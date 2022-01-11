@@ -5,7 +5,6 @@ import java.util.HashMap;
 import com.google.common.base.Supplier;
 
 import electrodynamics.api.ISubtype;
-import electrodynamics.api.References;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
@@ -37,7 +36,7 @@ public class DeferredRegisters {
 
 	private static void registerSubtypeItem(ISubtype[] array) {
 		for (ISubtype subtype : array) {
-			ITEMS.register(subtype.tag(), supplier(new Item(new Item.Properties().tab(References.CORETAB)), subtype));
+			ITEMS.register(subtype.tag(), supplier(new Item(new Item.Properties().tab(References.MODULARTAB)), subtype));
 		}
 	}
 

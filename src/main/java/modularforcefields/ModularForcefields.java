@@ -20,9 +20,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(References.ID)
 @EventBusSubscriber(modid = References.ID, bus = Bus.MOD)
-public class NuclearScience {
+public class ModularForcefields {
 
-	public NuclearScience() {
+	public ModularForcefields() {
 		ConfigurationHandler.registerConfig(Constants.class);
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		DeferredRegisters.BLOCKS.register(bus);

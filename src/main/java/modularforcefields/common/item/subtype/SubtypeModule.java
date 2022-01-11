@@ -9,12 +9,12 @@ public enum SubtypeModule implements ISubtype {
 
 	@Override
 	public String tag() {
-		return "ingot" + name();
+		return "module" + name();
 	}
 
 	@Override
 	public String forgeTag() {
-		return "ingots/" + name();
+		return "modules/" + name();
 	}
 
 	@Override
