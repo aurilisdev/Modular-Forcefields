@@ -1,0 +1,20 @@
+{
+	"variants": {
+		"facing=east": {
+			"model": "modularforcefields:block/coerciondriver",
+			"y": 0
+		},
+		"facing=north": {
+			"model": "modularforcefields:block/coerciondriver",
+			"y": 270
+		},
+		"facing=south": {
+			"model": "modularforcefields:block/coerciondriver",
+			"y": 90
+		},
+		"facing=west": {
+			"model": "modularforcefields:block/coerciondriver",
+			"y": 180
+		}
+	}
+}

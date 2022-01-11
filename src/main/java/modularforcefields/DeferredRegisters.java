@@ -3,9 +3,17 @@ package modularforcefields;
 import java.util.HashMap;
 
 import com.google.common.base.Supplier;
+import com.google.common.collect.Sets;
 
 import electrodynamics.api.ISubtype;
+import electrodynamics.common.blockitem.BlockItemDescriptable;
+import electrodynamics.prefab.block.GenericMachineBlock;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.common.tile.TileBiometricIdentifier;
+import modularforcefields.common.tile.TileCoercionDeriver;
+import modularforcefields.common.tile.TileFortronCapacitor;
+import modularforcefields.common.tile.TileFortronFieldProjector;
+import modularforcefields.common.tile.TileInterdictionMatrix;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
@@ -29,12 +37,42 @@ public class DeferredRegisters {
 	public static final HashMap<ISubtype, Item> SUBTYPEITEM_MAPPINGS = new HashMap<>();
 	public static final HashMap<Item, ISubtype> ITEMSUBTYPE_MAPPINGS = new HashMap<>();
 	public static final HashMap<ISubtype, Block> SUBTYPEBLOCK_MAPPINGS = new HashMap<>();
+	public static GenericMachineBlock blockBiometricIdentifier;
+	public static GenericMachineBlock blockCoercionDeriver;
+	public static GenericMachineBlock blockFortronCapacitor;
+	public static GenericMachineBlock blockFortronFieldProjector;
+	public static GenericMachineBlock blockInterdictionMatrix;
 
 	static {
+		BLOCKS.register("biometricidentifier", supplier(blockBiometricIdentifier = new GenericMachineBlock(TileBiometricIdentifier::new)));
+		BLOCKS.register("coercionderiver", supplier(blockCoercionDeriver = new GenericMachineBlock(TileCoercionDeriver::new)));
+		BLOCKS.register("fortroncapacitor", supplier(blockFortronCapacitor = new GenericMachineBlock(TileFortronCapacitor::new)));
+		BLOCKS.register("fortronfieldprojector", supplier(blockFortronFieldProjector = new GenericMachineBlock(TileFortronFieldProjector::new)));
+		BLOCKS.register("interdictionmatrix", supplier(blockInterdictionMatrix = new GenericMachineBlock(TileInterdictionMatrix::new)));
+		ITEMS.register("biometricidentifier",
+				supplier(new BlockItemDescriptable(blockBiometricIdentifier, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("coercionderiver",
+				supplier(new BlockItemDescriptable(blockCoercionDeriver, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("fortroncapacitor",
+				supplier(new BlockItemDescriptable(blockFortronCapacitor, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("fortronfieldprojector",
+				supplier(new BlockItemDescriptable(blockFortronFieldProjector, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("interdictionmatrix",
+				supplier(new BlockItemDescriptable(blockInterdictionMatrix, new Item.Properties().tab(References.MODULARTAB))));
 		registerSubtypeItem(SubtypeModule.values());
 	}
 	public static final RegistryObject<Item> ITEM_FOCUSMATRIX = ITEMS.register("focusmatrix",
 			supplier(new Item(new Item.Properties().tab(References.MODULARTAB))));
+	public static final RegistryObject<BlockEntityType<TileBiometricIdentifier>> TILE_BIOMETRICIDENTIFIER = TILES.register("biometricidentifier",
+			() -> new BlockEntityType<>(TileBiometricIdentifier::new, Sets.newHashSet(blockBiometricIdentifier), null));
+	public static final RegistryObject<BlockEntityType<TileCoercionDeriver>> TILE_COERCIONDERIVER = TILES.register("coercionderiver",
+			() -> new BlockEntityType<>(TileCoercionDeriver::new, Sets.newHashSet(blockCoercionDeriver), null));
+	public static final RegistryObject<BlockEntityType<TileFortronCapacitor>> TILE_FORTRONCAPACITOR = TILES.register("fortroncapacitor",
+			() -> new BlockEntityType<>(TileFortronCapacitor::new, Sets.newHashSet(blockFortronCapacitor), null));
+	public static final RegistryObject<BlockEntityType<TileFortronFieldProjector>> TILE_FORTRONFIELDPROJECTOR = TILES.register(
+			"fortronfieldprojector", () -> new BlockEntityType<>(TileFortronFieldProjector::new, Sets.newHashSet(blockFortronFieldProjector), null));
+	public static final RegistryObject<BlockEntityType<TileInterdictionMatrix>> TILE_INTERDICTIONMATRIX = TILES.register("interdictionmatrix",
+			() -> new BlockEntityType<>(TileInterdictionMatrix::new, Sets.newHashSet(blockInterdictionMatrix), null));
 
 	private static void registerSubtypeItem(ISubtype[] array) {
 		for (ISubtype subtype : array) {

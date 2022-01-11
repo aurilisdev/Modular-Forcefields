@@ -4,10 +4,8 @@ import electrodynamics.prefab.configuration.ConfigurationHandler;
 import modularforcefields.client.ClientRegister;
 import modularforcefields.common.packet.NetworkHandler;
 import modularforcefields.common.settings.Constants;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,7 +13,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(References.ID)
@@ -43,13 +40,5 @@ public class ModularForcefields {
 	@SubscribeEvent
 	public static void onCommonSetup(FMLCommonSetupEvent event) {
 		NetworkHandler.init();
-	}
-
-	@SubscribeEvent
-	public static void onLoadEvent(FMLLoadCompleteEvent event) {
-	}
-
-	@SubscribeEvent
-	public static void registerEffects(RegistryEvent.Register<MobEffect> event) {
 	}
 }

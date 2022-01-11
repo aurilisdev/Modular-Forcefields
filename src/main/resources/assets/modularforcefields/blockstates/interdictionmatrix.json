@@ -1,0 +1,20 @@
+{
+	"variants": {
+		"facing=east": {
+			"model": "modularforcefields:block/interdictionmatrix",
+			"y": 0
+		},
+		"facing=north": {
+			"model": "modularforcefields:block/interdictionmatrix",
+			"y": 270
+		},
+		"facing=south": {
+			"model": "modularforcefields:block/interdictionmatrix",
+			"y": 90
+		},
+		"facing=west": {
+			"model": "modularforcefields:block/interdictionmatrix",
+			"y": 180
+		}
+	}
+}
