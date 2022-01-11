@@ -1,0 +1,192 @@
+buildscript {
+    repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.ajoberstar:gradle-git:0.6.1'
+    }
+}
+import org.ajoberstar.gradle.git.tasks.GitTag
+import org.ajoberstar.gradle.git.tasks.GitPush
+
+plugins {
+    id "com.matthewprenger.cursegradle" version '1.4.0'
+}
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
+
+libsDirName = "../output"
+distsDirName = "../output"
+
+def version_minor='0'
+def version_revision='1'
+def minecraft_version='1.18.1'
+def version_build='0'
+def version_major='0'
+
+version = minecraft_version+'-'+version_major+'.'+version_minor+'.'+version_revision+'-'+version_build
+group = 'modularforcefields' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'Modular Forcefields'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+minecraft {
+    mappings channel: 'official', version: '1.18.1' 
+    
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                modularforcefields {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                modularforcefields {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'modularforcefields', '--all', '--output', file('src/generated/resources/')
+
+            mods {
+                modularforcefields {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    def Folder = new File("C:/AmpzLibz")
+    if(Folder.exists()) {
+        implementation fileTree(Folder)
+    }
+    minecraft 'net.minecraftforge:forge:1.18.1-39.0.0'
+    compileOnly fg.deobf("mezz.jei:jei-1.18.1:9.1.0.41:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.1:9.1.0.41")
+
+}
+
+// Example for how to get properties into the manifest for reading by the runtime..
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "modularforcefields",
+            "Specification-Vendor": "aurilisdev",
+            "Specification-Version": "1", // We are version 1 of ourselves
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"aurilisdev",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar') 
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	from sourceSets.main.allSource
+	classifier = 'sources'
+}
+task deobfJar(type: Jar) {
+	from sourceSets.main.output
+	classifier = 'deobf'
+}
+
+artifacts {
+	archives sourcesJar
+	archives deobfJar
+}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
+
+/*
+This needs to stay. It's the Maven repository for JEI along with a fallback!
+*/
+repositories{
+		mavenCentral()
+	  	maven {
+	   	    name = "Progwml6 maven"
+	   	    url = "https://dvs1.progwml6.com/files/maven/"
+	  	}
+	    maven {
+	       name = "ModMaven"
+	       url = "https://modmaven.k-4u.nl"
+	    }
+}
+
+ext.gittagnew = 'v'+project.version
+
+task createTag(type: GitTag) {
+   repoPath = rootDir
+   tagName = gittagnew
+   message = "tag ${project.version.toString()}"
+}
+
+task pushTag(type: GitPush, dependsOn: createTag) {
+   namesOrSpecs = [gittagnew]
+}
+tasks.curseforge.dependsOn jar
+tasks.curseforge.dependsOn pushTag
+
+curseforge {
+  apiKey = System.getenv("CURSEFORGE_KEY")
+  project {
+    id = '322896'
+    changelog = 'You can find changelog at: https://aurilis.dev/'
+    releaseType = 'release'
+    addGameVersion minecraft_version
+    
+    mainArtifact(jar) {
+      relations {
+        requiredDependency 'electrodynamics'
+      }
+      displayName=project.name+' ' + project.version
+    }
+  }
+}
