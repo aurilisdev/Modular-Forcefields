@@ -23,5 +23,10 @@
   "item.modularforcefields.moduleupgradestabilize" : "Stabilization Upgrade",
   "item.modularforcefields.moduleupgradestrength" : "Strength Upgrade",
   "item.modularforcefields.focusmatrix" : "Focus Matrix",
+  "block.modularforcefields.biometricidentifier" : "Biometric Identifier",
+  "block.modularforcefields.coercionderiver" : "Coercion Deriver",
+  "block.modularforcefields.fortroncapacitor" : "Fortron Capacitor",
+  "block.modularforcefields.fortronfieldprojector" : "Fortron Field Projector",
+  "block.modularforcefields.interdictionmatrix" : "Interdiction Matrix",
   "itemGroup.itemgroupmodularforcefields" : "Modular Forcefields"
 }
