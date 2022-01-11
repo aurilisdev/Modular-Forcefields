@@ -22,5 +22,6 @@
   "item.modularforcefields.moduleupgradesponge" : "Sponge Upgrade",
   "item.modularforcefields.moduleupgradestabilize" : "Stabilization Upgrade",
   "item.modularforcefields.moduleupgradestrength" : "Strength Upgrade",
+  "item.modularforcefields.focusmatrix" : "Focus Matrix",
   "itemGroup.itemgroupmodularforcefields" : "Modular Forcefields"
 }

@@ -33,6 +33,8 @@ public class DeferredRegisters {
 	static {
 		registerSubtypeItem(SubtypeModule.values());
 	}
+	public static final RegistryObject<Item> ITEM_FOCUSMATRIX = ITEMS.register("focusmatrix",
+			supplier(new Item(new Item.Properties().tab(References.MODULARTAB))));
 
 	private static void registerSubtypeItem(ISubtype[] array) {
 		for (ISubtype subtype : array) {
