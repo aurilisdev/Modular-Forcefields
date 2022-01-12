@@ -1,6 +1,9 @@
 package modularforcefields.client;
 
+import modularforcefields.DeferredRegisters;
 import modularforcefields.References;
+import modularforcefields.client.screen.ScreenCoercionDeriver;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,6 +21,7 @@ public class ClientRegister {
 	}
 
 	public static void setup() {
+		MenuScreens.register(DeferredRegisters.CONTAINER_COERCIONDERIVER.get(), ScreenCoercionDeriver::new);
 	}
 
 	@SubscribeEvent
