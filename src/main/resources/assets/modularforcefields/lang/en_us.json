@@ -28,7 +28,7 @@
   "block.modularforcefields.fortroncapacitor" : "Fortron Capacitor",
   "block.modularforcefields.fortronfieldprojector" : "Fortron Field Projector",
   "block.modularforcefields.interdictionmatrix" : "Interdiction Matrix",
-  "fluid.modularforcefields.fortron" : "Hydraulic Fluid",
+  "fluid.modularforcefields.fortron" : "Fortron Fluid",
   "container.coercionderiver" : "Coercion Deriver",
   "container.fortroncapacitor" : "Fortron Capacitor",
   "itemGroup.itemgroupmodularforcefields" : "Modular Forcefields"

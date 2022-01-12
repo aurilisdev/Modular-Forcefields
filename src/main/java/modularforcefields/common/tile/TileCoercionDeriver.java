@@ -12,6 +12,7 @@ import electrodynamics.prefab.tile.components.type.ComponentElectrodynamic;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
+import electrodynamics.prefab.utilities.object.TransferPack;
 import modularforcefields.DeferredRegisters;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.item.subtype.SubtypeModule;
@@ -33,7 +34,7 @@ public class TileCoercionDeriver extends GenericTile {
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentTickable().tickServer(this::tickServer).tickCommon(this::tickCommon));
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
-		addComponent(new ComponentElectrodynamic(this).voltage(Constants.COERCIONDERIVER_VOLTAGE).input(Direction.DOWN));
+		addComponent(new ComponentElectrodynamic(this).voltage(Constants.COERCIONDERIVER_VOLTAGE).input(Direction.DOWN).output(Direction.DOWN));
 		addComponent(new ComponentInventory(this).size(4)
 				.valid((index, stack, inv) -> VALIDMODULES.contains(DeferredRegisters.ITEMSUBTYPE_MAPPINGS.getOrDefault(stack.getItem(), null))));
 		addComponent(new ComponentContainerProvider("container.coercionderiver")
@@ -53,11 +54,17 @@ public class TileCoercionDeriver extends GenericTile {
 			fortronCapacity = max;
 			packets.sendGuiPacketToTracking();
 		}
+		fortron += electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity - fortron), electro.getVoltage()), false)
+				.getJoules();
 	}
 
 	private int getMaxStored() {
 		return (int) (BASEENERGY + BASEENERGY * 10 * Math.pow(1.051, getModuleCount(SubtypeModule.upgradespeed))
 				+ BASEENERGY * 30 * Math.pow(1.051, getModuleCount(SubtypeModule.upgradecapacity) * 2.0));
+	}
+
+	private int getTransfer() {
+		return (int) (BASEENERGY + BASEENERGY * 300 * Math.pow(1.051, getModuleCount(SubtypeModule.upgradespeed))) / 3;
 	}
 
 	private int getModuleCount(SubtypeModule module) {
