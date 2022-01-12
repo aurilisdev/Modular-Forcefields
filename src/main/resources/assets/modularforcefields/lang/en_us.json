@@ -30,5 +30,6 @@
   "block.modularforcefields.interdictionmatrix" : "Interdiction Matrix",
   "fluid.modularforcefields.fortron" : "Hydraulic Fluid",
   "container.coercionderiver" : "Coercion Deriver",
+  "container.fortroncapacitor" : "Fortron Capacitor",
   "itemGroup.itemgroupmodularforcefields" : "Modular Forcefields"
 }
