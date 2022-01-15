@@ -1,10 +1,10 @@
 package modularforcefields.common.tile;
 
 import java.util.HashSet;
+import java.util.function.Predicate;
 
 import org.apache.commons.compress.utils.Sets;
 
-import electrodynamics.prefab.tile.GenericTile;
 import electrodynamics.prefab.tile.components.ComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
 import electrodynamics.prefab.tile.components.type.ComponentDirection;
@@ -21,9 +21,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TileCoercionDeriver extends GenericTile {
+public class TileCoercionDeriver extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity);
 	public static final int BASEENERGY = 700;
 	public int fortron;
@@ -41,10 +42,8 @@ public class TileCoercionDeriver extends GenericTile {
 				.createMenu((id, player) -> new ContainerCoercionDeriver(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 
-	private void tickCommon(ComponentTickable tickable) {
-	}
-
-	private void tickServer(ComponentTickable tickable) {
+	@Override
+	protected void tickServer(ComponentTickable tickable) {
 		ComponentElectrodynamic electro = getComponent(ComponentType.Electrodynamic);
 		ComponentPacketHandler packets = getComponent(ComponentType.PacketHandler);
 		if (tickable.getTicks() % 20 == 0) {
@@ -56,6 +55,7 @@ public class TileCoercionDeriver extends GenericTile {
 		}
 		fortron += electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity - fortron), electro.getVoltage()), false)
 				.getJoules();
+		sendFortronTo(fortron, getConnectionTest());
 	}
 
 	private int getMaxStored() {
@@ -67,11 +67,6 @@ public class TileCoercionDeriver extends GenericTile {
 		return (int) (BASEENERGY + BASEENERGY * 300 * Math.pow(1.051, getModuleCount(SubtypeModule.upgradespeed))) / 3;
 	}
 
-	private int getModuleCount(SubtypeModule module) {
-		ComponentInventory inv = getComponent(ComponentType.Inventory);
-		return inv.countItem(DeferredRegisters.SUBTYPEITEM_MAPPINGS.get(module));
-	}
-
 	private void writeGuiPacket(CompoundTag compound) {
 		compound.putInt("fortron", fortron);
 		compound.putInt("fortronCapacity", fortronCapacity);
@@ -81,4 +76,10 @@ public class TileCoercionDeriver extends GenericTile {
 		fortron = compound.getInt("fortron");
 		fortronCapacity = compound.getInt("fortronCapacity");
 	}
+
+	@Override
+	protected Predicate<BlockEntity> getConnectionTest() {
+		return b -> b.getType() == DeferredRegisters.TILE_FORTRONCAPACITOR.get();
+	}
+
 }
