@@ -43,6 +43,12 @@ public class TileFortronCapacitor extends TileFortronConnective {
 			fortronCapacity = max;
 			packets.sendGuiPacketToTracking();
 		}
+		fortron -= sendFortronTo(fortron, entity -> {
+			if (entity instanceof TileCoercionDeriver) {
+				return false;
+			}
+			return true;
+		});
 	}
 
 	private int getMaxStored() {

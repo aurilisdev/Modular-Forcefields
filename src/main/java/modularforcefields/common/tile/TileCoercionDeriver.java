@@ -33,7 +33,6 @@ public class TileCoercionDeriver extends TileFortronConnective {
 	public TileCoercionDeriver(BlockPos pos, BlockState state) {
 		super(DeferredRegisters.TILE_COERCIONDERIVER.get(), pos, state);
 		addComponent(new ComponentDirection());
-		addComponent(new ComponentTickable().tickServer(this::tickServer).tickCommon(this::tickCommon));
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
 		addComponent(new ComponentElectrodynamic(this).voltage(Constants.COERCIONDERIVER_VOLTAGE).input(Direction.DOWN).output(Direction.DOWN));
 		addComponent(new ComponentInventory(this).size(4)

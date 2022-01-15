@@ -38,7 +38,7 @@ public class TileFortronConnective extends GenericTile {
 	protected void findConnections() {
 		Predicate<BlockEntity> predicate = getConnectionTest();
 		for (BlockEntity entity : WorldUtils.getNearbyTiles(level, worldPosition, 5)) {
-			if (entity instanceof TileFortronConnective connection && predicate.test(entity)) {
+			if (entity != this && entity instanceof TileFortronConnective connection && predicate.test(entity)) {
 				connections.add(connection);
 				connection.connections.add(this);
 
@@ -77,9 +77,7 @@ public class TileFortronConnective extends GenericTile {
 			}
 		}
 		for (TileFortronConnective connective : sendList) {
-			int localSent = connective.recieveFortron(send / sendList.size());
-			sent += localSent;
-			send -= localSent;
+			sent += connective.recieveFortron(send / sendList.size());
 		}
 		return sent;
 	}
