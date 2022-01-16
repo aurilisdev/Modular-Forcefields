@@ -54,7 +54,7 @@ public class TileCoercionDeriver extends TileFortronConnective {
 		}
 		fortron += electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity - fortron), electro.getVoltage()), false)
 				.getJoules();
-		sendFortronTo(fortron, getConnectionTest());
+		sendFortronTo(Math.min(fortron, getTransfer()), getConnectionTest());
 	}
 
 	private int getMaxStored() {

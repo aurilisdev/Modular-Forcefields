@@ -76,8 +76,12 @@ public class TileFortronConnective extends GenericTile {
 				it.remove();
 			}
 		}
+		int size = sendList.size();
 		for (TileFortronConnective connective : sendList) {
-			sent += connective.recieveFortron(send / sendList.size());
+			int ret = connective.recieveFortron(send / size);
+			sent += ret;
+			send -= ret;
+			size--;
 		}
 		return sent;
 	}

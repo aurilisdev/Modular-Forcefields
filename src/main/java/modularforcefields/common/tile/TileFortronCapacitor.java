@@ -43,17 +43,16 @@ public class TileFortronCapacitor extends TileFortronConnective {
 			fortronCapacity = max;
 			packets.sendGuiPacketToTracking();
 		}
-		fortron -= sendFortronTo(fortron, entity -> {
-			if (entity instanceof TileCoercionDeriver) {
-				return false;
-			}
-			return true;
-		});
+		fortron -= sendFortronTo(Math.min(fortron, getTransfer()), entity -> true);
 	}
 
 	private int getMaxStored() {
 		return (int) (BASEENERGY + BASEENERGY * 10 * Math.pow(1.051, getModuleCount(SubtypeModule.upgradespeed))
 				+ BASEENERGY * 30 * Math.pow(1.051, getModuleCount(SubtypeModule.upgradecapacity) * 2.0));
+	}
+
+	private int getTransfer() {
+		return (int) (BASEENERGY + BASEENERGY * 300 * Math.pow(1.051, getModuleCount(SubtypeModule.upgradespeed))) / 3;
 	}
 
 	private void writeGuiPacket(CompoundTag compound) {
@@ -64,6 +63,10 @@ public class TileFortronCapacitor extends TileFortronConnective {
 	private void readGuiPacket(CompoundTag compound) {
 		fortron = compound.getInt("fortron");
 		fortronCapacity = compound.getInt("fortronCapacity");
+	}@Override
+	public CompoundTag save(CompoundTag tag) {
+		// TODO Auto-generated method stub
+		return super.save(tag);
 	}
 
 	@Override
