@@ -94,7 +94,7 @@ public class TileFortronConnective extends GenericTile {
 	protected void tickServer(ComponentTickable tickable) {
 	}
 
-	protected int getFrequency() {
+	public int getFrequency() {
 		return frequency;
 	}
 
@@ -118,6 +118,10 @@ public class TileFortronConnective extends GenericTile {
 	public void setRemoved() {
 		super.setRemoved();
 		invalidateConnections();
+	}
+
+	public int getConnections() {
+		return connections.size();
 	}
 
 }

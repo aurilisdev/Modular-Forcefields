@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileCoercionDeriver extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity);
-	public static final int BASEENERGY = 700;
+	public static final int BASEENERGY = 50;
 	public int fortron;
 	public int fortronCapacity;
 
@@ -35,7 +35,7 @@ public class TileCoercionDeriver extends TileFortronConnective {
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
 		addComponent(new ComponentElectrodynamic(this).voltage(Constants.COERCIONDERIVER_VOLTAGE).input(Direction.DOWN).output(Direction.DOWN));
-		addComponent(new ComponentInventory(this).size(4)
+		addComponent(new ComponentInventory(this).size(4).shouldSendInfo()
 				.valid((index, stack, inv) -> VALIDMODULES.contains(DeferredRegisters.ITEMSUBTYPE_MAPPINGS.getOrDefault(stack.getItem(), null))));
 		addComponent(new ComponentContainerProvider("container.coercionderiver")
 				.createMenu((id, player) -> new ContainerCoercionDeriver(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
@@ -58,12 +58,11 @@ public class TileCoercionDeriver extends TileFortronConnective {
 	}
 
 	private int getMaxStored() {
-		return (int) (BASEENERGY + BASEENERGY * 10 * Math.pow(1.051, getModuleCount(SubtypeModule.upgradespeed))
-				+ BASEENERGY * 30 * Math.pow(1.051, getModuleCount(SubtypeModule.upgradecapacity) * 2.0));
+		return (int) (getTransfer() + BASEENERGY * getModuleCount(SubtypeModule.upgradecapacity) * 2.0);
 	}
 
-	private int getTransfer() {
-		return (int) (BASEENERGY + BASEENERGY * 300 * Math.pow(1.051, getModuleCount(SubtypeModule.upgradespeed))) / 3;
+	public int getTransfer() {
+		return BASEENERGY * 30 + BASEENERGY * getModuleCount(SubtypeModule.upgradespeed);
 	}
 
 	private void writeGuiPacket(CompoundTag compound) {
@@ -80,5 +79,4 @@ public class TileCoercionDeriver extends TileFortronConnective {
 	protected Predicate<BlockEntity> getConnectionTest() {
 		return b -> b.getType() == DeferredRegisters.TILE_FORTRONCAPACITOR.get();
 	}
-
 }
