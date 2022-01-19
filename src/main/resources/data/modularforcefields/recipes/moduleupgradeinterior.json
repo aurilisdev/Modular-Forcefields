@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "l",
+        "f",
+        "l"
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "l": {
+            "tag": "forge:storage_blocks/lapis"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:moduleupgradeinterior",
+        "count": 1
+    }
+}

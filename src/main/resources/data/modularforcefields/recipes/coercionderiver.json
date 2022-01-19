@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "fsf",
+        "frf",
+        "fsf"
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "s": {
+            "tag": "forge:plates/steel"
+        },
+        "r": {
+            "item": "minecraft:repeater"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:coercionderiver",
+        "count": 1
+    }
+}

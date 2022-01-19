@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "hfr"
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "h": {
+            "item": "modularforcefields:moduleupgradeantifriendly"
+        },
+        "r": {
+            "item": "modularforcefields:moduleupgradeantihostile"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:moduleupgradeantipersonnel",
+        "count": 1
+    }
+}

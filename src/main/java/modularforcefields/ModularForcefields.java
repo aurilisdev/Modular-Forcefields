@@ -4,6 +4,7 @@ import electrodynamics.prefab.configuration.ConfigurationHandler;
 import modularforcefields.client.ClientRegister;
 import modularforcefields.common.packet.NetworkHandler;
 import modularforcefields.common.settings.Constants;
+import modularforcefields.common.tags.MFFTags;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -40,5 +41,6 @@ public class ModularForcefields {
 	@SubscribeEvent
 	public static void onCommonSetup(FMLCommonSetupEvent event) {
 		NetworkHandler.init();
+		MFFTags.init();
 	}
 }

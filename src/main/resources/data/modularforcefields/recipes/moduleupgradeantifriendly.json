@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " w ",
+        "pfl",
+        " s "
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "w": {
+            "tag": "minecraft:wool"
+        },
+        "p": {
+            "item": "minecraft:cooked_porkchop"
+        },
+        "s": {
+            "item": "minecraft:slime_ball"
+        },
+        "l": {
+            "item": "minecraft:leather"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:moduleupgradeantifriendly",
+        "count": 1
+    }
+}
