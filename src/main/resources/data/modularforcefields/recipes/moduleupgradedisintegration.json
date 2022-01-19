@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " r ",
+        "fpf",
+        " r "
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "r": {
+            "item": "minecraft:redstone"
+        },
+        "p": {
+            "item": "minecraft:repeater"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:moduleupgradedisintegration",
+        "count": 1
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "www",
+        "wfw",
+        "www"
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "w": {
+            "item": "minecraft:water_bucket"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:moduleupgradesponge",
+        "count": 1
+    }
+}

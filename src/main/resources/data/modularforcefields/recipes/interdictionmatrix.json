@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "sss",
+        "fff",
+        "fcf"
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "s": {
+            "item": "modularforcefields:moduleupgradeshock"
+        },
+        "c": {
+            "item": "minecraft:ender_chest"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:interdictionmatrix",
+        "count": 1
+    }
+}

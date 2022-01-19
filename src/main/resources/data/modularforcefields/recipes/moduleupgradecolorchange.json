@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "ggg",
+        "gfg",
+        "ggg"
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "g": {
+            "item": "minecraft:glowstone"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:moduleupgradecolorchange",
+        "count": 4
+    }
+}

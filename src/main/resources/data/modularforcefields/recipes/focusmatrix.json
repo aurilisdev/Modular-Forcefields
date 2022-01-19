@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "rsr",
+        "sds",
+        "rsr"
+    ],
+    "key": {
+        "r": {
+            "item": "minecraft:redstone"
+        },
+        "s": {
+            "tag": "forge:plates/steel"
+        },
+        "d": {
+            "tag": "forge:gems/diamond"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:focusmatrix",
+        "count": 8
+    }
+}

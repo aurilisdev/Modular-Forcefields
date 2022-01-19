@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " r ",
+        "pfb",
+        " g "
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "r": {
+            "item": "minecraft:rotten_flesh"
+        },
+        "p": {
+            "item": "minecraft:gunpowder"
+        },
+        "g": {
+            "item": "minecraft:ghast_tear"
+        },
+        "b": {
+            "item": "minecraft:bone"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:moduleupgradeantihostile",
+        "count": 1
+    }
+}

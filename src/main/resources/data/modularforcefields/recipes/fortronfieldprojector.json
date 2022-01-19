@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " d ",
+        "fff",
+        "srs"
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "s": {
+            "tag": "forge:plates/steel"
+        },
+        "d": {
+            "tag": "forge:gems/diamond"
+        },
+        "r": {
+            "item": "minecraft:repeater"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:fortronfieldprojector",
+        "count": 1
+    }
+}

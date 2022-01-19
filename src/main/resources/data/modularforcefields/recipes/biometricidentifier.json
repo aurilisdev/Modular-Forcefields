@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "fsf",
+        "sps",
+        "fsf"
+    ],
+    "key": {
+        "f": {
+            "item": "modularforcefields:focusmatrix"
+        },
+        "s": {
+            "tag": "forge:plates/steel"
+        },
+        "p": {
+            "item": "minecraft:paper"
+        }
+    },
+    "result": {
+        "item": "modularforcefields:biometricidentifier",
+        "count": 1
+    }
+}
