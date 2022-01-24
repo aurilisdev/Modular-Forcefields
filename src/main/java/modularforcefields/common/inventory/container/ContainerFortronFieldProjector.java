@@ -24,6 +24,7 @@ public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<
 	public static final Integer[] SLOT_WEST = new Integer[] { 1, 2 };
 	public static final Integer[] SLOT_UP = new Integer[] { 0, 8 };
 	public static final Integer[] SLOT_DOWN = new Integer[] { 3, 11 };
+	public static final int SLOT_TYPE = 19;
 	public static final HashMap<List<Integer>, String> SLOT_MAP = new HashMap<>();
 	static {
 		SLOT_MAP.put(Arrays.asList(SLOT_NORTH), "North");

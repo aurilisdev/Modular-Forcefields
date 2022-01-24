@@ -36,6 +36,6 @@
   "gui.fortrondevice.frequency" : "Frequency: %s",
   "container.coercionderiver" : "Coercion Deriver",
   "container.fortroncapacitor" : "Fortron Capacitor",
-  "container.fortronfieldprojector" : "Fortron Field Project",
+  "container.fortronfieldprojector" : "Fortron Field Projector",
   "itemGroup.itemgroupmodularforcefields" : "Modular Forcefields"
 }
