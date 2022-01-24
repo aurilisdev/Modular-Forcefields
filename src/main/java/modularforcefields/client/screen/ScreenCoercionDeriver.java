@@ -32,8 +32,7 @@ public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDerive
 			}
 			return null;
 		}, this, 8, 27));
-		components.add(new ScreenComponentElectricInfo(this, -ScreenComponentInfo.SIZE + 1, 2)
-				.wattage(electro -> electro.getHolder() instanceof TileCoercionDeriver deriver ? (double) deriver.fortron : 0));
+		components.add(new ScreenComponentElectricInfo(this, -ScreenComponentInfo.SIZE + 1, 2).wattage(electro -> electro.getHolder() instanceof TileCoercionDeriver deriver ? (double) deriver.fortron : 0));
 		imageHeight += 40;
 		inventoryLabelY += 40;
 	}
@@ -42,11 +41,9 @@ public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDerive
 	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		super.renderLabels(matrixStack, mouseX, mouseY);
 		if (menu.getUnsafeHost() instanceof TileCoercionDeriver deriver) {
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.transfer",
-					ChatFormatter.getChatDisplayShort(deriver.getTransfer(), DisplayUnit.BUCKETS)), 25, 65, 4210752);
+			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.transfer", ChatFormatter.getChatDisplayShort(deriver.getTransfer(), DisplayUnit.BUCKETS)), 25, 65, 4210752);
 			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.linked", deriver.getConnections()), 25, 55, 4210752);
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.usage",
-					ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
+			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
 			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.frequency", deriver.getFrequency()), 25, 35, 4210752);
 		}
 	}

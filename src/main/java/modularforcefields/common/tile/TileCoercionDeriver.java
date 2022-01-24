@@ -35,10 +35,8 @@ public class TileCoercionDeriver extends TileFortronConnective {
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
 		addComponent(new ComponentElectrodynamic(this).voltage(Constants.COERCIONDERIVER_VOLTAGE).input(Direction.DOWN).output(Direction.DOWN));
-		addComponent(new ComponentInventory(this).size(4).shouldSendInfo()
-				.valid((index, stack, inv) -> VALIDMODULES.contains(DeferredRegisters.ITEMSUBTYPE_MAPPINGS.getOrDefault(stack.getItem(), null))));
-		addComponent(new ComponentContainerProvider("container.coercionderiver")
-				.createMenu((id, player) -> new ContainerCoercionDeriver(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentInventory(this).size(4).shouldSendInfo().valid((index, stack, inv) -> VALIDMODULES.contains(DeferredRegisters.ITEMSUBTYPE_MAPPINGS.getOrDefault(stack.getItem(), null))));
+		addComponent(new ComponentContainerProvider("container.coercionderiver").createMenu((id, player) -> new ContainerCoercionDeriver(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override
@@ -52,8 +50,7 @@ public class TileCoercionDeriver extends TileFortronConnective {
 			fortronCapacity = max;
 			packets.sendGuiPacketToTracking();
 		}
-		fortron += electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity - fortron), electro.getVoltage()), false)
-				.getJoules();
+		fortron += electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity - fortron), electro.getVoltage()), false).getJoules();
 		sendFortronTo(Math.min(fortron, getTransfer()), getConnectionTest());
 	}
 

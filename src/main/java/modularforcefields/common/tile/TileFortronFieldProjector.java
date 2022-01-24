@@ -19,7 +19,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileFortronFieldProjector extends TileFortronConnective {
-
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
 	public static final int BASEENERGY = 100;
 	private FortronFieldColor fieldColor = FortronFieldColor.LIGHT_BLUE;
@@ -31,9 +30,8 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		super(DeferredRegisters.TILE_FORTRONFIELDPROJECTOR.get(), pos, state);
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
-		addComponent(new ComponentInventory(this).size(4).shouldSendInfo().valid((index, stack, inv) -> true));
-		addComponent(new ComponentContainerProvider("container.fortronfieldprojector")
-				.createMenu((id, player) -> new ContainerFortronFieldProjector(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentInventory(this).size(21).shouldSendInfo().valid((index, stack, inv) -> true));
+		addComponent(new ComponentContainerProvider("container.fortronfieldprojector").createMenu((id, player) -> new ContainerFortronFieldProjector(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override

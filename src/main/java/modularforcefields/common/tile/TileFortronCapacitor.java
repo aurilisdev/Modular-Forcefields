@@ -28,10 +28,8 @@ public class TileFortronCapacitor extends TileFortronConnective {
 		super(DeferredRegisters.TILE_FORTRONCAPACITOR.get(), pos, state);
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
-		addComponent(new ComponentInventory(this).size(4).shouldSendInfo()
-				.valid((index, stack, inv) -> VALIDMODULES.contains(DeferredRegisters.ITEMSUBTYPE_MAPPINGS.getOrDefault(stack.getItem(), null))));
-		addComponent(new ComponentContainerProvider("container.fortroncapacitor")
-				.createMenu((id, player) -> new ContainerFortronCapacitor(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentInventory(this).size(4).shouldSendInfo().valid((index, stack, inv) -> VALIDMODULES.contains(DeferredRegisters.ITEMSUBTYPE_MAPPINGS.getOrDefault(stack.getItem(), null))));
+		addComponent(new ComponentContainerProvider("container.fortroncapacitor").createMenu((id, player) -> new ContainerFortronCapacitor(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override

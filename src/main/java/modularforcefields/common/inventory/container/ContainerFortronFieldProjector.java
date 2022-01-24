@@ -1,5 +1,9 @@
 package modularforcefields.common.inventory.container;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 import electrodynamics.prefab.inventory.container.GenericContainerBlockEntity;
 import modularforcefields.DeferredRegisters;
 import modularforcefields.common.item.subtype.SubtypeModule;
@@ -12,6 +16,23 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 
 public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<TileFortronFieldProjector> {
+	public static final int[] SLOT_UPGRADES = new int[] { 12, 13, 14, 15, 16, 17 };
+	public static final int[] SLOT_MODULES = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+	public static final Integer[] SLOT_NORTH = new Integer[] { 4, 6 };
+	public static final Integer[] SLOT_SOUTH = new Integer[] { 5, 7 };
+	public static final Integer[] SLOT_EAST = new Integer[] { 9, 10 };
+	public static final Integer[] SLOT_WEST = new Integer[] { 1, 2 };
+	public static final Integer[] SLOT_UP = new Integer[] { 0, 8 };
+	public static final Integer[] SLOT_DOWN = new Integer[] { 3, 11 };
+	public static final HashMap<List<Integer>, String> SLOT_MAP = new HashMap<>();
+	static {
+		SLOT_MAP.put(Arrays.asList(SLOT_NORTH), "North");
+		SLOT_MAP.put(Arrays.asList(SLOT_SOUTH), "South");
+		SLOT_MAP.put(Arrays.asList(SLOT_EAST), "East");
+		SLOT_MAP.put(Arrays.asList(SLOT_WEST), "West");
+		SLOT_MAP.put(Arrays.asList(SLOT_UP), "Up");
+		SLOT_MAP.put(Arrays.asList(SLOT_DOWN), "Down");
+	}
 
 	public ContainerFortronFieldProjector(int id, Inventory playerinv) {
 		this(id, playerinv, new SimpleContainer(4), new SimpleContainerData(3));
