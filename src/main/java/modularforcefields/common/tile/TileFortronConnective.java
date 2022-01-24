@@ -104,6 +104,17 @@ public class TileFortronConnective extends GenericTile {
 		return count;
 	}
 
+	public boolean hasModule(SubtypeModule module) {
+		ComponentInventory inv = getComponent(ComponentType.Inventory);
+		for (int slot = 0; slot < inv.getContainerSize(); slot++) {
+			ItemStack itemstack = inv.getItem(slot);
+			if (itemstack.getItem().equals(DeferredRegisters.SUBTYPEITEM_MAPPINGS.get(module))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	protected void tickServer(ComponentTickable tickable) {
 	}
 

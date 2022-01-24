@@ -34,6 +34,7 @@ public class TileFortronCapacitor extends TileFortronConnective {
 
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
+		super.tickServer(tickable);
 		ComponentPacketHandler packets = getComponent(ComponentType.PacketHandler);
 		if (tickable.getTicks() % 20 == 0) {
 			int max = getMaxStored();

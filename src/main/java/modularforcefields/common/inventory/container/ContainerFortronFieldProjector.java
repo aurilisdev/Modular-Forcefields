@@ -36,7 +36,7 @@ public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<
 	}
 
 	public ContainerFortronFieldProjector(int id, Inventory playerinv) {
-		this(id, playerinv, new SimpleContainer(4), new SimpleContainerData(3));
+		this(id, playerinv, new SimpleContainer(21), new SimpleContainerData(3));
 	}
 
 	public ContainerFortronFieldProjector(int id, Inventory pinv, Container inv, ContainerData data) {
@@ -59,6 +59,10 @@ public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<
 				addSlot(new SlotModule(inv, nextIndex(), 8 + 18 * xSlot, 27 + 18 * ySlot, valid));
 			}
 		}
+		addSlot(new SlotModule(inv, nextIndex(), 133, 120, valid));
+
+		addSlot(new SlotModule(inv, nextIndex(), 118, 45, valid));
+
 	}
 
 }

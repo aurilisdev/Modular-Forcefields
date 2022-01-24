@@ -36,7 +36,9 @@ public class TileFortronField extends GenericTile {
 	public void saveAdditional(CompoundTag compound) {
 		super.saveAdditional(compound);
 		compound.putInt("fieldColor", fieldColor.ordinal());
-		projectorPos.writeToNBT(compound, "projectorPos");
+		if (projectorPos != null) {
+			projectorPos.writeToNBT(compound, "projectorPos");
+		}
 	}
 
 	@Override
@@ -48,6 +50,10 @@ public class TileFortronField extends GenericTile {
 
 	public FortronFieldColor getFieldColor() {
 		return fieldColor;
+	}
+
+	public Location getProjectorPos() {
+		return projectorPos;
 	}
 
 	@Override

@@ -41,6 +41,7 @@ public class TileCoercionDeriver extends TileFortronConnective {
 
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
+		super.tickServer(tickable);
 		ComponentElectrodynamic electro = getComponent(ComponentType.Electrodynamic);
 		ComponentPacketHandler packets = getComponent(ComponentType.PacketHandler);
 		if (tickable.getTicks() % 20 == 0) {

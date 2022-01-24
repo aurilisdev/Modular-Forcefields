@@ -1,5 +1,6 @@
 package modularforcefields.common.tile.projection;
 
+import modularforcefields.common.tile.FortronFieldStatus;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 
 public class ThreadProjectorCalculationThread extends Thread {
@@ -16,14 +17,15 @@ public class ThreadProjectorCalculationThread extends Thread {
 	@Override
 	public void run() {
 		if (!projector.isRemoved()) {
-			projector.setCalculating(true);
+			projector.status = FortronFieldStatus.CALCULATING;
 			projector.calculatedFieldPoints.clear();
 			ProjectionType type = projector.getProjectionType();
-			type.calculate.accept(projector, this);
+			type.calculate(projector, this);
 			if (isInterrupted()) {
 				projector.calculatedFieldPoints.clear();
 			}
-			projector.setCalculating(false);
+			projector.calculatedSize = projector.calculatedFieldPoints.size();
+			projector.status = FortronFieldStatus.PROJECTING;
 		}
 	}
 }
