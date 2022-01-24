@@ -8,13 +8,16 @@ import com.google.common.collect.Sets;
 import electrodynamics.api.ISubtype;
 import electrodynamics.common.blockitem.BlockItemDescriptable;
 import electrodynamics.prefab.block.GenericMachineBlock;
+import modularforcefields.common.block.BlockFortronField;
 import modularforcefields.common.fluid.types.FluidFortron;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
+import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileBiometricIdentifier;
 import modularforcefields.common.tile.TileCoercionDeriver;
 import modularforcefields.common.tile.TileFortronCapacitor;
+import modularforcefields.common.tile.TileFortronField;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.common.tile.TileInterdictionMatrix;
 import net.minecraft.world.entity.EntityType;
@@ -45,6 +48,7 @@ public class DeferredRegisters {
 	public static GenericMachineBlock blockFortronCapacitor;
 	public static GenericMachineBlock blockFortronFieldProjector;
 	public static GenericMachineBlock blockInterdictionMatrix;
+	public static BlockFortronField blockFortronField;
 	public static FluidFortron fluidFortron;
 
 	static {
@@ -53,6 +57,7 @@ public class DeferredRegisters {
 		BLOCKS.register("fortroncapacitor", supplier(blockFortronCapacitor = new GenericMachineBlock(TileFortronCapacitor::new)));
 		BLOCKS.register("fortronfieldprojector", supplier(blockFortronFieldProjector = new GenericMachineBlock(TileFortronFieldProjector::new)));
 		BLOCKS.register("interdictionmatrix", supplier(blockInterdictionMatrix = new GenericMachineBlock(TileInterdictionMatrix::new)));
+		BLOCKS.register("fortronfield", supplier(blockFortronField = new BlockFortronField()));
 		ITEMS.register("biometricidentifier",
 				supplier(new BlockItemDescriptable(blockBiometricIdentifier, new Item.Properties().tab(References.MODULARTAB))));
 		ITEMS.register("coercionderiver",
@@ -63,6 +68,7 @@ public class DeferredRegisters {
 				supplier(new BlockItemDescriptable(blockFortronFieldProjector, new Item.Properties().tab(References.MODULARTAB))));
 		ITEMS.register("interdictionmatrix",
 				supplier(new BlockItemDescriptable(blockInterdictionMatrix, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("fortronfield", supplier(new BlockItemDescriptable(blockFortronField, new Item.Properties().tab(References.MODULARTAB))));
 		registerSubtypeItem(SubtypeModule.values());
 		FLUIDS.register("fluidfortron", supplier(fluidFortron = new FluidFortron()));
 	}
@@ -79,11 +85,15 @@ public class DeferredRegisters {
 			"fortronfieldprojector", () -> new BlockEntityType<>(TileFortronFieldProjector::new, Sets.newHashSet(blockFortronFieldProjector), null));
 	public static final RegistryObject<BlockEntityType<TileInterdictionMatrix>> TILE_INTERDICTIONMATRIX = TILES.register("interdictionmatrix",
 			() -> new BlockEntityType<>(TileInterdictionMatrix::new, Sets.newHashSet(blockInterdictionMatrix), null));
+	public static final RegistryObject<BlockEntityType<TileFortronField>> TILE_FORTRONFIELD = TILES.register("fortronfield",
+			() -> new BlockEntityType<>(TileFortronField::new, Sets.newHashSet(blockFortronField), null));
 
 	public static final RegistryObject<MenuType<ContainerCoercionDeriver>> CONTAINER_COERCIONDERIVER = CONTAINERS.register("coercionderiver",
 			() -> new MenuType<>(ContainerCoercionDeriver::new));
 	public static final RegistryObject<MenuType<ContainerFortronCapacitor>> CONTAINER_FORTRONCAPACITOR = CONTAINERS.register("fortroncapacitor",
 			() -> new MenuType<>(ContainerFortronCapacitor::new));
+	public static final RegistryObject<MenuType<ContainerFortronFieldProjector>> CONTAINER_FORTRONFIELDPROJECTOR = CONTAINERS
+			.register("fortronfieldprojector", () -> new MenuType<>(ContainerFortronFieldProjector::new));
 
 	private static void registerSubtypeItem(ISubtype[] array) {
 		for (ISubtype subtype : array) {

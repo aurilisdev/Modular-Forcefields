@@ -2,11 +2,15 @@ package modularforcefields;
 
 import electrodynamics.prefab.configuration.ConfigurationHandler;
 import modularforcefields.client.ClientRegister;
+import modularforcefields.common.block.BlockColorFortronField;
 import modularforcefields.common.packet.NetworkHandler;
 import modularforcefields.common.settings.Constants;
 import modularforcefields.common.tags.MFFTags;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -36,6 +40,13 @@ public class ModularForcefields {
 	@OnlyIn(Dist.CLIENT)
 	public static void onClientSetup(FMLClientSetupEvent event) {
 		ClientRegister.setup();
+		ItemBlockRenderTypes.setRenderLayer(DeferredRegisters.blockFortronField, RenderType.translucent());
+	}
+
+	@SubscribeEvent
+	@OnlyIn(Dist.CLIENT)
+	public static void onColorEvent(ColorHandlerEvent.Block event) {
+		event.getBlockColors().register(new BlockColorFortronField(), DeferredRegisters.blockFortronField);
 	}
 
 	@SubscribeEvent

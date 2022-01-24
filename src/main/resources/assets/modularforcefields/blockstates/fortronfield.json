@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "modularforcefields:block/fortronfield"
+    }
+  }
+}

@@ -28,6 +28,7 @@
   "block.modularforcefields.fortroncapacitor" : "Fortron Capacitor",
   "block.modularforcefields.fortronfieldprojector" : "Fortron Field Projector",
   "block.modularforcefields.interdictionmatrix" : "Interdiction Matrix",
+  "block.modularforcefields.fortronfield" : "Fortron Field",
   "fluid.modularforcefields.fortron" : "Fortron Fluid",
   "gui.fortrondevice.transfer" : "Transfer Rate: %s",
   "gui.fortrondevice.linked" : "Linked Devices: %s",
@@ -35,5 +36,6 @@
   "gui.fortrondevice.frequency" : "Frequency: %s",
   "container.coercionderiver" : "Coercion Deriver",
   "container.fortroncapacitor" : "Fortron Capacitor",
+  "container.fortronfieldprojector" : "Fortron Field Project",
   "itemGroup.itemgroupmodularforcefields" : "Modular Forcefields"
 }
