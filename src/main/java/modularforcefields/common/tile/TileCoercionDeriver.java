@@ -55,11 +55,11 @@ public class TileCoercionDeriver extends TileFortronConnective {
 	}
 
 	private int getMaxStored() {
-		return (int) (getTransfer() + BASEENERGY * getModuleCount(SubtypeModule.upgradecapacity) * 2.0);
+		return (int) (getTransfer() + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
 	}
 
 	public int getTransfer() {
-		return BASEENERGY * 30 + BASEENERGY * getModuleCount(SubtypeModule.upgradespeed);
+		return BASEENERGY * 30 + BASEENERGY * countModules(SubtypeModule.upgradespeed);
 	}
 
 	private void writeGuiPacket(CompoundTag compound) {

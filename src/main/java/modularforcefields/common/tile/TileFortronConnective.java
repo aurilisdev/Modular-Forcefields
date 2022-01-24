@@ -12,6 +12,7 @@ import electrodynamics.prefab.utilities.WorldUtils;
 import modularforcefields.DeferredRegisters;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -86,9 +87,21 @@ public class TileFortronConnective extends GenericTile {
 		return sent;
 	}
 
-	protected int getModuleCount(SubtypeModule module) {
+	public int countModules(SubtypeModule module) {
 		ComponentInventory inv = getComponent(ComponentType.Inventory);
 		return inv.countItem(DeferredRegisters.SUBTYPEITEM_MAPPINGS.get(module));
+	}
+
+	public int countModules(SubtypeModule module, int... slots) {
+		ComponentInventory inv = getComponent(ComponentType.Inventory);
+		int count = 0;
+		for (int slot : slots) {
+			ItemStack itemstack = inv.getItem(slot);
+			if (itemstack.getItem().equals(DeferredRegisters.SUBTYPEITEM_MAPPINGS.get(module))) {
+				count += itemstack.getCount();
+			}
+		}
+		return count;
 	}
 
 	protected void tickServer(ComponentTickable tickable) {

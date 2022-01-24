@@ -18,8 +18,8 @@ public class ThreadProjectorCalculationThread extends Thread {
 		if (!projector.isRemoved()) {
 			projector.setCalculating(true);
 			projector.calculatedFieldPoints.clear();
-			projector.getProjectionType();
-//			type.calculate(projector);
+			ProjectionType type = projector.getProjectionType();
+			type.calculate.accept(projector, this);
 			if (isInterrupted()) {
 				projector.calculatedFieldPoints.clear();
 			}

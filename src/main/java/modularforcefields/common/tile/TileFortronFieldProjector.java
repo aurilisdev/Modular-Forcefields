@@ -60,7 +60,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	}
 
 	public boolean isInterior() {
-		return getModuleCount(SubtypeModule.upgradeinterior) > 0;
+		return countModules(SubtypeModule.upgradeinterior) > 0;
 	}
 
 	public ProjectionType getProjectionType() {
