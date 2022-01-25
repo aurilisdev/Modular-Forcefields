@@ -15,9 +15,7 @@ public enum ProjectionType {
 		for (int i = proj.xRadiusNeg; i <= proj.xRadiusPos; i++) {
 			for (int j = proj.yRadiusNeg; j <= proj.yRadiusPos; j++) {
 				for (int k = proj.zRadiusNeg; k <= proj.zRadiusPos; k++) {
-					if (t.isInterrupted()) {
-						return;
-					}
+
 					boolean isEdge = i == proj.xRadiusNeg || i == proj.xRadiusPos || j == proj.yRadiusNeg || j == proj.yRadiusPos || k == proj.zRadiusNeg || k == proj.zRadiusPos;
 					if (proj.isInterior() != isEdge) {
 						proj.calculatedFieldPoints.add(new HashDistanceBlockPos(i, j, k, 10000 - j));
@@ -31,9 +29,6 @@ public enum ProjectionType {
 		for (int i = shifted.getY() - proj.radius; i <= shifted.getX() + proj.radius; i++) {
 			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY() - proj.radius); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + proj.radius); j++) {
 				for (int k = shifted.getZ() - proj.radius; k <= shifted.getZ() + proj.radius; k++) {
-					if (t.isInterrupted()) {
-						return;
-					}
 					Location loc = new Location(i + 0.5f, j + 0.5f, k + 0.5f);
 					int distance = (int) loc.distance(new Location(shifted));
 					if (proj.isInterior() ? distance <= proj.radius : distance == proj.radius) {
@@ -49,9 +44,6 @@ public enum ProjectionType {
 		for (int i = shifted.getY() - radius; i <= shifted.getX() + radius; i++) {
 			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY()); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + radius); j++) {
 				for (int k = shifted.getZ() - radius; k <= shifted.getZ() + radius; k++) {
-					if (t.isInterrupted()) {
-						return;
-					}
 					Location loc = new Location(i + 0.5f, j + 0.5f, k + 0.5f);
 					int distance = (int) loc.distance(new Location(shifted));
 					if (proj.isInterior() ? distance <= radius : distance == radius) {

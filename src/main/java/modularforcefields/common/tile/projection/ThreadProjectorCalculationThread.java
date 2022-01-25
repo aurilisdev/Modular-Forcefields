@@ -7,7 +7,7 @@ public class ThreadProjectorCalculationThread extends Thread {
 	private TileFortronFieldProjector projector;
 
 	public ThreadProjectorCalculationThread(TileFortronFieldProjector projector) {
-		this.projector = projector;
+		this.projector = projector;setName("Fortron Field Calculation Thread");
 	}
 
 	public TileFortronFieldProjector getProjector() {

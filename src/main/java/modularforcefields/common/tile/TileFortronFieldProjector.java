@@ -16,6 +16,7 @@ import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
+import electrodynamics.prefab.utilities.InventoryUtils;
 import electrodynamics.prefab.utilities.object.Location;
 import modularforcefields.DeferredRegisters;
 import modularforcefields.common.block.FortronFieldColor;
@@ -28,8 +29,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -38,7 +39,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class TileFortronFieldProjector extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
@@ -107,6 +111,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
+		System.out.println(status + ":" + new Location(worldPosition));
 		if (status == FortronFieldStatus.PROJECTED) {
 			if (activeFields.size() >= calculatedSize) {
 				status = FortronFieldStatus.PROJECTED_SEALED;
@@ -125,7 +130,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 				int count = 0;
 				Iterator<TileFortronField> it = activeFields.iterator();
 				while (it.hasNext()) {
-					if (count++ > 250) {
+					if (count++ > 100) {
 						break;
 					}
 					TileFortronField field = it.next();
@@ -153,9 +158,11 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 						}
 					} else if (status != FortronFieldStatus.CALCULATING && !calculatedFieldPoints.isEmpty()) {
 						projectField();
+					} else if (status == FortronFieldStatus.PROJECTING && calculatedFieldPoints.isEmpty()) {
+						status = FortronFieldStatus.PROJECTED;
 					}
 				}
-			} else {
+			} else if (status != FortronFieldStatus.PREPARE) {
 				if (fortron < use) {
 					ticksUntilProjection = 100;
 				}
@@ -172,7 +179,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 
 //		ArrayList<TileFortronFieldConstructor> relevantConstructors = shouldDisintegrate ? ForcefieldEventHandler.INSTANCE.getRelevantConstructors(World(), loc.xCoord, loc.yCoord, loc.zCoord) : null;
 		for (BlockPos fieldPoint : calculatedFieldPoints) {
-			if ((currentlyGenerated >= totalGeneratedPerTick) || (currentlyMissed >= 500)) {
+			if (currentlyGenerated >= totalGeneratedPerTick || currentlyMissed >= 500) {
 				break;
 			}
 			finishedQueueItems.add(fieldPoint);
@@ -180,8 +187,10 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			Block block = state.getBlock();
 			if (block == DeferredRegisters.blockFortronField) {
 				TileFortronField field = (TileFortronField) level.getBlockEntity(fieldPoint);
-				if (field != null && field.getProjectorPos().equals(new Location(worldPosition))) {
+				Location onFieldLocation = new Location(worldPosition);
+				if (field != null && (onFieldLocation.equals(field.getProjectorPos()) || field.getProjectorPos() == null || !(level.getBlockEntity(field.getProjectorPos().toBlockPos()) instanceof TileFortronFieldProjector))) {
 					activeFields.add(field);
+					field.setConstructor(this);
 					currentlyGenerated++;
 					continue;
 				}
@@ -216,8 +225,14 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 //					}
 				if (state.getDestroySpeed(level, fieldPoint) != -1) {
 					if (hasCollectionModule) {
-						for (ItemStack stack : Block.getDrops(state, (ServerLevel) level, fieldPoint, null)) {
-							// TODO: implement collection module
+						for (Direction dir : Direction.values()) {
+							BlockEntity entity = level.getBlockEntity(shiftedPosition.offset(dir.getNormal()));
+							if (entity != null) {
+								LazyOptional<IItemHandler> cap = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir);
+								if (cap.isPresent()) {
+									InventoryUtils.addItemsToItemHandler(cap.resolve().get(), Block.getDrops(state, (ServerLevel) level, fieldPoint, null));
+								}
+							}
 						}
 					}
 					if (state.isAir()) {
@@ -229,10 +244,29 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 				}
 			} else if (state.canBeReplaced(new BlockPlaceContext(level, null, InteractionHand.MAIN_HAND, new ItemStack(block), new BlockHitResult(Vec3.ZERO, Direction.DOWN, fieldPoint, false)))) {
 				if (shouldStabilize) {
-					for (Direction dir : Direction.values()) {
+					boolean broken = false;
+					for (Direction dir : Direction.values()) { // TODO: Optimize this so it doesnt check all inventories around every placement.
+						if (broken) {
+							break;
+						}
 						BlockEntity entity = level.getBlockEntity(shiftedPosition.offset(dir.getNormal()));
-						if (entity instanceof Container) {
-							// TOOD: Implement stabilize module
+						if (entity != null) {
+							LazyOptional<IItemHandler> cap = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir);
+							if (cap.isPresent()) {
+								IItemHandler handler = cap.resolve().get();
+								for (int i = 0; i < handler.getSlots(); i++) {
+									ItemStack stack = handler.getStackInSlot(i);
+									if (stack != null && stack.getItem() instanceof BlockItem bi) {
+										Block b = bi.getBlock();
+										if (b.canSurvive(b.defaultBlockState(), level, fieldPoint)) {
+											level.setBlockAndUpdate(fieldPoint, b.defaultBlockState());
+											stack.shrink(1);
+											broken = true;
+											break;
+										}
+									}
+								}
+							}
 						}
 					}
 				} else {
@@ -248,6 +282,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			}
 		}
 		calculatedFieldPoints.removeAll(finishedQueueItems);
+
 	}
 
 	public int getMaxFortron() {
@@ -337,9 +372,9 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		xRadiusNeg = shiftedPosition.getX() - Math.min(64, countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_WEST[0], ContainerFortronFieldProjector.SLOT_WEST[1]));
 		yRadiusNeg = Math.max(getLevel().getMinBuildHeight(), shiftedPosition.getY() - countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_DOWN[0], ContainerFortronFieldProjector.SLOT_DOWN[1]));
 		zRadiusNeg = shiftedPosition.getZ() - Math.min(64, countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_NORTH[0], ContainerFortronFieldProjector.SLOT_NORTH[1]));
-		radius = Math.min(64, countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_MODULES[0], ContainerFortronFieldProjector.SLOT_MODULES[ContainerFortronFieldProjector.SLOT_MODULES.length - 1]) / 6);
+		radius = Math.min(64, countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_MODULES) / 6);
 		scaleEnergy = BASEENERGY * countModules(SubtypeModule.manipulationscale, 0, 11);
-		speedEnergy = 1 + BASEENERGY * countModules(SubtypeModule.upgradespeed, ContainerFortronFieldProjector.SLOT_UPGRADES[0], ContainerFortronFieldProjector.SLOT_UPGRADES[ContainerFortronFieldProjector.SLOT_UPGRADES.length - 1]);
+		speedEnergy = 1 + BASEENERGY * countModules(SubtypeModule.upgradespeed, ContainerFortronFieldProjector.SLOT_UPGRADES);
 	}
 
 	public ProjectionType getProjectionType() {

@@ -25,9 +25,10 @@ public class TileFortronField extends GenericTile {
 	public void setConstructor(TileFortronFieldProjector projector) {
 		if (!level.isClientSide()) {
 			if (projector != null) {
+				fieldColor = projector.getFieldColor();
+				projectorPos = new Location(projector.getBlockPos());
 				ComponentPacketHandler handler = getComponent(ComponentType.PacketHandler);
 				handler.sendGuiPacketToTracking();
-				fieldColor = projector.getFieldColor();
 			}
 		}
 	}
