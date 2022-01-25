@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import electrodynamics.prefab.block.GenericEntityBlock;
-import electrodynamics.prefab.utilities.Scheduler;
-import electrodynamics.prefab.utilities.object.Location;
-import modularforcefields.common.tile.FortronFieldStatus;
+import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileFortronField;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -21,7 +22,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext.Builder;
 import net.minecraft.world.phys.AABB;
@@ -47,8 +47,25 @@ public class BlockFortronField extends GenericEntityBlock {
 					return Shapes.empty();
 				}
 			}
+			return Shapes.box(bound, bound, bound, 1 - bound, 1 - bound, 1 - bound);
 		}
 		return super.getCollisionShape(state, getter, pos, context);
+	}
+
+	@Override
+	public void entityInside(BlockState state, Level lvl, BlockPos pos, Entity ent) {
+		if (!lvl.isClientSide()) {
+			if (ent instanceof LivingEntity living) {
+				if (lvl.getBlockEntity(pos) instanceof TileFortronField field) {
+					if (field.getProjectorPos() != null && lvl.getBlockEntity(field.getProjectorPos()) instanceof TileFortronFieldProjector projector) {
+						int count = projector.countModules(SubtypeModule.upgradeshock);
+						if (count > 0) {
+							living.hurt(DamageSource.MAGIC, count);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -81,26 +98,6 @@ public class BlockFortronField extends GenericEntityBlock {
 	@Override
 	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
 		return true;
-	}
-
-	@Override
-	public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
-		if (level.getBlockEntity(pos) instanceof TileFortronField field) {
-			Location projectorPos = field.getProjectorPos();
-			if (projectorPos != null && level.getBlockEntity(projectorPos.toBlockPos()) instanceof TileFortronFieldProjector projector) {
-				if (projector.status != FortronFieldStatus.DESTROYING) {
-					projector.activeFields.remove(field);
-					Scheduler.schedule(1, () -> {
-						level.setBlockAndUpdate(pos, state);
-						if (level.getBlockEntity(pos) instanceof TileFortronField newField) {
-							projector.activeFields.add(newField);
-							newField.setConstructor(projector);
-						}
-					});
-				}
-			}
-		}
-		return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
 	}
 
 	@Override

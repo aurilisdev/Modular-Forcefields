@@ -42,7 +42,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -121,13 +120,17 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
-		if(tickable.getTicks() % 1000 == 1)
-		{
+		if (tickable.getTicks() % 1000 == 1) {
 			onChanged(getComponent(ComponentType.Inventory));
 		}
 		if (status == FortronFieldStatus.PROJECTED) {
 			if (activeFields.size() >= calculatedSize) {
 				status = FortronFieldStatus.PROJECTED_SEALED;
+			}
+			if (tickable.getTicks() % 200 == 1) {
+				for (TileFortronField field : activeFields) {
+					field.setConstructor(this);
+				}
 			}
 		}
 		ProjectionType projectedType = getProjectionType();
@@ -200,8 +203,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			Block block = state.getBlock();
 			if (block == DeferredRegisters.blockFortronField) {
 				TileFortronField field = (TileFortronField) level.getBlockEntity(fieldPoint);
-				Location onFieldLocation = new Location(worldPosition);
-				if (field != null && (onFieldLocation.equals(field.getProjectorPos()) || field.getProjectorPos() == null || !(level.getBlockEntity(field.getProjectorPos().toBlockPos()) instanceof TileFortronFieldProjector))) {
+				if (field != null && (worldPosition.equals(field.getProjectorPos()) || field.getProjectorPos() == null || !(level.getBlockEntity(field.getProjectorPos()) instanceof TileFortronFieldProjector))) {
 					activeFields.add(field);
 					field.setConstructor(this);
 					currentlyGenerated++;
@@ -209,20 +211,9 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 				}
 			}
 			if (shouldSponge) {
-				if (block instanceof IFluidBlock) {
-					level.setBlock(fieldPoint, Blocks.AIR.defaultBlockState(), 2);
-					for (Direction direction : Direction.values()) {
-						BlockPos adjPos = fieldPoint.offset(direction.getNormal());
-						Block adjacentBlock = level.getBlockState(adjPos).getBlock();
-						if (adjacentBlock instanceof IFluidBlock) {
-							level.setBlock(adjPos, Blocks.AIR.defaultBlockState(), 2);
-						}
-					}
-					currentlyGenerated++;
-				} else if (state.isAir()) {
-					currentlyMissed++;
-				}
-			} else if (shouldDisintegrate) {
+				// TODO: IMPLEMENT SPONGE MODULE
+			}
+			if (shouldDisintegrate) {
 //					boolean skip = false;
 //					if (relevantConstructors != null) {
 //						for (TileFortronFieldConstructor constructor : relevantConstructors) {
@@ -249,14 +240,11 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 							}
 						}
 					}
-					if (state.isAir()) {
-						currentlyMissed++;
-						continue;
-					}
 					level.setBlock(fieldPoint, Blocks.AIR.defaultBlockState(), 2);
-					currentlyGenerated++;
+					state = Blocks.AIR.defaultBlockState();
 				}
-			} else if (state.canBeReplaced(new BlockPlaceContext(level, null, InteractionHand.MAIN_HAND, new ItemStack(block), new BlockHitResult(Vec3.ZERO, Direction.DOWN, fieldPoint, false)))) {
+			}
+			if (state.canBeReplaced(new BlockPlaceContext(level, null, InteractionHand.MAIN_HAND, new ItemStack(block), new BlockHitResult(Vec3.ZERO, Direction.DOWN, fieldPoint, false)))) {
 				if (shouldStabilize) {
 					boolean broken = false;
 					for (Direction dir : Direction.values()) { // TODO: Optimize this so it doesnt check all inventories around every placement.
