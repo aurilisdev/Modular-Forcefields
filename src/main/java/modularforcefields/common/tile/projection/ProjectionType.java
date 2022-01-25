@@ -4,8 +4,6 @@ import java.util.function.BiConsumer;
 
 import electrodynamics.prefab.block.HashDistanceBlockPos;
 import electrodynamics.prefab.utilities.object.Location;
-import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
-import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import net.minecraft.core.BlockPos;
 
@@ -40,13 +38,12 @@ public enum ProjectionType {
 	}),
 	HEMISPHERE((proj, t) -> {
 		BlockPos shifted = proj.getShiftedPos();
-		int radius = Math.min(64, proj.countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_MODULES[0], ContainerFortronFieldProjector.SLOT_MODULES[ContainerFortronFieldProjector.SLOT_MODULES.length - 1]) / 6);
-		for (int i = shifted.getY() - radius; i <= shifted.getX() + radius; i++) {
-			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY()); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + radius); j++) {
-				for (int k = shifted.getZ() - radius; k <= shifted.getZ() + radius; k++) {
+		for (int i = shifted.getY() - proj.radius; i <= shifted.getX() + proj.radius; i++) {
+			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY()); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + proj.radius); j++) {
+				for (int k = shifted.getZ() - proj.radius; k <= shifted.getZ() + proj.radius; k++) {
 					Location loc = new Location(i + 0.5f, j + 0.5f, k + 0.5f);
 					int distance = (int) loc.distance(new Location(shifted));
-					if (proj.isInterior() ? distance <= radius : distance == radius) {
+					if (proj.isInterior() ? distance <= proj.radius : distance == proj.radius) {
 						proj.calculatedFieldPoints.add(new HashDistanceBlockPos(i, j, k, 10000 - j));
 					}
 				}
@@ -55,16 +52,15 @@ public enum ProjectionType {
 	}),
 	PYRAMID((proj, t) -> {
 		BlockPos shifted = proj.getShiftedPos();
-		int radius = Math.min(64, proj.countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_MODULES[0], ContainerFortronFieldProjector.SLOT_MODULES[ContainerFortronFieldProjector.SLOT_MODULES.length - 1]) / 6);
-		for (int i = shifted.getY() - radius; i <= shifted.getX() + radius; i++) {
-			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY()); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + radius); j++) {
-				for (int k = shifted.getZ() - radius; k <= shifted.getZ() + radius; k++) {
+		for (int i = shifted.getY() - proj.radius; i <= shifted.getX() + proj.radius; i++) {
+			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY()); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + proj.radius); j++) {
+				for (int k = shifted.getZ() - proj.radius; k <= shifted.getZ() + proj.radius; k++) {
 					if (t.isInterrupted()) {
 						return;
 					}
 					Location loc = new Location(i + 0.5f, j + 0.5f, k + 0.5f);
 					int distance = (int) loc.distancelinear(new Location(shifted));
-					if (proj.isInterior() ? distance <= radius : distance == radius) {
+					if (proj.isInterior() ? distance <= proj.radius : distance == proj.radius) {
 						proj.calculatedFieldPoints.add(new HashDistanceBlockPos(i, j, k, 10000 - j));
 					}
 				}
