@@ -37,5 +37,6 @@
   "container.coercionderiver" : "Coercion Deriver",
   "container.fortroncapacitor" : "Fortron Capacitor",
   "container.fortronfieldprojector" : "Fortron Field Projector",
+  "container.interdictionmatrix" : "Interdiction Matrix",
   "itemGroup.itemgroupmodularforcefields" : "Modular Forcefields"
 }

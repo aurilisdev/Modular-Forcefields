@@ -13,6 +13,7 @@ import modularforcefields.common.fluid.types.FluidFortron;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
+import modularforcefields.common.inventory.container.ContainerInterdictionMatrix;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileBiometricIdentifier;
 import modularforcefields.common.tile.TileCoercionDeriver;
@@ -79,6 +80,7 @@ public class DeferredRegisters {
 	public static final RegistryObject<MenuType<ContainerCoercionDeriver>> CONTAINER_COERCIONDERIVER = CONTAINERS.register("coercionderiver", () -> new MenuType<>(ContainerCoercionDeriver::new));
 	public static final RegistryObject<MenuType<ContainerFortronCapacitor>> CONTAINER_FORTRONCAPACITOR = CONTAINERS.register("fortroncapacitor", () -> new MenuType<>(ContainerFortronCapacitor::new));
 	public static final RegistryObject<MenuType<ContainerFortronFieldProjector>> CONTAINER_FORTRONFIELDPROJECTOR = CONTAINERS.register("fortronfieldprojector", () -> new MenuType<>(ContainerFortronFieldProjector::new));
+	public static final RegistryObject<MenuType<ContainerInterdictionMatrix>> CONTAINER_INTERDICTIONMATRIX = CONTAINERS.register("interdictionmatrix", () -> new MenuType<>(ContainerInterdictionMatrix::new));
 
 	private static void registerSubtypeItem(ISubtype[] array) {
 		for (ISubtype subtype : array) {

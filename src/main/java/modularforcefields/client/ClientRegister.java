@@ -5,6 +5,7 @@ import modularforcefields.References;
 import modularforcefields.client.screen.ScreenCoercionDeriver;
 import modularforcefields.client.screen.ScreenFortronCapacitor;
 import modularforcefields.client.screen.ScreenFortronFieldProjector;
+import modularforcefields.client.screen.ScreenInterdictionMatrix;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,6 +27,7 @@ public class ClientRegister {
 		MenuScreens.register(DeferredRegisters.CONTAINER_COERCIONDERIVER.get(), ScreenCoercionDeriver::new);
 		MenuScreens.register(DeferredRegisters.CONTAINER_FORTRONCAPACITOR.get(), ScreenFortronCapacitor::new);
 		MenuScreens.register(DeferredRegisters.CONTAINER_FORTRONFIELDPROJECTOR.get(), ScreenFortronFieldProjector::new);
+		MenuScreens.register(DeferredRegisters.CONTAINER_INTERDICTIONMATRIX.get(), ScreenInterdictionMatrix::new);
 	}
 
 	@SubscribeEvent

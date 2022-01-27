@@ -4,9 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import electrodynamics.prefab.block.GenericEntityBlock;
-import electrodynamics.prefab.tile.components.ComponentType;
-import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.FortronFieldStatus;
 import modularforcefields.common.tile.TileFortronField;
