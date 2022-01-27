@@ -12,8 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileFortronField extends GenericTile {
 
-	private BlockPos projectorPos = BlockPos.ZERO;
 	private FortronFieldColor fieldColor = FortronFieldColor.LIGHT_BLUE;
+	private BlockPos projectorPos = BlockPos.ZERO;
 
 	public TileFortronField(BlockPos pos, BlockState state) {
 		super(DeferredRegisters.TILE_FORTRONFIELD.get(), pos, state);
@@ -22,12 +22,14 @@ public class TileFortronField extends GenericTile {
 	}
 
 	public void setConstructor(TileFortronFieldProjector projector) {
-		if (projector != null) {
-			fieldColor = projector.getFieldColor();
-			projectorPos = projector.getBlockPos();
-			if (!level.isClientSide()) {
-				ComponentPacketHandler handler = getComponent(ComponentType.PacketHandler);
-				handler.sendGuiPacketToTracking();
+		if (!level.isClientSide()) {
+			if (projector != null) {
+				fieldColor = projector.getFieldColor();
+				if (projectorPos != BlockPos.ZERO) {
+					projectorPos = new BlockPos(projector.getBlockPos());
+					ComponentPacketHandler handler = getComponent(ComponentType.PacketHandler);
+					handler.sendGuiPacketToTracking();
+				}
 			}
 		}
 	}
@@ -36,11 +38,12 @@ public class TileFortronField extends GenericTile {
 	public void saveAdditional(CompoundTag compound) {
 		super.saveAdditional(compound);
 		compound.putInt("fieldColor", fieldColor.ordinal());
-		if (projectorPos != null) {
+		if (projectorPos != BlockPos.ZERO && projectorPos != null) {
 			compound.putInt("px", projectorPos.getX());
 			compound.putInt("py", projectorPos.getY());
 			compound.putInt("pz", projectorPos.getZ());
 		}
+
 	}
 
 	@Override
@@ -58,10 +61,5 @@ public class TileFortronField extends GenericTile {
 
 	public BlockPos getProjectorPos() {
 		return projectorPos;
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
 	}
 }

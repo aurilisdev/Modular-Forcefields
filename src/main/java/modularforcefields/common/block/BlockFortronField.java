@@ -4,7 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import electrodynamics.prefab.block.GenericEntityBlock;
+import electrodynamics.prefab.tile.components.ComponentType;
+import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
+import modularforcefields.DeferredRegisters;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.common.tile.FortronFieldStatus;
 import modularforcefields.common.tile.TileFortronField;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import net.minecraft.core.BlockPos;
@@ -22,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext.Builder;
 import net.minecraft.world.phys.AABB;
@@ -66,6 +71,19 @@ public class BlockFortronField extends GenericEntityBlock {
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+		if (level.getBlockEntity(pos) instanceof TileFortronField field) {
+			BlockPos projectorPos = field.getProjectorPos();
+			if (projectorPos != null && level.getBlockEntity(projectorPos) instanceof TileFortronFieldProjector projector) {
+				if (projector.status != FortronFieldStatus.DESTROYING) {
+					return false;
+				}
+			}
+		}
+		return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
 	}
 
 	@Override

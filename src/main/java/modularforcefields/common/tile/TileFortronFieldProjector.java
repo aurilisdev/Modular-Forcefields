@@ -18,7 +18,6 @@ import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.InventoryUtils;
-import electrodynamics.prefab.utilities.Scheduler;
 import electrodynamics.prefab.utilities.object.Location;
 import modularforcefields.DeferredRegisters;
 import modularforcefields.common.block.FortronFieldColor;
@@ -127,11 +126,6 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			if (activeFields.size() >= calculatedSize) {
 				status = FortronFieldStatus.PROJECTED_SEALED;
 			}
-			if (tickable.getTicks() % 200 == 1) {
-				for (TileFortronField field : activeFields) {
-					field.setConstructor(this);
-				}
-			}
 		}
 		ProjectionType projectedType = getProjectionType();
 		if (type != projectedType) {
@@ -150,7 +144,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 						break;
 					}
 					TileFortronField field = it.next();
-					level.setBlock(field.getBlockPos(), Blocks.AIR.defaultBlockState(), 2);
+					level.setBlockAndUpdate(field.getBlockPos(), Blocks.AIR.defaultBlockState());
 					it.remove();
 				}
 			}
@@ -176,6 +170,10 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 						projectField();
 					} else if (status == FortronFieldStatus.PROJECTING && calculatedFieldPoints.isEmpty()) {
 						status = FortronFieldStatus.PROJECTED;
+						for (TileFortronField field : activeFields) {
+							field.setConstructor(this);
+						} // Looping through after is bad so fix if possible
+
 					}
 				}
 			} else if (status != FortronFieldStatus.PREPARE) {
@@ -240,7 +238,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 							}
 						}
 					}
-					level.setBlock(fieldPoint, Blocks.AIR.defaultBlockState(), 2);
+					level.setBlockAndUpdate(fieldPoint, Blocks.AIR.defaultBlockState());
 					state = Blocks.AIR.defaultBlockState();
 				}
 			}
@@ -261,7 +259,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 									if (stack != null && stack.getItem() instanceof BlockItem bi) {
 										Block b = bi.getBlock();
 										if (b.canSurvive(b.defaultBlockState(), level, fieldPoint)) {
-											level.setBlock(fieldPoint, b.defaultBlockState(), 2);
+											level.setBlockAndUpdate(fieldPoint, b.defaultBlockState());
 											stack.shrink(1);
 											broken = true;
 											break;
@@ -272,10 +270,10 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 						}
 					}
 				} else {
-					level.setBlock(fieldPoint, DeferredRegisters.blockFortronField.defaultBlockState(), 2);
+					level.setBlockAndUpdate(fieldPoint, DeferredRegisters.blockFortronField.defaultBlockState());
 					if (level.getBlockEntity(fieldPoint) instanceof TileFortronField field) {
-						Scheduler.schedule(1, () -> field.setConstructor(this));
-						activeFields.add(field);
+						field.setConstructor(this);
+						activeFields.add(field); // TODO: This setConstructor statement doesnt work?? only the one after its fully projected works.
 					}
 					currentlyGenerated++;
 				}
