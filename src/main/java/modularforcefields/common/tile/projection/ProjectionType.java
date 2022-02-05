@@ -13,7 +13,6 @@ public enum ProjectionType {
 		for (int i = proj.xRadiusNeg; i <= proj.xRadiusPos; i++) {
 			for (int j = proj.yRadiusNeg; j <= proj.yRadiusPos; j++) {
 				for (int k = proj.zRadiusNeg; k <= proj.zRadiusPos; k++) {
-
 					boolean isEdge = i == proj.xRadiusNeg || i == proj.xRadiusPos || j == proj.yRadiusNeg || j == proj.yRadiusPos || k == proj.zRadiusNeg || k == proj.zRadiusPos;
 					if (proj.isInterior() != isEdge) {
 						proj.calculatedFieldPoints.add(new HashDistanceBlockPos(i, j, k, 10000 - j));
