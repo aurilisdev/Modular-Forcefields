@@ -290,7 +290,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	}
 
 	public int getFortronUse() {
-		return scaleEnergy + speedEnergy + (shouldDisintegrate || shouldStabilize ? 25000 : 0);
+		return -1;// scaleEnergy + speedEnergy + (shouldDisintegrate || shouldStabilize ? 25000 : 0);
 	}
 
 	@Override
