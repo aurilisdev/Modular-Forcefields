@@ -12,10 +12,12 @@ import electrodynamics.prefab.utilities.WorldUtils;
 import modularforcefields.DeferredRegisters;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.RegistryObject;
 
 public class TileFortronConnective extends GenericTile {
 	protected HashSet<TileFortronConnective> connections = new HashSet<>();
@@ -108,7 +110,8 @@ public class TileFortronConnective extends GenericTile {
 		ComponentInventory inv = getComponent(ComponentType.Inventory);
 		for (int slot = 0; slot < inv.getContainerSize(); slot++) {
 			ItemStack itemstack = inv.getItem(slot);
-			if (itemstack.getItem().equals(DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module).get())) {
+			RegistryObject<Item> obj = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
+			if (obj != null && itemstack.getItem().equals(obj.get())) {
 				return true;
 			}
 		}
