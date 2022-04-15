@@ -12,6 +12,6 @@ public class ItemGroupModularForcefields extends CreativeModeTab {
 
 	@Override
 	public ItemStack makeIcon() {
-		return new ItemStack(electrodynamics.DeferredRegisters.SUBTYPEBLOCK_MAPPINGS.get(SubtypeOre.molybdenum));
+		return new ItemStack(electrodynamics.DeferredRegisters.SUBTYPEBLOCKREGISTER_MAPPINGS.get(SubtypeOre.molybdenum).get());
 	}
 }

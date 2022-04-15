@@ -20,7 +20,7 @@ public class SlotModule extends SlotGeneric {
 
 		items = new ArrayList<>();
 		for (SubtypeModule upg : valid) {
-			items.add(DeferredRegisters.SUBTYPEITEM_MAPPINGS.get(upg));
+			items.add(DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(upg).get());
 		}
 	}
 

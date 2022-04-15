@@ -1,10 +1,12 @@
 package modularforcefields.common.tile;
 
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 import org.apache.commons.compress.utils.Sets;
 
+import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.tile.components.ComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
 import electrodynamics.prefab.tile.components.type.ComponentDirection;
@@ -21,8 +23,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.RegistryObject;
 
 public class TileCoercionDeriver extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity);
@@ -35,7 +39,17 @@ public class TileCoercionDeriver extends TileFortronConnective {
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
 		addComponent(new ComponentElectrodynamic(this).voltage(Constants.COERCIONDERIVER_VOLTAGE).input(Direction.DOWN).output(Direction.DOWN));
-		addComponent(new ComponentInventory(this).size(4).shouldSendInfo().valid((index, stack, inv) -> VALIDMODULES.contains(DeferredRegisters.ITEMSUBTYPE_MAPPINGS.getOrDefault(stack.getItem(), null))));
+		addComponent(new ComponentInventory(this).size(4).shouldSendInfo().valid((index, stack, inv) -> {
+			for (Entry<ISubtype, RegistryObject<Item>> en : DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
+				if (VALIDMODULES.contains(en.getKey())) {
+					if (en.getValue().get() == stack.getItem()) {
+						return true;
+					}
+				}
+			}
+			return false;
+
+		}));
 		addComponent(new ComponentContainerProvider("container.coercionderiver").createMenu((id, player) -> new ContainerCoercionDeriver(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 

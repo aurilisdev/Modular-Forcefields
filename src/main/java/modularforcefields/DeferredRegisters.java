@@ -41,9 +41,6 @@ public class DeferredRegisters {
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, References.ID);
 	public static final HashMap<ISubtype, RegistryObject<Item>> SUBTYPEITEMREGISTER_MAPPINGS = new HashMap<>();
 	public static final HashMap<ISubtype, RegistryObject<Block>> SUBTYPEBLOCKREGISTER_MAPPINGS = new HashMap<>();
-	public static final HashMap<ISubtype, Item> SUBTYPEITEM_MAPPINGS = new HashMap<>();
-	public static final HashMap<Item, ISubtype> ITEMSUBTYPE_MAPPINGS = new HashMap<>();
-	public static final HashMap<ISubtype, Block> SUBTYPEBLOCK_MAPPINGS = new HashMap<>();
 	public static GenericMachineBlock blockBiometricIdentifier;
 	public static GenericMachineBlock blockCoercionDeriver;
 	public static GenericMachineBlock blockFortronCapacitor;
@@ -53,22 +50,22 @@ public class DeferredRegisters {
 	public static FluidFortron fluidFortron;
 
 	static {
-		BLOCKS.register("biometricidentifier", supplier(blockBiometricIdentifier = new GenericMachineBlock(TileBiometricIdentifier::new)));
-		BLOCKS.register("coercionderiver", supplier(blockCoercionDeriver = new GenericMachineBlock(TileCoercionDeriver::new)));
-		BLOCKS.register("fortroncapacitor", supplier(blockFortronCapacitor = new GenericMachineBlock(TileFortronCapacitor::new)));
-		BLOCKS.register("fortronfieldprojector", supplier(blockFortronFieldProjector = new GenericMachineBlock(TileFortronFieldProjector::new)));
-		BLOCKS.register("interdictionmatrix", supplier(blockInterdictionMatrix = new GenericMachineBlock(TileInterdictionMatrix::new)));
-		BLOCKS.register("fortronfield", supplier(blockFortronField = new BlockFortronField()));
-		ITEMS.register("biometricidentifier", supplier(new BlockItemDescriptable(blockBiometricIdentifier, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("coercionderiver", supplier(new BlockItemDescriptable(blockCoercionDeriver, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("fortroncapacitor", supplier(new BlockItemDescriptable(blockFortronCapacitor, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("fortronfieldprojector", supplier(new BlockItemDescriptable(blockFortronFieldProjector, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("interdictionmatrix", supplier(new BlockItemDescriptable(blockInterdictionMatrix, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("fortronfield", supplier(new BlockItemDescriptable(blockFortronField, new Item.Properties().tab(References.MODULARTAB))));
+		BLOCKS.register("biometricidentifier", supplier(() -> blockBiometricIdentifier = new GenericMachineBlock(TileBiometricIdentifier::new)));
+		BLOCKS.register("coercionderiver", supplier(() -> blockCoercionDeriver = new GenericMachineBlock(TileCoercionDeriver::new)));
+		BLOCKS.register("fortroncapacitor", supplier(() -> blockFortronCapacitor = new GenericMachineBlock(TileFortronCapacitor::new)));
+		BLOCKS.register("fortronfieldprojector", supplier(() -> blockFortronFieldProjector = new GenericMachineBlock(TileFortronFieldProjector::new)));
+		BLOCKS.register("interdictionmatrix", supplier(() -> blockInterdictionMatrix = new GenericMachineBlock(TileInterdictionMatrix::new)));
+		BLOCKS.register("fortronfield", supplier(() -> blockFortronField = new BlockFortronField()));
+		ITEMS.register("biometricidentifier", supplier(() -> new BlockItemDescriptable(()->blockBiometricIdentifier, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("coercionderiver", supplier(() -> new BlockItemDescriptable(()->blockCoercionDeriver, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("fortroncapacitor", supplier(() -> new BlockItemDescriptable(()->blockFortronCapacitor, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("fortronfieldprojector", supplier(() -> new BlockItemDescriptable(()->blockFortronFieldProjector, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("interdictionmatrix", supplier(() -> new BlockItemDescriptable(()->blockInterdictionMatrix, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("fortronfield", supplier(() -> new BlockItemDescriptable(()->blockFortronField, new Item.Properties().tab(References.MODULARTAB))));
 		registerSubtypeItem(SubtypeModule.values());
-		FLUIDS.register("fluidfortron", supplier(fluidFortron = new FluidFortron()));
+		FLUIDS.register("fluidfortron", supplier(() -> fluidFortron = new FluidFortron()));
 	}
-	public static final RegistryObject<Item> ITEM_FOCUSMATRIX = ITEMS.register("focusmatrix", supplier(new Item(new Item.Properties().tab(References.MODULARTAB))));
+	public static final RegistryObject<Item> ITEM_FOCUSMATRIX = ITEMS.register("focusmatrix", supplier(() -> new Item(new Item.Properties().tab(References.MODULARTAB))));
 
 	public static final RegistryObject<BlockEntityType<TileBiometricIdentifier>> TILE_BIOMETRICIDENTIFIER = TILES.register("biometricidentifier", () -> new BlockEntityType<>(TileBiometricIdentifier::new, Sets.newHashSet(blockBiometricIdentifier), null));
 	public static final RegistryObject<BlockEntityType<TileCoercionDeriver>> TILE_COERCIONDERIVER = TILES.register("coercionderiver", () -> new BlockEntityType<>(TileCoercionDeriver::new, Sets.newHashSet(blockCoercionDeriver), null));
@@ -84,21 +81,15 @@ public class DeferredRegisters {
 
 	private static void registerSubtypeItem(ISubtype[] array) {
 		for (ISubtype subtype : array) {
-			ITEMS.register(subtype.tag(), supplier(new Item(new Item.Properties().tab(References.MODULARTAB)), subtype));
+			ITEMS.register(subtype.tag(), supplier(() -> new Item(new Item.Properties().tab(References.MODULARTAB)), subtype));
 		}
 	}
 
-	private static <T extends IForgeRegistryEntry<T>> Supplier<? extends T> supplier(T entry) {
-		return () -> entry;
+	private static <T extends IForgeRegistryEntry<T>> Supplier<? extends T> supplier(Supplier<T> entry) {
+		return entry;
 	}
 
-	private static <T extends IForgeRegistryEntry<T>> Supplier<? extends T> supplier(T entry, ISubtype en) {
-		if (entry instanceof Block block) {
-			SUBTYPEBLOCK_MAPPINGS.put(en, block);
-		} else if (entry instanceof Item item) {
-			SUBTYPEITEM_MAPPINGS.put(en, item);
-			ITEMSUBTYPE_MAPPINGS.put(item, en);
-		}
-		return supplier(entry);
+	private static <T extends IForgeRegistryEntry<T>> Supplier<? extends T> supplier(Supplier<T> entry, ISubtype en) {
+		return entry;
 	}
 }

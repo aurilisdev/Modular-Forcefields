@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +33,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -43,6 +45,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.RegistryObject;
 
 public class TileFortronFieldProjector extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
@@ -354,13 +357,21 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			if (i != ContainerFortronFieldProjector.SLOT_TYPE) {
 				ItemStack stack = inv.getItem(i);
 				if (stack != null) {
-					if (DeferredRegisters.ITEMSUBTYPE_MAPPINGS.get(stack.getItem()) instanceof SubtypeModule) {
-						ret += stack.getCount();
+					for (Entry<ISubtype, RegistryObject<Item>> en : DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
+						if (VALIDMODULES.contains(en.getKey())) {
+							if (en.getValue().get() == stack.getItem()) {
+								ret += stack.getCount();
+							}
+						}
 					}
 				}
 			}
 		}
-		BlockPos newshiftedPosition = worldPosition.offset(countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_EAST[0], ContainerFortronFieldProjector.SLOT_EAST[1]) - countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_WEST[0], ContainerFortronFieldProjector.SLOT_WEST[1]), countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_UP[0], ContainerFortronFieldProjector.SLOT_UP[1]) - countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_DOWN[0], ContainerFortronFieldProjector.SLOT_DOWN[1]), countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_SOUTH[0], ContainerFortronFieldProjector.SLOT_SOUTH[1]) - countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_NORTH[0], ContainerFortronFieldProjector.SLOT_NORTH[1]));
+		BlockPos newshiftedPosition = worldPosition.offset(
+				countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_EAST[0], ContainerFortronFieldProjector.SLOT_EAST[1]) - countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_WEST[0], ContainerFortronFieldProjector.SLOT_WEST[1]),
+				countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_UP[0], ContainerFortronFieldProjector.SLOT_UP[1]) - countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_DOWN[0], ContainerFortronFieldProjector.SLOT_DOWN[1]),
+				countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_SOUTH[0], ContainerFortronFieldProjector.SLOT_SOUTH[1])
+						- countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_NORTH[0], ContainerFortronFieldProjector.SLOT_NORTH[1]));
 		int newxRadiusPos = newshiftedPosition.getX() + Math.min(64, countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_EAST[0], ContainerFortronFieldProjector.SLOT_EAST[1]));
 		int newyRadiusPos = Math.min(getLevel().getMaxBuildHeight(), Math.max(getLevel().getMinBuildHeight(), newshiftedPosition.getY() + countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_UP[0], ContainerFortronFieldProjector.SLOT_UP[1])));
 		int newzRadiusPos = newshiftedPosition.getZ() + Math.min(64, countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_SOUTH[0], ContainerFortronFieldProjector.SLOT_SOUTH[1]));
@@ -387,7 +398,12 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	public ProjectionType getProjectionType() {
 		ComponentInventory inv = getComponent(ComponentType.Inventory);
 		ItemStack stack = inv.getItem(ContainerFortronFieldProjector.SLOT_TYPE);
-		ISubtype subtype = DeferredRegisters.ITEMSUBTYPE_MAPPINGS.get(stack.getItem());
+		ISubtype subtype = null;
+		for (Entry<ISubtype, RegistryObject<Item>> en : DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
+			if (en.getValue().get() == stack.getItem()) {
+				subtype = en.getKey();
+			}
+		}
 		if (subtype instanceof SubtypeModule module) {
 			switch (module) {
 			case shapecube:
