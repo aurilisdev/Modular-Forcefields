@@ -1,9 +1,10 @@
 {
+    "parent" : "minecraft:block/cube_all",
 	"credit": "aurilisdev",
 	"texture_size": [128, 128],
 	"textures": {
-		"2": "modularforcefields:model/coercionDeriver",
-		"particle": "modularforcefields:model/coercionDeriver"
+		"2": "modularforcefields:model/coercionderiver",
+		"particle": "modularforcefields:model/coercionderiver"
 	},
 	"elements": [
 		{
