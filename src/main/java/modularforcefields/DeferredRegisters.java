@@ -1,6 +1,7 @@
 package modularforcefields;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Sets;
@@ -40,6 +41,7 @@ public class DeferredRegisters {
 	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, References.ID);
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, References.ID);
 	public static final HashMap<ISubtype, RegistryObject<Item>> SUBTYPEITEMREGISTER_MAPPINGS = new HashMap<>();
+	public static final HashMap<Item, ISubtype> ITEMSUBTYPE_MAPPINGS = new HashMap<>();
 	public static final HashMap<ISubtype, RegistryObject<Block>> SUBTYPEBLOCKREGISTER_MAPPINGS = new HashMap<>();
 	public static GenericMachineBlock blockBiometricIdentifier;
 	public static GenericMachineBlock blockCoercionDeriver;
@@ -56,12 +58,12 @@ public class DeferredRegisters {
 		BLOCKS.register("fortronfieldprojector", supplier(() -> blockFortronFieldProjector = new GenericMachineBlock(TileFortronFieldProjector::new)));
 		BLOCKS.register("interdictionmatrix", supplier(() -> blockInterdictionMatrix = new GenericMachineBlock(TileInterdictionMatrix::new)));
 		BLOCKS.register("fortronfield", supplier(() -> blockFortronField = new BlockFortronField()));
-		ITEMS.register("biometricidentifier", supplier(() -> new BlockItemDescriptable(()->blockBiometricIdentifier, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("coercionderiver", supplier(() -> new BlockItemDescriptable(()->blockCoercionDeriver, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("fortroncapacitor", supplier(() -> new BlockItemDescriptable(()->blockFortronCapacitor, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("fortronfieldprojector", supplier(() -> new BlockItemDescriptable(()->blockFortronFieldProjector, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("interdictionmatrix", supplier(() -> new BlockItemDescriptable(()->blockInterdictionMatrix, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("fortronfield", supplier(() -> new BlockItemDescriptable(()->blockFortronField, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("biometricidentifier", supplier(() -> new BlockItemDescriptable(() -> blockBiometricIdentifier, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("coercionderiver", supplier(() -> new BlockItemDescriptable(() -> blockCoercionDeriver, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("fortroncapacitor", supplier(() -> new BlockItemDescriptable(() -> blockFortronCapacitor, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("fortronfieldprojector", supplier(() -> new BlockItemDescriptable(() -> blockFortronFieldProjector, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("interdictionmatrix", supplier(() -> new BlockItemDescriptable(() -> blockInterdictionMatrix, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("fortronfield", supplier(() -> new BlockItemDescriptable(() -> blockFortronField, new Item.Properties().tab(References.MODULARTAB))));
 		registerSubtypeItem(SubtypeModule.values());
 		FLUIDS.register("fluidfortron", supplier(() -> fluidFortron = new FluidFortron()));
 	}
@@ -81,7 +83,8 @@ public class DeferredRegisters {
 
 	private static void registerSubtypeItem(ISubtype[] array) {
 		for (ISubtype subtype : array) {
-			ITEMS.register(subtype.tag(), supplier(() -> new Item(new Item.Properties().tab(References.MODULARTAB)), subtype));
+			RegistryObject<Item> object = ITEMS.register(subtype.tag(), supplier(() -> new Item(new Item.Properties().tab(References.MODULARTAB)), subtype));
+			SUBTYPEITEMREGISTER_MAPPINGS.put(subtype, object);
 		}
 	}
 
@@ -91,5 +94,11 @@ public class DeferredRegisters {
 
 	private static <T extends IForgeRegistryEntry<T>> Supplier<? extends T> supplier(Supplier<T> entry, ISubtype en) {
 		return entry;
+	}
+
+	public static void initItemMapping() {
+		for (Entry<ISubtype, RegistryObject<Item>> en : SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
+			ITEMSUBTYPE_MAPPINGS.put(en.getValue().get(), en.getKey());
+		}
 	}
 }

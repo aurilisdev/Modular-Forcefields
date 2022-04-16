@@ -53,5 +53,6 @@ public class ModularForcefields {
 	public static void onCommonSetup(FMLCommonSetupEvent event) {
 		NetworkHandler.init();
 		MFFTags.init();
+		DeferredRegisters.initItemMapping();
 	}
 }

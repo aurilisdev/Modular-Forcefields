@@ -10,6 +10,7 @@ import modularforcefields.common.item.subtype.SubtypeModule;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.RegistryObject;
 
 public class SlotModule extends SlotGeneric {
 
@@ -20,7 +21,10 @@ public class SlotModule extends SlotGeneric {
 
 		items = new ArrayList<>();
 		for (SubtypeModule upg : valid) {
-			items.add(DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(upg).get());
+			RegistryObject<Item> object = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(upg);
+			if (object != null) {
+				items.add(object.get());
+			}
 		}
 	}
 

@@ -91,7 +91,8 @@ public class TileFortronConnective extends GenericTile {
 
 	public int countModules(SubtypeModule module) {
 		ComponentInventory inv = getComponent(ComponentType.Inventory);
-		return inv.countItem(DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module).get());
+		RegistryObject<Item> object = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
+		return object == null ? 0 : inv.countItem(object.get());
 	}
 
 	public int countModules(SubtypeModule module, int... slots) {
@@ -99,7 +100,8 @@ public class TileFortronConnective extends GenericTile {
 		int count = 0;
 		for (int slot : slots) {
 			ItemStack itemstack = inv.getItem(slot);
-			if (itemstack.getItem().equals(DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module).get())) {
+			RegistryObject<Item> object = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
+			if (object != null && itemstack.getItem().equals(object.get())) {
 				count += itemstack.getCount();
 			}
 		}
