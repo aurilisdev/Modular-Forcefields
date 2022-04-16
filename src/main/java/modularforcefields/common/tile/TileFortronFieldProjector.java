@@ -215,19 +215,6 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 				// TODO: IMPLEMENT SPONGE MODULE
 			}
 			if (shouldDisintegrate) {
-//					boolean skip = false;
-//					if (relevantConstructors != null) {
-//						for (TileFortronFieldConstructor constructor : relevantConstructors) {
-//							if (constructor != this && constructor.isProtecting(fieldPoint.xCoord, fieldPoint.yCoord, fieldPoint.zCoord)) {
-//								currentlyMissed++;
-//								skip = true;
-//								break;
-//							}
-//						}
-//					}
-//					if (skip) {
-//						continue;
-//					}
 				if (state.getDestroySpeed(level, fieldPoint) != -1) {
 					if (hasCollectionModule) {
 						List<ItemStack> items = Block.getDrops(state, (ServerLevel) level, fieldPoint, null);
