@@ -1,8 +1,10 @@
 package modularforcefields.common.tile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.commons.compress.utils.Sets;
 
@@ -33,19 +35,30 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-@EventBusSubscriber(bus = Bus.MOD, modid = References.ID)
+@EventBusSubscriber(bus = Bus.FORGE, modid = References.ID)
 public class TileInterdictionMatrix extends TileFortronConnective {
+	public static HashMap<TileInterdictionMatrix, AABB> matrices = new HashMap<>();
 	public static final int BASEENERGY = 100;
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
 	public int fortronCapacity;
 	public int fortron;
 	public int radius;
 	public int frequency;
+	public boolean running;
+	public boolean antispawn;
+	public boolean blockaccess;
+	public boolean blockalter;
 	private int scaleEnergy;
 	private int strength;
 
@@ -82,11 +95,17 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		if (tickable.getTicks() % 1000 == 1) {
 			onChanged(getComponent(ComponentType.Inventory));
 		}
+		int use = getFortronUse();
+		running = false;
+		if (fortron >= use) {
+			fortron -= use;
+			running = true;
+		}
 		if (tickable.getTicks() % 10 == 0) {
-			int use = getFortronUse();
-			if (fortron >= use) {
-				fortron -= use;
-				List<LivingEntity> entities = level.getEntities(EntityTypeTest.forClass(LivingEntity.class), new AABB(worldPosition).inflate(radius), l -> l.isAlive());
+			if (running) {
+				AABB aabb = new AABB(worldPosition).inflate(radius);
+				List<LivingEntity> entities = level.getEntities(EntityTypeTest.forClass(LivingEntity.class), aabb, l -> l.isAlive());
+				matrices.put(this, aabb);
 				List<SubtypeModule> list = new ArrayList<>();
 				for (ItemStack stack : this.<ComponentInventory>getComponent(ComponentType.Inventory).getItems()) {
 					ISubtype subtype = DeferredRegisters.ITEMSUBTYPE_MAPPINGS.get(stack.getItem());
@@ -141,17 +160,62 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 					player.hurt(DamageSource.MAGIC, 100);
 				}
 			}
-			if (list.contains(SubtypeModule.upgradeantispawn)) {
-				// TODO: Implement some global list with aabbs and matrices that events can check
-			}
-			if (list.contains(SubtypeModule.upgradeblockaccess)) {
-				// TODO: Implement some global list with aabbs and matrices that events can check
-			}
-			if (list.contains(SubtypeModule.upgradeblockalter)) {
-				// TODO: Implement some global list with aabbs and matrices that events can check
+			antispawn = list.contains(SubtypeModule.upgradeantispawn);
+			blockaccess = list.contains(SubtypeModule.upgradeblockaccess);
+			blockalter = list.contains(SubtypeModule.upgradeblockalter);
+		}
+	}
+
+	@SubscribeEvent
+	public static void spawnLiving(LivingSpawnEvent event) {
+		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
+			if (en.getKey().running && en.getKey().antispawn) {
+				if (en.getValue().intersects(event.getEntity().getBoundingBox())) {
+					event.setCanceled(true);
+					event.setResult(Result.DENY);
+					return;
+				}
 			}
 		}
+	}
 
+	@SubscribeEvent
+	public static void antiAcces(PlayerInteractEvent event) {
+		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
+			if (en.getKey().running && en.getKey().blockaccess) {
+				if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+					event.setCanceled(true);
+					event.setResult(Result.DENY);
+					return;
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void antiAccess(BreakEvent event) {
+		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
+			if (en.getKey().running && en.getKey().blockalter) {
+				if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+					event.setCanceled(true);
+					event.setResult(Result.DENY);
+					return;
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void antiAccess(EntityPlaceEvent event) {
+		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
+			if (en.getKey().running && en.getKey().blockalter) {
+				if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+					event.setCanceled(true);
+					event.setResult(Result.DENY);
+					return;
+				}
+			}
+		}
 	}
 
 	public int getMaxFortron() {
@@ -187,5 +251,11 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		radius = countModules(SubtypeModule.manipulationscale, 0, 11);
 		strength = countModules(SubtypeModule.upgradestrength, 0, 11);
 		scaleEnergy = BASEENERGY * radius * radius * radius;
+	}
+
+	@Override
+	public void invalidateCaps() {
+		super.invalidateCaps();
+		matrices.remove(this);
 	}
 }
