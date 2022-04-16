@@ -169,7 +169,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	@SubscribeEvent
 	public static void spawnLiving(LivingSpawnEvent event) {
 		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-			if (en.getKey().running && en.getKey().antispawn) {
+			if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().antispawn) {
 				if (en.getValue().intersects(event.getEntity().getBoundingBox())) {
 					event.setCanceled(true);
 					event.setResult(Result.DENY);
@@ -182,7 +182,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	@SubscribeEvent
 	public static void antiAcces(PlayerInteractEvent event) {
 		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-			if (en.getKey().running && en.getKey().blockaccess) {
+			if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
 				if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
 					event.setCanceled(true);
 					event.setResult(Result.DENY);
@@ -195,7 +195,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	@SubscribeEvent
 	public static void antiAccess(BreakEvent event) {
 		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-			if (en.getKey().running && en.getKey().blockalter) {
+			if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockalter) {
 				if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
 					event.setCanceled(true);
 					event.setResult(Result.DENY);
@@ -208,7 +208,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	@SubscribeEvent
 	public static void antiAccess(EntityPlaceEvent event) {
 		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-			if (en.getKey().running && en.getKey().blockalter) {
+			if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockalter) {
 				if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
 					event.setCanceled(true);
 					event.setResult(Result.DENY);
