@@ -193,8 +193,6 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		Set<BlockPos> finishedQueueItems = new HashSet<>();
 		int currentlyGenerated = 0;
 		int currentlyMissed = 0;
-
-//		ArrayList<TileFortronFieldConstructor> relevantConstructors = shouldDisintegrate ? ForcefieldEventHandler.INSTANCE.getRelevantConstructors(World(), loc.xCoord, loc.yCoord, loc.zCoord) : null;
 		for (BlockPos fieldPoint : calculatedFieldPoints) {
 			if (currentlyGenerated >= totalGeneratedPerTick || currentlyMissed >= 500) {
 				break;

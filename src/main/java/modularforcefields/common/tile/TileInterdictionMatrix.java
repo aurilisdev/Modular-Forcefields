@@ -260,7 +260,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	}
 
 	public int getFortronUse() {
-		return scaleEnergy * -1;
+		return scaleEnergy;
 	}
 
 	@Override
@@ -287,7 +287,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	private void onChanged(ComponentInventory inv) {
 		radius = countModules(SubtypeModule.manipulationscale);
 		strength = countModules(SubtypeModule.upgradestrength);
-		scaleEnergy = BASEENERGY * radius * radius * radius;
+		scaleEnergy = (BASEENERGY + strength) * radius * radius * radius;
 	}
 
 	@Override
