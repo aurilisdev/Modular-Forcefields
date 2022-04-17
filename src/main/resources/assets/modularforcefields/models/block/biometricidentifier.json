@@ -1,5 +1,6 @@
 {
 	"credit": "aurilisdev",
+	"parent": "minecraft:block/cube_all",
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "modularforcefields:model/biometricidentifier",
