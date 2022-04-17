@@ -30,7 +30,7 @@ public class TileFortronConnective extends GenericTile {
 
 	protected void tickCommon(ComponentTickable tickable) {
 		long ticks = tickable.getTicks();
-		if (ticks % 1200 == 1) {
+		if (ticks % 200 == 1) {
 			findConnections();
 		}
 		if (ticks % 20 == 0) {
@@ -75,7 +75,7 @@ public class TileFortronConnective extends GenericTile {
 		Iterator<TileFortronConnective> it = sendList.iterator();
 		while (it.hasNext()) {
 			TileFortronConnective connective = it.next();
-			if (!(connective.canRecieveFortron(this) && valid.test(connective))) {
+			if (!connective.canRecieveFortron(this) || !valid.test(connective)) {
 				it.remove();
 			}
 		}

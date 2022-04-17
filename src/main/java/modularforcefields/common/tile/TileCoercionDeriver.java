@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
 
-import org.apache.commons.compress.utils.Sets;
+import com.google.common.collect.Sets;
 
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.tile.components.ComponentType;
@@ -66,7 +66,7 @@ public class TileCoercionDeriver extends TileFortronConnective {
 			packets.sendGuiPacketToTracking();
 		}
 		fortron += electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity - fortron), electro.getVoltage()), false).getJoules();
-		sendFortronTo(Math.min(fortron, getTransfer()), getConnectionTest());
+		fortron -= sendFortronTo(Math.min(fortron, getTransfer()), getConnectionTest());
 	}
 
 	private int getMaxStored() {

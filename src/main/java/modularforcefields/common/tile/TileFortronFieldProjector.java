@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.compress.utils.Sets;
+import com.google.common.collect.Sets;
 
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.tile.components.ComponentType;
@@ -96,6 +96,13 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		}
 	}
 
+	@Override
+	protected int recieveFortron(int amount) {
+		int received = Math.max(0, Math.min(amount, fortronCapacity - fortron));
+		fortron += received;
+		return received;
+	}
+
 	public TileFortronFieldProjector(BlockPos pos, BlockState state) {
 		super(DeferredRegisters.TILE_FORTRONFIELDPROJECTOR.get(), pos, state);
 		addComponent(new ComponentDirection());
@@ -107,10 +114,6 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	@Override
 	protected void tickCommon(ComponentTickable tickable) {
 		super.tickCommon(tickable);
-		if (tickable.getTicks() % 20 == 0) {
-			fortronCapacity = getMaxFortron();
-			fortron = Mth.clamp(fortron, 0, fortronCapacity);
-		}
 	}
 
 	@Override
@@ -122,6 +125,10 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
+		if (tickable.getTicks() % 20 == 0) {
+			fortronCapacity = getMaxFortron();
+			fortron = Mth.clamp(fortron, 0, fortronCapacity);
+		}
 		if (tickable.getTicks() % 1000 == 1) {
 			onChanged(getComponent(ComponentType.Inventory));
 		}

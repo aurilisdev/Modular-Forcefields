@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.apache.commons.compress.utils.Sets;
+import com.google.common.collect.Sets;
 
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.tile.components.ComponentType;

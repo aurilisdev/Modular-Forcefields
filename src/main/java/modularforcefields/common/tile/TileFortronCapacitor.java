@@ -3,7 +3,7 @@ package modularforcefields.common.tile;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
-import org.apache.commons.compress.utils.Sets;
+import com.google.common.collect.Sets;
 
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.tile.components.ComponentType;
