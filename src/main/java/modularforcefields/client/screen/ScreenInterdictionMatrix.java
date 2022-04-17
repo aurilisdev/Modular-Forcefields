@@ -38,10 +38,10 @@ public class ScreenInterdictionMatrix extends GenericScreen<ContainerInterdictio
 	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		super.renderLabels(matrixStack, mouseX, mouseY);
 		if (menu.getUnsafeHost() instanceof TileInterdictionMatrix matrix) {
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.transfer", ChatFormatter.getChatDisplayShort(matrix.getFortronUse(), DisplayUnit.BUCKETS)), 25, 65, 4210752);
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.linked", matrix.getConnections()), 25, 55, 4210752);
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(matrix.getFortronUse() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.frequency", matrix.getFrequency()), 25, 35, 4210752);
+			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.transfer", ChatFormatter.getChatDisplayShort(matrix.getFortronUse(), DisplayUnit.BUCKETS)), 25, 105, 4210752);
+			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.linked", matrix.getConnections()), 25, 95, 4210752);
+			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(matrix.getFortronUse() * 20, DisplayUnit.WATT)), 25, 85, 4210752);
+			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.frequency", matrix.getFrequency()), 25, 75, 4210752);
 		}
 	}
 }

@@ -44,5 +44,6 @@
 	"message.identificationcard.text": "ID set to: %s",
 	"message.identificationcard.id": "Name: %s",
 	"message.frequencycard.text": "Set frequency to: %s",
+	"message.frequencycard.freq": "Frequency: %s",
 	"itemGroup.itemgroupmodularforcefields": "Modular Forcefields"
 }

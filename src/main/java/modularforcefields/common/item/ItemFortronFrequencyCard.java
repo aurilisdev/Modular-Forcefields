@@ -24,20 +24,22 @@ public class ItemFortronFrequencyCard extends Item {
 	}
 
 	public void onUsage(Player player, ItemStack stack) {
-		CompoundTag tag = stack.getOrCreateTag();
-		int freq = tag.getInt("frequency");
-		if (player.isShiftKeyDown()) {
-			freq--;
-		} else {
-			freq++;
+		if (!player.level.isClientSide) {
+			CompoundTag tag = stack.getOrCreateTag();
+			int freq = tag.getInt("frequency");
+			if (player.isShiftKeyDown()) {
+				freq--;
+			} else {
+				freq++;
+			}
+			if (freq < 0) {
+				freq = 20;
+			} else if (freq > 20) {
+				freq = 0;
+			}
+			tag.putInt("frequency", freq);
+			player.displayClientMessage(new TranslatableComponent("message.frequencycard.text", freq), true);
 		}
-		if (freq < 0) {
-			freq = 0;
-		} else if (freq > 20) {
-			freq = 0;
-		}
-		tag.putInt("frequency", freq);
-		player.displayClientMessage(new TranslatableComponent("message.frequencycard.text", freq), true);
 	}
 
 	@Override
@@ -56,16 +58,10 @@ public class ItemFortronFrequencyCard extends Item {
 	}
 
 	@Override
-	public InteractionResult useOn(UseOnContext pContext) {
-		onUsage(pContext.getPlayer(), pContext.getItemInHand());
-		return super.useOn(pContext);
-	}
-
-	@Override
 	public void appendHoverText(ItemStack pStack, Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
 		super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 		if (pStack.hasTag()) {
-			pTooltipComponents.add(new TranslatableComponent("message.identificationcard.id", pStack.getOrCreateTag().getString("name")));
+			pTooltipComponents.add(new TranslatableComponent("message.frequencycard.freq", pStack.getOrCreateTag().getInt("frequency")));
 		}
 	}
 }
