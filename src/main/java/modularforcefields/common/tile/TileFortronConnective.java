@@ -127,7 +127,7 @@ public class TileFortronConnective extends GenericTile {
 		return frequency;
 	}
 
-	protected void setFrequency(int frequency) {
+	public void setFrequency(int frequency) {
 		this.frequency = frequency;
 	}
 

@@ -11,10 +11,13 @@ import electrodynamics.common.blockitem.BlockItemDescriptable;
 import electrodynamics.prefab.block.GenericMachineBlock;
 import modularforcefields.common.block.BlockFortronField;
 import modularforcefields.common.fluid.types.FluidFortron;
+import modularforcefields.common.inventory.container.ContainerBiometricIdentifier;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
 import modularforcefields.common.inventory.container.ContainerInterdictionMatrix;
+import modularforcefields.common.item.ItemFortronFrequencyCard;
+import modularforcefields.common.item.ItemIdentificationCard;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileBiometricIdentifier;
 import modularforcefields.common.tile.TileCoercionDeriver;
@@ -68,6 +71,8 @@ public class DeferredRegisters {
 		FLUIDS.register("fluidfortron", supplier(() -> fluidFortron = new FluidFortron()));
 	}
 	public static final RegistryObject<Item> ITEM_FOCUSMATRIX = ITEMS.register("focusmatrix", supplier(() -> new Item(new Item.Properties().tab(References.MODULARTAB))));
+	public static final RegistryObject<Item> ITEM_IDENTIFICATIONCARD = ITEMS.register("identificationcard", supplier(() -> new ItemIdentificationCard(new Item.Properties().tab(References.MODULARTAB).stacksTo(1))));
+	public static final RegistryObject<Item> ITEM_FREQUENCYCARD = ITEMS.register("frequencycard", supplier(() -> new ItemFortronFrequencyCard(new Item.Properties().tab(References.MODULARTAB).stacksTo(1))));
 
 	public static final RegistryObject<BlockEntityType<TileBiometricIdentifier>> TILE_BIOMETRICIDENTIFIER = TILES.register("biometricidentifier", () -> new BlockEntityType<>(TileBiometricIdentifier::new, Sets.newHashSet(blockBiometricIdentifier), null));
 	public static final RegistryObject<BlockEntityType<TileCoercionDeriver>> TILE_COERCIONDERIVER = TILES.register("coercionderiver", () -> new BlockEntityType<>(TileCoercionDeriver::new, Sets.newHashSet(blockCoercionDeriver), null));
@@ -80,6 +85,7 @@ public class DeferredRegisters {
 	public static final RegistryObject<MenuType<ContainerFortronCapacitor>> CONTAINER_FORTRONCAPACITOR = CONTAINERS.register("fortroncapacitor", () -> new MenuType<>(ContainerFortronCapacitor::new));
 	public static final RegistryObject<MenuType<ContainerFortronFieldProjector>> CONTAINER_FORTRONFIELDPROJECTOR = CONTAINERS.register("fortronfieldprojector", () -> new MenuType<>(ContainerFortronFieldProjector::new));
 	public static final RegistryObject<MenuType<ContainerInterdictionMatrix>> CONTAINER_INTERDICTIONMATRIX = CONTAINERS.register("interdictionmatrix", () -> new MenuType<>(ContainerInterdictionMatrix::new));
+	public static final RegistryObject<MenuType<ContainerBiometricIdentifier>> CONTAINER_BIOMETRICIDENTIFIER = CONTAINERS.register("biometricidentifier", () -> new MenuType<>(ContainerBiometricIdentifier::new));
 
 	private static void registerSubtypeItem(ISubtype[] array) {
 		for (ISubtype subtype : array) {

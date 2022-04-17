@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.apache.commons.compress.utils.Sets;
 
@@ -89,6 +90,8 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		return frequency;
 	}
 
+	private HashSet<UUID> validPlayers = new HashSet<>();
+
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
@@ -101,8 +104,23 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 			fortron -= use;
 			running = true;
 		}
+		running = true;
+		validPlayers.clear();
 		if (tickable.getTicks() % 10 == 0) {
 			if (running) {
+				for (Direction direction : Direction.values()) {
+					BlockEntity entity = level.getBlockEntity(worldPosition.offset(direction.getNormal()));
+					if (entity instanceof TileBiometricIdentifier identifier) {
+						for (ItemStack stack : identifier.<ComponentInventory>getComponent(ComponentType.Inventory).getItems()) {
+							if (stack.hasTag()) {
+								UUID id = stack.getTag().getUUID("player");
+								if (id != null) {
+									validPlayers.add(id);
+								}
+							}
+						}
+					}
+				}
 				AABB aabb = new AABB(worldPosition).inflate(radius);
 				List<LivingEntity> entities = level.getEntities(EntityTypeTest.forClass(LivingEntity.class), aabb, l -> l.isAlive());
 				matrices.put(this, aabb);
@@ -120,6 +138,11 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 
 	private void applyModules(List<SubtypeModule> list, List<LivingEntity> entities) {
 		for (LivingEntity entity : entities) {
+			if (entity instanceof Player player) {
+				if (validPlayers.contains(player.getUUID()) || player.isCreative()) {
+					continue;
+				}
+			}
 			if (list.contains(SubtypeModule.upgradeantifriendly)) {
 				if (entity instanceof Animal animal) {
 					animal.hurt(DamageSource.MAGIC, 5 + strength);
@@ -180,10 +203,14 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	}
 
 	@SubscribeEvent
-	public static void antiAcces(PlayerInteractEvent event) {
+	public static void antiAccess(PlayerInteractEvent event) {
 		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
 			if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
 				if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+					Player player = event.getPlayer();
+					if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
+						continue;
+					}
 					event.setCanceled(true);
 					event.setResult(Result.DENY);
 					return;
@@ -197,6 +224,10 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
 			if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockalter) {
 				if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+					Player player = event.getPlayer();
+					if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
+						continue;
+					}
 					event.setCanceled(true);
 					event.setResult(Result.DENY);
 					return;
@@ -210,11 +241,17 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
 			if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockalter) {
 				if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+					if (event.getEntity() instanceof Player player) {
+						if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
+							continue;
+						}
+					}
 					event.setCanceled(true);
 					event.setResult(Result.DENY);
 					return;
 				}
 			}
+
 		}
 	}
 
@@ -248,8 +285,8 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	}
 
 	private void onChanged(ComponentInventory inv) {
-		radius = countModules(SubtypeModule.manipulationscale, 0, 11);
-		strength = countModules(SubtypeModule.upgradestrength, 0, 11);
+		radius = countModules(SubtypeModule.manipulationscale);
+		strength = countModules(SubtypeModule.upgradestrength);
 		scaleEnergy = BASEENERGY * radius * radius * radius;
 	}
 

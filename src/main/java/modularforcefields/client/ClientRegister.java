@@ -2,6 +2,7 @@ package modularforcefields.client;
 
 import modularforcefields.DeferredRegisters;
 import modularforcefields.References;
+import modularforcefields.client.screen.ScreenBiometricIdentifier;
 import modularforcefields.client.screen.ScreenCoercionDeriver;
 import modularforcefields.client.screen.ScreenFortronCapacitor;
 import modularforcefields.client.screen.ScreenFortronFieldProjector;
@@ -28,6 +29,7 @@ public class ClientRegister {
 		MenuScreens.register(DeferredRegisters.CONTAINER_FORTRONCAPACITOR.get(), ScreenFortronCapacitor::new);
 		MenuScreens.register(DeferredRegisters.CONTAINER_FORTRONFIELDPROJECTOR.get(), ScreenFortronFieldProjector::new);
 		MenuScreens.register(DeferredRegisters.CONTAINER_INTERDICTIONMATRIX.get(), ScreenInterdictionMatrix::new);
+		MenuScreens.register(DeferredRegisters.CONTAINER_BIOMETRICIDENTIFIER.get(), ScreenBiometricIdentifier::new);
 	}
 
 	@SubscribeEvent

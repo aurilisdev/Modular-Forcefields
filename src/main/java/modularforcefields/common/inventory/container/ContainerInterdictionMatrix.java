@@ -32,7 +32,7 @@ public class ContainerInterdictionMatrix extends GenericContainerBlockEntity<Til
 			}
 		}
 		for (int var4 = 0; var4 < 9; var4++) {
-			addSlot(new SlotModule(inv, nextIndex(), 8 + var4 * 18, 31));
+			addSlot(new SlotModule(inv, nextIndex(), 8 + var4 * 18, 31, valid));
 		}
 
 	}
