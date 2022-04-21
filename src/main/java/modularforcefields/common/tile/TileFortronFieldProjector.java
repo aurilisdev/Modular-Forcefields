@@ -285,7 +285,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	}
 
 	public int getFortronUse() {
-		return scaleEnergy + speedEnergy + (shouldDisintegrate || shouldStabilize ? 25000 : 0);
+		return scaleEnergy + speedEnergy + (shouldDisintegrate || shouldStabilize ? 5000 : 0);
 	}
 
 	@Override
@@ -332,7 +332,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		shouldDisintegrate = hasModule(SubtypeModule.upgradedisintegration);
 		shouldStabilize = hasModule(SubtypeModule.upgradestabilize);
 		hasCollectionModule = hasModule(SubtypeModule.upgradecollection);
-		totalGeneratedPerTick = 1 + 2 * countModules(SubtypeModule.upgradespeed, ContainerFortronFieldProjector.SLOT_UPGRADES[0], ContainerFortronFieldProjector.SLOT_UPGRADES[ContainerFortronFieldProjector.SLOT_UPGRADES.length - 1]) / ((shouldSponge ? 2 : 5) / (shouldStabilize ? 2 : 1));
+		totalGeneratedPerTick = 1 + 2 * countModules(SubtypeModule.upgradespeed) / ((shouldSponge ? 2 : 5) / (shouldStabilize ? 2 : 1));
 		if (shouldSponge) {
 			totalGeneratedPerTick /= 2;
 		} else if (shouldDisintegrate) {
@@ -359,11 +359,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 				}
 			}
 		}
-		BlockPos newshiftedPosition = worldPosition.offset(
-				countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_EAST[0], ContainerFortronFieldProjector.SLOT_EAST[1]) - countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_WEST[0], ContainerFortronFieldProjector.SLOT_WEST[1]),
-				countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_UP[0], ContainerFortronFieldProjector.SLOT_UP[1]) - countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_DOWN[0], ContainerFortronFieldProjector.SLOT_DOWN[1]),
-				countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_SOUTH[0], ContainerFortronFieldProjector.SLOT_SOUTH[1])
-						- countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_NORTH[0], ContainerFortronFieldProjector.SLOT_NORTH[1]));
+		BlockPos newshiftedPosition = worldPosition.offset(countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_EAST[0], ContainerFortronFieldProjector.SLOT_EAST[1]) - countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_WEST[0], ContainerFortronFieldProjector.SLOT_WEST[1]), countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_UP[0], ContainerFortronFieldProjector.SLOT_UP[1]) - countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_DOWN[0], ContainerFortronFieldProjector.SLOT_DOWN[1]), countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_SOUTH[0], ContainerFortronFieldProjector.SLOT_SOUTH[1]) - countModules(SubtypeModule.manipulationtranslate, ContainerFortronFieldProjector.SLOT_NORTH[0], ContainerFortronFieldProjector.SLOT_NORTH[1]));
 		int newxRadiusPos = newshiftedPosition.getX() + Math.min(64, countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_EAST[0], ContainerFortronFieldProjector.SLOT_EAST[1]));
 		int newyRadiusPos = Math.min(getLevel().getMaxBuildHeight(), Math.max(getLevel().getMinBuildHeight(), newshiftedPosition.getY() + countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_UP[0], ContainerFortronFieldProjector.SLOT_UP[1])));
 		int newzRadiusPos = newshiftedPosition.getZ() + Math.min(64, countModules(SubtypeModule.manipulationscale, ContainerFortronFieldProjector.SLOT_SOUTH[0], ContainerFortronFieldProjector.SLOT_SOUTH[1]));

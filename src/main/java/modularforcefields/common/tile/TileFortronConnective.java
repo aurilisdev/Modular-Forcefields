@@ -113,7 +113,7 @@ public class TileFortronConnective extends GenericTile {
 		for (int slot = 0; slot < inv.getContainerSize(); slot++) {
 			ItemStack itemstack = inv.getItem(slot);
 			RegistryObject<Item> obj = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
-			if (obj != null && itemstack.getItem().equals(obj.get())) {
+			if (obj != null && itemstack.getItem() == obj.get()) {
 				return true;
 			}
 		}
