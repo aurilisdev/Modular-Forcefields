@@ -122,7 +122,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 					}
 				}
 				AABB aabb = new AABB(worldPosition).inflate(radius);
-				List<LivingEntity> entities = level.getEntities(EntityTypeTest.forClass(LivingEntity.class), aabb, l -> l.isAlive());
+				List<LivingEntity> entities = level.getEntities(EntityTypeTest.forClass(LivingEntity.class), aabb, LivingEntity::isAlive);
 				matrices.put(this, aabb);
 				List<SubtypeModule> list = new ArrayList<>();
 				for (ItemStack stack : this.<ComponentInventory>getComponent(ComponentType.Inventory).getItems()) {
