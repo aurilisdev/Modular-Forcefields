@@ -8,11 +8,10 @@ import electrodynamics.prefab.screen.GenericScreen;
 import electrodynamics.prefab.screen.component.ScreenComponentElectricInfo;
 import electrodynamics.prefab.screen.component.ScreenComponentFluid;
 import electrodynamics.prefab.screen.component.ScreenComponentInfo;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.tile.TileCoercionDeriver;
+import modularforcefields.registers.ModularForcefieldsFluids;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,7 +26,7 @@ public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDerive
 			TileCoercionDeriver deriver = container.getHostFromIntArray();
 			if (deriver != null) {
 				FluidTank tank = new FluidTank(deriver.fortronCapacity);
-				tank.setFluid(new FluidStack(DeferredRegisters.fluidFortron, deriver.fortron));
+				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, deriver.fortron));
 				return tank;
 			}
 			return null;
@@ -41,10 +40,10 @@ public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDerive
 	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		super.renderLabels(matrixStack, mouseX, mouseY);
 		if (menu.getUnsafeHost() instanceof TileCoercionDeriver deriver) {
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.transfer", ChatFormatter.getChatDisplayShort(deriver.getTransfer(), DisplayUnit.BUCKETS)), 25, 65, 4210752);
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.linked", deriver.getConnections()), 25, 55, 4210752);
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.frequency", deriver.getFrequency()), 25, 35, 4210752);
+			font.draw(matrixStack, Component.translatable("gui.fortrondevice.transfer", ChatFormatter.getChatDisplayShort(deriver.getTransfer(), DisplayUnit.BUCKETS)), 25, 65, 4210752);
+			font.draw(matrixStack, Component.translatable("gui.fortrondevice.linked", deriver.getConnections()), 25, 55, 4210752);
+			font.draw(matrixStack, Component.translatable("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
+			font.draw(matrixStack, Component.translatable("gui.fortrondevice.frequency", deriver.getFrequency()), 25, 35, 4210752);
 		}
 	}
 }

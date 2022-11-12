@@ -17,10 +17,11 @@ import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.InventoryUtils;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.References;
 import modularforcefields.common.inventory.container.ContainerInterdictionMatrix;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.registers.ModularForcefieldsBlockTypes;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -35,16 +36,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
+import net.minecraftforge.event.level.BlockEvent.BreakEvent;
+import net.minecraftforge.event.level.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 @EventBusSubscriber(bus = Bus.FORGE, modid = References.ID)
@@ -64,7 +65,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	private int strength;
 
 	public TileInterdictionMatrix(BlockPos pos, BlockState state) {
-		super(DeferredRegisters.TILE_INTERDICTIONMATRIX.get(), pos, state);
+		super(ModularForcefieldsBlockTypes.TILE_INTERDICTIONMATRIX.get(), pos, state);
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::saveAdditional).guiPacketReader(this::load));
 		addComponent(new ComponentInventory(this).size(18).shouldSendInfo().valid((index, stack, inv) -> true).onChanged(this::onChanged));
@@ -126,7 +127,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 				matrices.put(this, aabb);
 				List<SubtypeModule> list = new ArrayList<>();
 				for (ItemStack stack : this.<ComponentInventory>getComponent(ComponentType.Inventory).getItems()) {
-					ISubtype subtype = DeferredRegisters.ITEMSUBTYPE_MAPPINGS.get(stack.getItem());
+					ISubtype subtype = ModularForcefieldsItems.ITEMSUBTYPE_MAPPINGS.get(stack.getItem());
 					if (subtype instanceof SubtypeModule module) {
 						list.add(module);
 					}
@@ -156,7 +157,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 			if (list.contains(SubtypeModule.upgradeconfiscate)) {
 				if (entity instanceof Player player) {
 					BlockEntity above = level.getBlockEntity(worldPosition.above());
-					LazyOptional<IItemHandler> cap = above.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
+					LazyOptional<IItemHandler> cap = above.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.DOWN);
 					if (cap.isPresent()) {
 						List<ItemStack> stacks = player.getInventory().items;
 						IItemHandler handler = cap.resolve().get();
@@ -207,7 +208,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
 			if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
 				if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
-					Player player = event.getPlayer();
+					Player player = event.getEntity();
 					if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
 						continue;
 					}

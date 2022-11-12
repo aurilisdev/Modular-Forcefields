@@ -20,12 +20,14 @@ import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.InventoryUtils;
 import electrodynamics.prefab.utilities.object.Location;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.block.FortronFieldColor;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.projection.ProjectionType;
 import modularforcefields.common.tile.projection.ThreadProjectorCalculationThread;
+import modularforcefields.registers.ModularForcefieldsBlockTypes;
+import modularforcefields.registers.ModularForcefieldsBlocks;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -42,8 +44,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -104,16 +106,11 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	}
 
 	public TileFortronFieldProjector(BlockPos pos, BlockState state) {
-		super(DeferredRegisters.TILE_FORTRONFIELDPROJECTOR.get(), pos, state);
+		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELDPROJECTOR.get(), pos, state);
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::saveAdditional).guiPacketReader(this::load));
 		addComponent(new ComponentInventory(this).size(21).shouldSendInfo().valid((index, stack, inv) -> true).onChanged(this::onChanged));
 		addComponent(new ComponentContainerProvider("container.fortronfieldprojector").createMenu((id, player) -> new ContainerFortronFieldProjector(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
-	}
-
-	@Override
-	protected void tickCommon(ComponentTickable tickable) {
-		super.tickCommon(tickable);
 	}
 
 	@Override
@@ -207,7 +204,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			finishedQueueItems.add(fieldPoint);
 			BlockState state = level.getBlockState(fieldPoint);
 			Block block = state.getBlock();
-			if (block == DeferredRegisters.blockFortronField) {
+			if (block == ModularForcefieldsBlocks.blockFortronField) {
 				TileFortronField field = (TileFortronField) level.getBlockEntity(fieldPoint);
 				if (field != null && (worldPosition.equals(field.getProjectorPos()) || field.getProjectorPos() == null || !(level.getBlockEntity(field.getProjectorPos()) instanceof TileFortronFieldProjector))) {
 					activeFields.add(field);
@@ -226,7 +223,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 						for (Direction dir : Direction.values()) {
 							BlockEntity entity = level.getBlockEntity(worldPosition.offset(dir.getNormal()));
 							if (entity != null) {
-								LazyOptional<IItemHandler> cap = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir);
+								LazyOptional<IItemHandler> cap = entity.getCapability(ForgeCapabilities.ITEM_HANDLER, dir);
 								if (cap.isPresent()) {
 									items = InventoryUtils.addItemsToItemHandler(cap.resolve().get(), items);
 								}
@@ -246,7 +243,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 						}
 						BlockEntity entity = level.getBlockEntity(worldPosition.offset(dir.getNormal()));
 						if (entity != null) {
-							LazyOptional<IItemHandler> cap = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir);
+							LazyOptional<IItemHandler> cap = entity.getCapability(ForgeCapabilities.ITEM_HANDLER, dir);
 							if (cap.isPresent()) {
 								IItemHandler handler = cap.resolve().get();
 								for (int i = 0; i < handler.getSlots(); i++) {
@@ -265,7 +262,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 						}
 					}
 				} else {
-					level.setBlockAndUpdate(fieldPoint, DeferredRegisters.blockFortronField.defaultBlockState());
+					level.setBlockAndUpdate(fieldPoint, ModularForcefieldsBlocks.blockFortronField.defaultBlockState());
 					if (level.getBlockEntity(fieldPoint) instanceof TileFortronField field) {
 						field.setConstructor(this);
 						activeFields.add(field); // TODO: This setConstructor statement doesnt work?? only the one after its fully projected works.
@@ -349,7 +346,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			if (i != ContainerFortronFieldProjector.SLOT_TYPE) {
 				ItemStack stack = inv.getItem(i);
 				if (stack != null) {
-					for (Entry<ISubtype, RegistryObject<Item>> en : DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
+					for (Entry<ISubtype, RegistryObject<Item>> en : ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
 						if (VALIDMODULES.contains(en.getKey())) {
 							if (en.getValue().get() == stack.getItem()) {
 								ret += stack.getCount();
@@ -387,7 +384,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		ComponentInventory inv = getComponent(ComponentType.Inventory);
 		ItemStack stack = inv.getItem(ContainerFortronFieldProjector.SLOT_TYPE);
 		ISubtype subtype = null;
-		for (Entry<ISubtype, RegistryObject<Item>> en : DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
+		for (Entry<ISubtype, RegistryObject<Item>> en : ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
 			if (en.getValue().get() == stack.getItem()) {
 				subtype = en.getKey();
 			}

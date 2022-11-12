@@ -1,11 +1,11 @@
 package modularforcefields.common.inventory.container;
 
 import electrodynamics.prefab.inventory.container.GenericContainerBlockEntity;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileCoercionDeriver;
 import modularforcefields.common.tile.TileFortronCapacitor;
 import modularforcefields.prefab.inventory.container.slot.item.type.SlotModule;
+import modularforcefields.registers.ModularForcefieldsMenuTypes;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,7 +19,7 @@ public class ContainerFortronCapacitor extends GenericContainerBlockEntity<TileF
 	}
 
 	public ContainerFortronCapacitor(int id, Inventory pinv, Container inv, ContainerData data) {
-		super(DeferredRegisters.CONTAINER_FORTRONCAPACITOR.get(), id, pinv, inv, data);
+		super(ModularForcefieldsMenuTypes.CONTAINER_FORTRONCAPACITOR.get(), id, pinv, inv, data);
 	}
 
 	@Override

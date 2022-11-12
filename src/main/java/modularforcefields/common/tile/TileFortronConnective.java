@@ -9,8 +9,8 @@ import electrodynamics.prefab.tile.components.ComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.WorldUtils;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -91,7 +91,7 @@ public class TileFortronConnective extends GenericTile {
 
 	public int countModules(SubtypeModule module) {
 		ComponentInventory inv = getComponent(ComponentType.Inventory);
-		RegistryObject<Item> object = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
+		RegistryObject<Item> object = ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
 		return object == null ? 0 : inv.countItem(object.get());
 	}
 
@@ -100,7 +100,7 @@ public class TileFortronConnective extends GenericTile {
 		int count = 0;
 		for (int slot : slots) {
 			ItemStack itemstack = inv.getItem(slot);
-			RegistryObject<Item> object = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
+			RegistryObject<Item> object = ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
 			if (object != null && itemstack.getItem().equals(object.get())) {
 				count += itemstack.getCount();
 			}
@@ -112,7 +112,7 @@ public class TileFortronConnective extends GenericTile {
 		ComponentInventory inv = getComponent(ComponentType.Inventory);
 		for (int slot = 0; slot < inv.getContainerSize(); slot++) {
 			ItemStack itemstack = inv.getItem(slot);
-			RegistryObject<Item> obj = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
+			RegistryObject<Item> obj = ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
 			if (obj != null && itemstack.getItem() == obj.get()) {
 				return true;
 			}

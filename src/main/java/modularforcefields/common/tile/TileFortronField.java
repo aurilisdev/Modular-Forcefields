@@ -4,8 +4,8 @@ import electrodynamics.prefab.tile.GenericTile;
 import electrodynamics.prefab.tile.components.ComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.block.FortronFieldColor;
+import modularforcefields.registers.ModularForcefieldsBlockTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +16,7 @@ public class TileFortronField extends GenericTile {
 	private BlockPos projectorPos = BlockPos.ZERO;
 
 	public TileFortronField(BlockPos pos, BlockState state) {
-		super(DeferredRegisters.TILE_FORTRONFIELD.get(), pos, state);
+		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELD.get(), pos, state);
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::saveAdditional).guiPacketReader(this::load));
 	}

@@ -15,10 +15,11 @@ import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.object.TransferPack;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.settings.Constants;
+import modularforcefields.registers.ModularForcefieldsBlockTypes;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -35,12 +36,12 @@ public class TileCoercionDeriver extends TileFortronConnective {
 	public int fortronCapacity;
 
 	public TileCoercionDeriver(BlockPos pos, BlockState state) {
-		super(DeferredRegisters.TILE_COERCIONDERIVER.get(), pos, state);
+		super(ModularForcefieldsBlockTypes.TILE_COERCIONDERIVER.get(), pos, state);
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
 		addComponent(new ComponentElectrodynamic(this).voltage(Constants.COERCIONDERIVER_VOLTAGE).input(Direction.DOWN).output(Direction.DOWN));
 		addComponent(new ComponentInventory(this).size(4).shouldSendInfo().valid((index, stack, inv) -> {
-			for (Entry<ISubtype, RegistryObject<Item>> en : DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
+			for (Entry<ISubtype, RegistryObject<Item>> en : ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
 				if (VALIDMODULES.contains(en.getKey())) {
 					if (en.getValue().get() == stack.getItem()) {
 						return true;
@@ -89,6 +90,6 @@ public class TileCoercionDeriver extends TileFortronConnective {
 
 	@Override
 	protected Predicate<BlockEntity> getConnectionTest() {
-		return b -> b.getType() == DeferredRegisters.TILE_FORTRONCAPACITOR.get();
+		return b -> b.getType() == ModularForcefieldsBlockTypes.TILE_FORTRONCAPACITOR.get();
 	}
 }

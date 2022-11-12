@@ -5,8 +5,8 @@ import java.util.List;
 
 import electrodynamics.prefab.inventory.container.slot.item.SlotGeneric;
 import electrodynamics.prefab.screen.component.ScreenComponentSlot.EnumSlotType;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +21,7 @@ public class SlotModule extends SlotGeneric {
 
 		items = new ArrayList<>();
 		for (SubtypeModule upg : valid) {
-			RegistryObject<Item> object = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(upg);
+			RegistryObject<Item> object = ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.get(upg);
 			if (object != null) {
 				items.add(object.get());
 			}

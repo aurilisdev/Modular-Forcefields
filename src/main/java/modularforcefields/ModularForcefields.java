@@ -6,11 +6,12 @@ import modularforcefields.common.block.BlockColorFortronField;
 import modularforcefields.common.packet.NetworkHandler;
 import modularforcefields.common.settings.Constants;
 import modularforcefields.common.tags.MFFTags;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
+import modularforcefields.registers.ModularForcefieldsBlocks;
+import modularforcefields.registers.ModularForcefieldsItems;
+import modularforcefields.registers.UnifiedModularForcefieldsRegister;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -27,32 +28,25 @@ public class ModularForcefields {
 	public ModularForcefields() {
 		ConfigurationHandler.registerConfig(Constants.class);
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-		DeferredRegisters.BLOCKS.register(bus);
-		DeferredRegisters.ITEMS.register(bus);
-		DeferredRegisters.TILES.register(bus);
-		DeferredRegisters.CONTAINERS.register(bus);
-		DeferredRegisters.FLUIDS.register(bus);
-		DeferredRegisters.ENTITIES.register(bus);
-		SoundRegister.SOUNDS.register(bus);
+		UnifiedModularForcefieldsRegister.register(bus);
 	}
 
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void onClientSetup(FMLClientSetupEvent event) {
 		ClientRegister.setup();
-		ItemBlockRenderTypes.setRenderLayer(DeferredRegisters.blockFortronField, RenderType.translucent());
 	}
 
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
-	public static void onColorEvent(ColorHandlerEvent.Block event) {
-		event.getBlockColors().register(new BlockColorFortronField(), DeferredRegisters.blockFortronField);
+	public static void onColorEvent(RegisterColorHandlersEvent.Block event) {
+		event.register(new BlockColorFortronField(), ModularForcefieldsBlocks.blockFortronField);
 	}
 
 	@SubscribeEvent
 	public static void onCommonSetup(FMLCommonSetupEvent event) {
 		NetworkHandler.init();
 		MFFTags.init();
-		DeferredRegisters.initItemMapping();
+		ModularForcefieldsItems.initItemMapping();
 	}
 }

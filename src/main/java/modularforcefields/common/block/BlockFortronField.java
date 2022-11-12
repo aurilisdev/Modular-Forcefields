@@ -36,7 +36,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockFortronField extends GenericEntityBlock {
 
 	public BlockFortronField() {
-		super(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion());
+		super(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noOcclusion());
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class BlockFortronField extends GenericEntityBlock {
 
 	@Override
 	public List<ItemStack> getDrops(BlockState state, Builder builder) {
-		return Arrays.asList(new ItemStack(this));
+		return Arrays.asList(ItemStack.EMPTY);
 	}
 
 	@Override

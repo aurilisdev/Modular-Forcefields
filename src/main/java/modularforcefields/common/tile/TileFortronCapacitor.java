@@ -12,9 +12,10 @@ import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.registers.ModularForcefieldsBlockTypes;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -29,11 +30,11 @@ public class TileFortronCapacitor extends TileFortronConnective {
 	public int fortronCapacity;
 
 	public TileFortronCapacitor(BlockPos pos, BlockState state) {
-		super(DeferredRegisters.TILE_FORTRONCAPACITOR.get(), pos, state);
+		super(ModularForcefieldsBlockTypes.TILE_FORTRONCAPACITOR.get(), pos, state);
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
 		addComponent(new ComponentInventory(this).size(4).shouldSendInfo().valid((index, stack, inv) -> {
-			for (Entry<ISubtype, RegistryObject<Item>> en : DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
+			for (Entry<ISubtype, RegistryObject<Item>> en : ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
 				if (VALIDMODULES.contains(en.getKey())) {
 					if (en.getValue().get() == stack.getItem()) {
 						return true;

@@ -5,7 +5,6 @@ import java.util.List;
 import modularforcefields.common.tile.TileFortronConnective;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -38,7 +37,7 @@ public class ItemFortronFrequencyCard extends Item {
 				freq = 0;
 			}
 			tag.putInt("frequency", freq);
-			player.displayClientMessage(new TranslatableComponent("message.frequencycard.text", freq), true);
+			player.displayClientMessage(Component.translatable("message.frequencycard.text", freq), true);
 		}
 	}
 
@@ -61,7 +60,7 @@ public class ItemFortronFrequencyCard extends Item {
 	public void appendHoverText(ItemStack pStack, Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
 		super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 		if (pStack.hasTag()) {
-			pTooltipComponents.add(new TranslatableComponent("message.frequencycard.freq", pStack.getOrCreateTag().getInt("frequency")));
+			pTooltipComponents.add(Component.translatable("message.frequencycard.freq", pStack.getOrCreateTag().getInt("frequency")));
 		}
 	}
 }
