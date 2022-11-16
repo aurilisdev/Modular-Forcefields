@@ -1,5 +1,7 @@
 package modularforcefields.common.tile;
 
+import electrodynamics.prefab.properties.Property;
+import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.GenericTile;
 import electrodynamics.prefab.tile.components.ComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentDirection;
@@ -12,19 +14,19 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileFortronField extends GenericTile {
 
-	private FortronFieldColor fieldColor = FortronFieldColor.LIGHT_BLUE;
+	public Property<Integer> fieldColorOrdinal = property(new Property<Integer>(PropertyType.Integer, "fieldColor")).set(FortronFieldColor.LIGHT_BLUE.ordinal()).save();
 	private BlockPos projectorPos = BlockPos.ZERO;
 
 	public TileFortronField(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELD.get(), pos, state);
 		addComponent(new ComponentDirection());
-		addComponent(new ComponentPacketHandler().guiPacketWriter(this::saveAdditional).guiPacketReader(this::load));
+		addComponent(new ComponentPacketHandler());
 	}
 
 	public void setConstructor(TileFortronFieldProjector projector) {
 		if (!level.isClientSide()) {
 			if (projector != null) {
-				fieldColor = projector.getFieldColor();
+				fieldColorOrdinal.set(projector.getFieldColor().ordinal());
 				if (projectorPos != BlockPos.ZERO) {
 					projectorPos = new BlockPos(projector.getBlockPos());
 					ComponentPacketHandler handler = getComponent(ComponentType.PacketHandler);
@@ -37,7 +39,6 @@ public class TileFortronField extends GenericTile {
 	@Override
 	public void saveAdditional(CompoundTag compound) {
 		super.saveAdditional(compound);
-		compound.putInt("fieldColor", fieldColor.ordinal());
 		if (projectorPos != BlockPos.ZERO && projectorPos != null) {
 			compound.putInt("px", projectorPos.getX());
 			compound.putInt("py", projectorPos.getY());
@@ -49,14 +50,13 @@ public class TileFortronField extends GenericTile {
 	@Override
 	public void load(CompoundTag compound) {
 		super.load(compound);
-		fieldColor = FortronFieldColor.values()[compound.getInt("fieldColor")];
 		if (compound.contains("px")) {
 			projectorPos = new BlockPos(compound.getInt("px"), compound.getInt("py"), compound.getInt("pz"));
 		}
 	}
 
 	public FortronFieldColor getFieldColor() {
-		return fieldColor;
+		return FortronFieldColor.values()[fieldColorOrdinal.get()];
 	}
 
 	public BlockPos getProjectorPos() {

@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
+import electrodynamics.prefab.properties.Property;
+import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.GenericTile;
 import electrodynamics.prefab.tile.components.ComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
@@ -21,7 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class TileFortronConnective extends GenericTile {
 	protected HashSet<TileFortronConnective> connections = new HashSet<>();
-	protected int frequency = 0;
+	public Property<Integer> frequency = property(new Property<Integer>(PropertyType.Integer, "frequency")).set(0).save();
 
 	protected TileFortronConnective(BlockEntityType<?> tileEntityTypeIn, BlockPos worldPos, BlockState blockState) {
 		super(tileEntityTypeIn, worldPos, blockState);
@@ -124,11 +126,11 @@ public class TileFortronConnective extends GenericTile {
 	}
 
 	public int getFrequency() {
-		return frequency;
+		return frequency.get();
 	}
 
 	public void setFrequency(int frequency) {
-		this.frequency = frequency;
+		this.frequency.set(frequency);
 	}
 
 	protected Predicate<BlockEntity> getConnectionTest() {

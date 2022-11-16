@@ -29,8 +29,8 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
 		components.add(new ScreenComponentFluid(() -> {
 			TileFortronFieldProjector projector = container.getHostFromIntArray();
 			if (projector != null) {
-				FluidTank tank = new FluidTank(projector.fortronCapacity);
-				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, projector.fortron));
+				FluidTank tank = new FluidTank(projector.fortronCapacity.get());
+				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, projector.fortron.get()));
 				return tank;
 			}
 			return null;

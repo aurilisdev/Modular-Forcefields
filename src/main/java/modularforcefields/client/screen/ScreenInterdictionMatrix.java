@@ -23,8 +23,8 @@ public class ScreenInterdictionMatrix extends GenericScreen<ContainerInterdictio
 		components.add(new ScreenComponentFluid(() -> {
 			TileInterdictionMatrix matrix = container.getHostFromIntArray();
 			if (matrix != null) {
-				FluidTank tank = new FluidTank(matrix.fortronCapacity);
-				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, matrix.fortron));
+				FluidTank tank = new FluidTank(matrix.fortronCapacity.get());
+				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, matrix.fortron.get()));
 				return tank;
 			}
 			return null;

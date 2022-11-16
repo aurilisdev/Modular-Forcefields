@@ -25,13 +25,13 @@ public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDerive
 		components.add(new ScreenComponentFluid(() -> {
 			TileCoercionDeriver deriver = container.getHostFromIntArray();
 			if (deriver != null) {
-				FluidTank tank = new FluidTank(deriver.fortronCapacity);
-				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, deriver.fortron));
+				FluidTank tank = new FluidTank(deriver.fortronCapacity.get());
+				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, deriver.fortron.get()));
 				return tank;
 			}
 			return null;
 		}, this, 8, 27));
-		components.add(new ScreenComponentElectricInfo(this, -ScreenComponentInfo.SIZE + 1, 2).wattage(electro -> electro.getHolder() instanceof TileCoercionDeriver deriver ? (double) deriver.fortron : 0));
+		components.add(new ScreenComponentElectricInfo(this, -ScreenComponentInfo.SIZE + 1, 2).wattage(electro -> electro.getHolder() instanceof TileCoercionDeriver deriver ? (double) deriver.fortron.get() : 0));
 		imageHeight += 40;
 		inventoryLabelY += 40;
 	}

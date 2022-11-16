@@ -10,6 +10,8 @@ import java.util.UUID;
 import com.google.common.collect.Sets;
 
 import electrodynamics.api.ISubtype;
+import electrodynamics.prefab.properties.Property;
+import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.components.ComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
 import electrodynamics.prefab.tile.components.type.ComponentDirection;
@@ -24,7 +26,6 @@ import modularforcefields.registers.ModularForcefieldsBlockTypes;
 import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,10 +54,9 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	public static HashMap<TileInterdictionMatrix, AABB> matrices = new HashMap<>();
 	public static final int BASEENERGY = 100;
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
-	public int fortronCapacity;
-	public int fortron;
+	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron")).set(0).save();
+	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity")).set(0).save();
 	public int radius;
-	public int frequency;
 	public boolean running;
 	public boolean antispawn;
 	public boolean blockaccess;
@@ -67,7 +67,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	public TileInterdictionMatrix(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_INTERDICTIONMATRIX.get(), pos, state);
 		addComponent(new ComponentDirection());
-		addComponent(new ComponentPacketHandler().guiPacketWriter(this::saveAdditional).guiPacketReader(this::load));
+		addComponent(new ComponentPacketHandler());
 		addComponent(new ComponentInventory(this).size(18).shouldSendInfo().valid((index, stack, inv) -> true).onChanged(this::onChanged));
 		addComponent(new ComponentContainerProvider("container.interdictionmatrix").createMenu((id, player) -> new ContainerInterdictionMatrix(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
@@ -76,19 +76,9 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	protected void tickCommon(ComponentTickable tickable) {
 		super.tickCommon(tickable);
 		if (tickable.getTicks() % 20 == 0) {
-			fortronCapacity = getMaxFortron();
-			fortron = Mth.clamp(fortron, 0, fortronCapacity);
+			fortronCapacity.set(getMaxFortron());
+			fortron.set(Mth.clamp(fortron.get(), 0, fortronCapacity.get()));
 		}
-	}
-
-	@Override
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
-	}
-
-	@Override
-	public int getFrequency() {
-		return frequency;
 	}
 
 	private HashSet<UUID> validPlayers = new HashSet<>();
@@ -101,8 +91,8 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		}
 		int use = getFortronUse();
 		running = false;
-		if (fortron >= use) {
-			fortron -= use;
+		if (fortron.get() >= use) {
+			fortron.set(fortron.get() - use);
 			running = true;
 		}
 		running = true;
@@ -262,22 +252,6 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 
 	public int getFortronUse() {
 		return scaleEnergy;
-	}
-
-	@Override
-	public void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		tag.putInt("frequency", frequency);
-		tag.putInt("fortronCapacity", fortronCapacity);
-		tag.putInt("fortron", fortron);
-	}
-
-	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		frequency = tag.getInt("frequency");
-		fortronCapacity = tag.getInt("fortronCapacity");
-		fortron = tag.getInt("fortron");
 	}
 
 	@Override

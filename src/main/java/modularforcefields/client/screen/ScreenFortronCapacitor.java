@@ -23,8 +23,8 @@ public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapaci
 		components.add(new ScreenComponentFluid(() -> {
 			TileFortronCapacitor capacitor = container.getHostFromIntArray();
 			if (capacitor != null) {
-				FluidTank tank = new FluidTank(capacitor.fortronCapacity);
-				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, capacitor.fortron));
+				FluidTank tank = new FluidTank(capacitor.fortronCapacity.get());
+				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, capacitor.fortron.get()));
 				return tank;
 			}
 			return null;

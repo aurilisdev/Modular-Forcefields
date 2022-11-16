@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import com.google.common.collect.Sets;
 
 import electrodynamics.api.ISubtype;
+import electrodynamics.prefab.properties.Property;
+import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.components.ComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
 import electrodynamics.prefab.tile.components.type.ComponentDirection;
@@ -30,7 +32,6 @@ import modularforcefields.registers.ModularForcefieldsBlocks;
 import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -55,10 +56,14 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	private ThreadProjectorCalculationThread calculationThread;
 	public Set<BlockPos> calculatedFieldPoints = Collections.synchronizedSet(new HashSet<>());
 	public Set<TileFortronField> activeFields = new HashSet<>();
+	public Property<Integer> typeOrdinal = property(new Property<Integer>(PropertyType.Integer, "type")).set(ProjectionType.NONE.ordinal()).save();
+	public Property<Integer> fieldColorOrdinal = property(new Property<Integer>(PropertyType.Integer, "fieldColorOrdinal")).set(FortronFieldColor.LIGHT_BLUE.ordinal()).save();
+	public Property<Integer> moduleCount = property(new Property<Integer>(PropertyType.Integer, "moduleCount")).set(0).save();
+	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity")).set(0).save();
+	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron")).set(0).save();
+
 	public int calculatedSize;
-	private FortronFieldColor fieldColor = FortronFieldColor.LIGHT_BLUE;
 	public FortronFieldStatus status = FortronFieldStatus.PROJECTING;
-	public ProjectionType type = ProjectionType.NONE;
 	public int xRadiusPos;
 	public int yRadiusPos;
 	public int zRadiusPos;
@@ -74,9 +79,6 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	public boolean hasCollectionModule = false;
 	public boolean isInterior = false;
 	public int totalGeneratedPerTick = 0;
-	public int fortronCapacity;
-	public int fortron;
-	public int moduleCount;
 	public int ticksUntilProjection;
 	public BlockPos shiftedPosition;
 
@@ -100,15 +102,15 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 
 	@Override
 	protected int recieveFortron(int amount) {
-		int received = Math.max(0, Math.min(amount, fortronCapacity - fortron));
-		fortron += received;
+		int received = Math.max(0, Math.min(amount, fortronCapacity.get() - fortron.get()));
+		fortron.set(fortron.get() + received);
 		return received;
 	}
 
 	public TileFortronFieldProjector(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELDPROJECTOR.get(), pos, state);
 		addComponent(new ComponentDirection());
-		addComponent(new ComponentPacketHandler().guiPacketWriter(this::saveAdditional).guiPacketReader(this::load));
+		addComponent(new ComponentPacketHandler());
 		addComponent(new ComponentInventory(this).size(21).shouldSendInfo().valid((index, stack, inv) -> true).onChanged(this::onChanged));
 		addComponent(new ComponentContainerProvider("container.fortronfieldprojector").createMenu((id, player) -> new ContainerFortronFieldProjector(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
@@ -123,8 +125,8 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
 		if (tickable.getTicks() % 20 == 0) {
-			fortronCapacity = getMaxFortron();
-			fortron = Mth.clamp(fortron, 0, fortronCapacity);
+			fortronCapacity.set(getMaxFortron());
+			fortron.set(Mth.clamp(fortron.get(), 0, fortronCapacity.get()));
 		}
 		if (tickable.getTicks() % 1000 == 1) {
 			onChanged(getComponent(ComponentType.Inventory));
@@ -135,9 +137,9 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			}
 		}
 		ProjectionType projectedType = getProjectionType();
-		if (type != projectedType) {
+		if (typeOrdinal.get() != projectedType.ordinal()) {
 			destroyField(false);
-			type = projectedType;
+			typeOrdinal.set(projectedType.ordinal());
 		}
 		if (status == FortronFieldStatus.DESTROYING) {
 			if (activeFields.isEmpty()) {
@@ -158,12 +160,12 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		}
 		if (tickable.getTicks() > 5) {
 			int use = getFortronUse();
-			if (isPoweredByRedstone() && type != ProjectionType.NONE && fortron >= use) {
-				fortron -= use;
+			if (isPoweredByRedstone() && typeOrdinal.get() != ProjectionType.NONE.ordinal() && fortron.get() >= use) {
+				fortron.set(fortron.get() - use);
 				if (status != FortronFieldStatus.DESTROYING) {
 					if (status == FortronFieldStatus.PREPARE && calculatedFieldPoints.isEmpty()) {
 						if (ticksUntilProjection > 0) {
-							if (fortron > use) {
+							if (fortron.get() > use) {
 								ticksUntilProjection--;
 							}
 						} else {
@@ -184,7 +186,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 					}
 				}
 			} else if (status != FortronFieldStatus.PREPARE) {
-				if (fortron < use) {
+				if (fortron.get() < use) {
 					ticksUntilProjection = 100;
 				}
 				destroyField(false);
@@ -285,28 +287,6 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		return scaleEnergy + speedEnergy + (shouldDisintegrate || shouldStabilize ? 5000 : 0);
 	}
 
-	@Override
-	public void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		tag.putInt("frequency", frequency);
-		tag.putInt("type", type.ordinal());
-		tag.putInt("fieldColor", fieldColor.ordinal());
-		tag.putInt("moduleCount", moduleCount);
-		tag.putInt("fortronCapacity", fortronCapacity);
-		tag.putInt("fortron", fortron);
-	}
-
-	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		frequency = tag.getInt("frequency");
-		type = ProjectionType.values()[tag.getInt("type")];
-		fieldColor = FortronFieldColor.values()[tag.getInt("fieldColor")];
-		moduleCount = tag.getInt("moduleCount");
-		fortronCapacity = tag.getInt("fortronCapacity");
-		fortron = tag.getInt("fortron");
-	}
-
 	public BlockPos getShiftedPos() {
 		if (shiftedPosition == null) {
 			shiftedPosition = worldPosition;
@@ -368,7 +348,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			destroyField(false);
 		}
 		shiftedPosition = newshiftedPosition;
-		moduleCount = ret;
+		moduleCount.set(ret);
 		xRadiusPos = newxRadiusPos;
 		yRadiusPos = newyRadiusPos;
 		zRadiusPos = newzRadiusPos;
@@ -407,6 +387,6 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	}
 
 	public FortronFieldColor getFieldColor() {
-		return fieldColor;
+		return FortronFieldColor.values()[fieldColorOrdinal.get()];
 	}
 }
