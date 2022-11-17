@@ -59,13 +59,11 @@ public class TileCoercionDeriver extends TileFortronConnective {
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
 		ComponentElectrodynamic electro = getComponent(ComponentType.Electrodynamic);
-		ComponentPacketHandler packets = getComponent(ComponentType.PacketHandler);
 		if (tickable.getTicks() % 20 == 0) {
 			int max = getMaxStored();
 			electro.maxJoules(max);
 			fortron.set(Mth.clamp(fortron.get(), 0, max));
 			fortronCapacity.set(max);
-			packets.sendGuiPacketToTracking();
 		}
 		fortron.set((int) (fortron.get() + electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity.get() - fortron.get()), electro.getVoltage()), false).getJoules()));
 		fortron.set(fortron.get() - sendFortronTo(Math.min(fortron.get(), getTransfer()), getConnectionTest()));
