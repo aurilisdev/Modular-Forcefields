@@ -54,8 +54,8 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	public static HashMap<TileInterdictionMatrix, AABB> matrices = new HashMap<>();
 	public static final int BASEENERGY = 100;
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
-	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron")).set(0).save();
-	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity")).set(0).save();
+	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron", 0));
+	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity", 0));
 	public int radius;
 	public boolean running;
 	public boolean antispawn;
@@ -68,7 +68,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		super(ModularForcefieldsBlockTypes.TILE_INTERDICTIONMATRIX.get(), pos, state);
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler());
-		addComponent(new ComponentInventory(this).size(18).shouldSendInfo().valid((index, stack, inv) -> true).onChanged(this::onChanged));
+		addComponent(new ComponentInventory(this).size(18).valid((index, stack, inv) -> true).onChanged(this::onChanged));
 		addComponent(new ComponentContainerProvider("container.interdictionmatrix").createMenu((id, player) -> new ContainerInterdictionMatrix(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 
@@ -87,7 +87,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
 		if (tickable.getTicks() % 1000 == 1) {
-			onChanged(getComponent(ComponentType.Inventory));
+			onChanged(getComponent(ComponentType.Inventory), -1);
 		}
 		int use = getFortronUse();
 		running = false;
@@ -259,7 +259,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		return tile instanceof TileFortronCapacitor;
 	}
 
-	private void onChanged(ComponentInventory inv) {
+	private void onChanged(ComponentInventory inv, int index) {
 		radius = countModules(SubtypeModule.manipulationscale);
 		strength = countModules(SubtypeModule.upgradestrength);
 		scaleEnergy = (BASEENERGY + strength) * radius * radius * radius;

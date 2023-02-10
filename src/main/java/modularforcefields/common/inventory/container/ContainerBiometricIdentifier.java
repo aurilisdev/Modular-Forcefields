@@ -24,7 +24,7 @@ public class ContainerBiometricIdentifier extends GenericContainerBlockEntity<Ti
 	@Override
 	public void addInventorySlots(Container inv, Inventory playerinv) {
 		for (int var4 = 0; var4 < 9; var4++) {
-			addSlot(new SlotRestricted(inv, var4, 8 + var4 * 18, 30, ModularForcefieldsItems.ITEM_IDENTIFICATIONCARD.get()));
+			addSlot(new SlotRestricted(inv, var4, 8 + var4 * 18, 30).setRestriction(ModularForcefieldsItems.ITEM_IDENTIFICATIONCARD.get()));
 		}
 	}
 

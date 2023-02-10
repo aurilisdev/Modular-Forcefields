@@ -27,14 +27,14 @@ import net.minecraftforge.registries.RegistryObject;
 public class TileFortronCapacitor extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity);
 	public static final int BASEENERGY = 100;
-	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron")).set(0).save();
-	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity")).set(0).save();
+	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron", 0));
+	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity", 0));
 
 	public TileFortronCapacitor(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_FORTRONCAPACITOR.get(), pos, state);
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler());
-		addComponent(new ComponentInventory(this).size(4).shouldSendInfo().valid((index, stack, inv) -> {
+		addComponent(new ComponentInventory(this).size(4).valid((index, stack, inv) -> {
 			for (Entry<ISubtype, RegistryObject<Item>> en : ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
 				if (VALIDMODULES.contains(en.getKey())) {
 					if (en.getValue().get() == stack.getItem()) {

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import electrodynamics.prefab.inventory.container.slot.item.SlotGeneric;
-import electrodynamics.prefab.screen.component.ScreenComponentSlot.EnumSlotType;
+import electrodynamics.prefab.screen.component.ScreenComponentSlot.IconType;
+import electrodynamics.prefab.screen.component.ScreenComponentSlot.SlotType;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.world.Container;
@@ -17,7 +18,7 @@ public class SlotModule extends SlotGeneric {
 	private List<Item> items;
 
 	public SlotModule(Container inventory, int index, int x, int y, SubtypeModule... valid) {
-		super(inventory, index, x, y);
+		super(SlotType.NORMAL, IconType.UPGRADE_DARK, inventory, index, x, y);
 
 		items = new ArrayList<>();
 		for (SubtypeModule upg : valid) {
@@ -31,11 +32,6 @@ public class SlotModule extends SlotGeneric {
 	@Override
 	public boolean mayPlace(ItemStack stack) {
 		return items != null && items.contains(stack.getItem());
-	}
-
-	@Override
-	public EnumSlotType getSlotType() {
-		return EnumSlotType.SPEED;
 	}
 
 }
