@@ -33,8 +33,8 @@ import net.minecraftforge.registries.RegistryObject;
 public class TileCoercionDeriver extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity);
 	public static final int BASEENERGY = 50;
-	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron", 0));
-	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity", 0));
+	public Property<Integer> fortron = property(new Property<>(PropertyType.Integer, "fortron", 0));
+	public Property<Integer> fortronCapacity = property(new Property<>(PropertyType.Integer, "fortronCapacity", 0));
 
 	public TileCoercionDeriver(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_COERCIONDERIVER.get(), pos, state);

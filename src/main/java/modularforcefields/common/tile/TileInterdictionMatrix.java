@@ -54,8 +54,8 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	public static HashMap<TileInterdictionMatrix, AABB> matrices = new HashMap<>();
 	public static final int BASEENERGY = 100;
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
-	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron", 0));
-	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity", 0));
+	public Property<Integer> fortron = property(new Property<>(PropertyType.Integer, "fortron", 0));
+	public Property<Integer> fortronCapacity = property(new Property<>(PropertyType.Integer, "fortronCapacity", 0));
 	public int radius;
 	public boolean running;
 	public boolean antispawn;

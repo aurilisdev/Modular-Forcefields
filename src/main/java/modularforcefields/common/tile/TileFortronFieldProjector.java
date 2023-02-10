@@ -56,11 +56,11 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	private ThreadProjectorCalculationThread calculationThread;
 	public Set<BlockPos> calculatedFieldPoints = Collections.synchronizedSet(new HashSet<>());
 	public Set<TileFortronField> activeFields = new HashSet<>();
-	public Property<Integer> typeOrdinal = property(new Property<Integer>(PropertyType.Integer, "type", ProjectionType.NONE.ordinal()));
-	public Property<Integer> fieldColorOrdinal = property(new Property<Integer>(PropertyType.Integer, "fieldColorOrdinal", FortronFieldColor.LIGHT_BLUE.ordinal()));
-	public Property<Integer> moduleCount = property(new Property<Integer>(PropertyType.Integer, "moduleCount", 0));
-	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity", 0));
-	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron", 0));
+	public Property<Integer> typeOrdinal = property(new Property<>(PropertyType.Integer, "type", ProjectionType.NONE.ordinal()));
+	public Property<Integer> fieldColorOrdinal = property(new Property<>(PropertyType.Integer, "fieldColorOrdinal", FortronFieldColor.LIGHT_BLUE.ordinal()));
+	public Property<Integer> moduleCount = property(new Property<>(PropertyType.Integer, "moduleCount", 0));
+	public Property<Integer> fortronCapacity = property(new Property<>(PropertyType.Integer, "fortronCapacity", 0));
+	public Property<Integer> fortron = property(new Property<>(PropertyType.Integer, "fortron", 0));
 
 	public int calculatedSize;
 	public FortronFieldStatus status = FortronFieldStatus.PROJECTING;
