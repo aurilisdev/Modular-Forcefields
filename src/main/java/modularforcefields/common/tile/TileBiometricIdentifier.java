@@ -19,7 +19,7 @@ public class TileBiometricIdentifier extends GenericTile {
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentTickable());
 		addComponent(new ComponentPacketHandler());
-		addComponent(new ComponentInventory(this).size(9).shouldSendInfo());
+		addComponent(new ComponentInventory(this).size(9));
 		addComponent(new ComponentContainerProvider("container.biometricidentifier").createMenu((id, player) -> new ContainerBiometricIdentifier(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 

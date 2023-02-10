@@ -23,7 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class TileFortronConnective extends GenericTile {
 	protected HashSet<TileFortronConnective> connections = new HashSet<>();
-	public Property<Integer> frequency = property(new Property<Integer>(PropertyType.Integer, "frequency")).set(0).save();
+	public Property<Integer> frequency = property(new Property<Integer>(PropertyType.Integer, "frequency", 0));
 
 	protected TileFortronConnective(BlockEntityType<?> tileEntityTypeIn, BlockPos worldPos, BlockState blockState) {
 		super(tileEntityTypeIn, worldPos, blockState);

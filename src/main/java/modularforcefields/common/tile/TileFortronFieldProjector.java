@@ -56,11 +56,11 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	private ThreadProjectorCalculationThread calculationThread;
 	public Set<BlockPos> calculatedFieldPoints = Collections.synchronizedSet(new HashSet<>());
 	public Set<TileFortronField> activeFields = new HashSet<>();
-	public Property<Integer> typeOrdinal = property(new Property<Integer>(PropertyType.Integer, "type")).set(ProjectionType.NONE.ordinal()).save();
-	public Property<Integer> fieldColorOrdinal = property(new Property<Integer>(PropertyType.Integer, "fieldColorOrdinal")).set(FortronFieldColor.LIGHT_BLUE.ordinal()).save();
-	public Property<Integer> moduleCount = property(new Property<Integer>(PropertyType.Integer, "moduleCount")).set(0).save();
-	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity")).set(0).save();
-	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron")).set(0).save();
+	public Property<Integer> typeOrdinal = property(new Property<Integer>(PropertyType.Integer, "type", ProjectionType.NONE.ordinal()));
+	public Property<Integer> fieldColorOrdinal = property(new Property<Integer>(PropertyType.Integer, "fieldColorOrdinal", FortronFieldColor.LIGHT_BLUE.ordinal()));
+	public Property<Integer> moduleCount = property(new Property<Integer>(PropertyType.Integer, "moduleCount", 0));
+	public Property<Integer> fortronCapacity = property(new Property<Integer>(PropertyType.Integer, "fortronCapacity", 0));
+	public Property<Integer> fortron = property(new Property<Integer>(PropertyType.Integer, "fortron", 0));
 
 	public int calculatedSize;
 	public FortronFieldStatus status = FortronFieldStatus.PROJECTING;
@@ -111,7 +111,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELDPROJECTOR.get(), pos, state);
 		addComponent(new ComponentDirection());
 		addComponent(new ComponentPacketHandler());
-		addComponent(new ComponentInventory(this).size(21).shouldSendInfo().valid((index, stack, inv) -> true).onChanged(this::onChanged));
+		addComponent(new ComponentInventory(this).size(21).valid((index, stack, inv) -> true).onChanged(this::onChanged));
 		addComponent(new ComponentContainerProvider("container.fortronfieldprojector").createMenu((id, player) -> new ContainerFortronFieldProjector(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 
@@ -129,7 +129,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			fortron.set(Mth.clamp(fortron.get(), 0, fortronCapacity.get()));
 		}
 		if (tickable.getTicks() % 1000 == 1) {
-			onChanged(getComponent(ComponentType.Inventory));
+			onChanged(getComponent(ComponentType.Inventory), -1);
 		}
 		if (status == FortronFieldStatus.PROJECTED) {
 			if (activeFields.size() >= calculatedSize) {
@@ -319,7 +319,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		}
 	}
 
-	private void onChanged(ComponentInventory inv) {
+	private void onChanged(ComponentInventory inv, int index) {
 		int ret = 0;
 		updateFieldTerms();
 		for (int i = 0; i < inv.getContainerSize(); i++) {

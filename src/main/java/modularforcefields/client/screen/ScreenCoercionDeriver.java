@@ -7,7 +7,7 @@ import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
 import electrodynamics.prefab.screen.component.ScreenComponentElectricInfo;
 import electrodynamics.prefab.screen.component.ScreenComponentFluid;
-import electrodynamics.prefab.screen.component.ScreenComponentInfo;
+import electrodynamics.prefab.screen.component.utils.AbstractScreenComponentInfo;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.tile.TileCoercionDeriver;
 import modularforcefields.registers.ModularForcefieldsFluids;
@@ -31,7 +31,7 @@ public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDerive
 			}
 			return null;
 		}, this, 8, 27));
-		components.add(new ScreenComponentElectricInfo(this, -ScreenComponentInfo.SIZE + 1, 2).wattage(electro -> electro.getHolder() instanceof TileCoercionDeriver deriver ? (double) deriver.fortron.get() : 0));
+		components.add(new ScreenComponentElectricInfo(this, -AbstractScreenComponentInfo.SIZE + 1, 2).wattage(electro -> electro.getHolder() instanceof TileCoercionDeriver deriver ? (double) deriver.fortron.get() : 0));
 		imageHeight += 40;
 		inventoryLabelY += 40;
 	}
