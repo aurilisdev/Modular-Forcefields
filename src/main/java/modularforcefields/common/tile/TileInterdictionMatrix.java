@@ -1,23 +1,11 @@
 package modularforcefields.common.tile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.UUID;
-
 import com.google.common.collect.Sets;
-
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.components.ComponentType;
-import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
-import electrodynamics.prefab.tile.components.type.ComponentInventory;
-import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
-import electrodynamics.prefab.tile.components.type.ComponentTickable;
+import electrodynamics.prefab.tile.components.type.*;
 import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
 import electrodynamics.prefab.utilities.InventoryUtils;
 import modularforcefields.References;
@@ -49,6 +37,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.items.IItemHandler;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 @EventBusSubscriber(bus = Bus.FORGE, modid = References.ID)
 public class TileInterdictionMatrix extends TileFortronConnective {
@@ -82,7 +73,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		}
 	}
 
-	private HashSet<UUID> validPlayers = new HashSet<>();
+	private final HashSet<UUID> validPlayers = new HashSet<>();
 
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
@@ -96,7 +87,6 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 			fortron.set(fortron.get() - use);
 			running = true;
 		}
-		running = true;
 		validPlayers.clear();
 		if (tickable.getTicks() % 10 == 0) {
 			if (running) {
@@ -147,37 +137,41 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 			}
 			if (list.contains(SubtypeModule.upgradeconfiscate)) {
 				if (entity instanceof Player player) {
-					BlockEntity above = level.getBlockEntity(worldPosition.above());
-					LazyOptional<IItemHandler> cap = above.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.DOWN);
-					if (cap.isPresent()) {
-						List<ItemStack> stacks = player.getInventory().items;
-						IItemHandler handler = cap.resolve().get();
-						for (int index = 0; index < stacks.size(); index++) {
-							ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
-							player.getInventory().items.set(index, back);
-						}
-						stacks = player.getInventory().items;
-						for (int index = 0; index < stacks.size(); index++) {
-							ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
-							player.getInventory().items.set(index, back);
-						}
-						stacks = player.getInventory().offhand;
-						for (int index = 0; index < stacks.size(); index++) {
-							ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
-							player.getInventory().items.set(index, back);
-						}
-
-					}
+					confiscateItems(player);
 				}
 			}
 			if (list.contains(SubtypeModule.upgradeantipersonnel)) {
 				if (entity instanceof Player player) {
-					player.hurt(DamageSource.MAGIC, 100);
+					player.hurt(DamageSource.MAGIC, 5 + strength);
 				}
 			}
 			antispawn = list.contains(SubtypeModule.upgradeantispawn);
 			blockaccess = list.contains(SubtypeModule.upgradeblockaccess);
 			blockalter = list.contains(SubtypeModule.upgradeblockalter);
+		}
+	}
+
+	private void confiscateItems(Player player) {
+		BlockEntity above = level.getBlockEntity(worldPosition.above());
+		LazyOptional<IItemHandler> cap = above.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.DOWN);
+		if (cap.isPresent()) {
+			List<ItemStack> stacks = player.getInventory().items;
+			IItemHandler handler = cap.resolve().get();
+			for (int index = 0; index < stacks.size(); index++) {
+				ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
+				player.getInventory().items.set(index, back);
+			}
+			stacks = player.getInventory().items;
+			for (int index = 0; index < stacks.size(); index++) {
+				ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
+				player.getInventory().items.set(index, back);
+			}
+			stacks = player.getInventory().offhand;
+			for (int index = 0; index < stacks.size(); index++) {
+				ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
+				player.getInventory().items.set(index, back);
+			}
+
 		}
 	}
 

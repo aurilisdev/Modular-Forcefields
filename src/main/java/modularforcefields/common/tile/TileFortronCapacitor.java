@@ -1,19 +1,11 @@
 package modularforcefields.common.tile;
 
-import java.util.HashSet;
-import java.util.Map.Entry;
-
 import com.google.common.collect.Sets;
-
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.components.ComponentType;
-import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
-import electrodynamics.prefab.tile.components.type.ComponentInventory;
-import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
-import electrodynamics.prefab.tile.components.type.ComponentTickable;
+import electrodynamics.prefab.tile.components.type.*;
 import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
 import modularforcefields.common.item.subtype.SubtypeModule;
@@ -24,6 +16,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.HashSet;
+import java.util.Map.Entry;
 
 public class TileFortronCapacitor extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity);
@@ -52,12 +47,15 @@ public class TileFortronCapacitor extends TileFortronConnective {
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
-		if (tickable.getTicks() % 20 == 0) {
-			int max = getMaxStored();
-			fortron.set(Mth.clamp(fortron.get(), 0, max));
-			fortronCapacity.set(max);
-		}
 		fortron.set(fortron.get() - sendFortronTo(Math.min(fortron.get(), getTransfer()), entity -> !(entity instanceof TileCoercionDeriver)));
+	}
+
+	@Override
+	public void onInventoryChange(ComponentInventory inv, int slot) {
+		super.onInventoryChange(inv, slot);
+		int max = getMaxStored();
+		fortron.set(Mth.clamp(fortron.get(), 0, max));
+		fortronCapacity.set(max);
 	}
 
 	private int getMaxStored() {

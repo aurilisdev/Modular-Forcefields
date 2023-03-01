@@ -1,17 +1,12 @@
 package modularforcefields.client.screen;
 
-import java.util.List;
-import java.util.Map.Entry;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import electrodynamics.api.electricity.formatting.ChatFormatter;
 import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
 import electrodynamics.prefab.screen.component.ScreenComponentFluid;
 import electrodynamics.prefab.screen.component.ScreenComponentSlot;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
-import modularforcefields.common.tile.TileFortronCapacitor;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.registers.ModularForcefieldsFluids;
 import net.minecraft.network.chat.Component;
@@ -21,6 +16,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+
+import java.util.List;
+import java.util.Map.Entry;
 
 @OnlyIn(Dist.CLIENT)
 public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronFieldProjector> {
@@ -42,11 +40,10 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
 	@Override
 	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		super.renderLabels(matrixStack, mouseX, mouseY);
-		if (menu.getUnsafeHost() instanceof TileFortronCapacitor capacitor) {
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.transfer", ChatFormatter.getChatDisplayShort(capacitor.getTransfer(), DisplayUnit.BUCKETS)), 25, 65, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(capacitor.getTransfer() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752);
+		if (menu.getUnsafeHost() instanceof TileFortronFieldProjector projector) {
+			font.draw(matrixStack, Component.translatable("gui.fortrondevice.linked", projector.getConnections()), 25, 115, 4210752);
+			font.draw(matrixStack, Component.translatable("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(projector.getFortronUse() * 20, DisplayUnit.BUCKETS)), 25, 105, 4210752);
+			font.draw(matrixStack, Component.translatable("gui.fortrondevice.frequency", projector.getFrequency()), 25, 95, 4210752);
 		}
 	}
 

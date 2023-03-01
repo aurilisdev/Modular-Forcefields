@@ -6,5 +6,5 @@ public enum FortronFieldStatus {
 	PROJECTING,
 	PROJECTED,
 	PROJECTED_SEALED,
-	DESTROYING;
+	DESTROYING
 }

@@ -32,7 +32,7 @@
 	"block.modularforcefields.interdictionmatrix": "Interdiction Matrix",
 	"block.modularforcefields.fortronfield": "Fortron Field",
 	"fluid.modularforcefields.fortron": "Fortron Fluid",
-	"gui.fortrondevice.transfer": "Transfer Rate: %s",
+	"gui.fortrondevice.transfer": "Transfer: %s",
 	"gui.fortrondevice.linked": "Linked Devices: %s",
 	"gui.fortrondevice.usage": "Usage: %s",
 	"gui.fortrondevice.frequency": "Frequency: %s",

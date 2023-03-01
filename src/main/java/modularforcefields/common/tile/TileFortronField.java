@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileFortronField extends GenericTile {
 
-	public Property<Integer> fieldColorOrdinal = property(new Property<>(PropertyType.Integer, "fieldColor", FortronFieldColor.LIGHT_BLUE.ordinal()));
-	private Property<BlockPos> projectorPos = property(new Property<>(PropertyType.BlockPos, "projectorPos", TileQuarry.OUT_OF_REACH));
+	public final Property<Integer> fieldColorOrdinal = property(new Property<>(PropertyType.Integer, "fieldColor", FortronFieldColor.LIGHT_BLUE.ordinal()));
+	private final Property<BlockPos> projectorPos = property(new Property<>(PropertyType.BlockPos, "projectorPos", TileQuarry.OUT_OF_REACH));
 
 	public TileFortronField(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELD.get(), pos, state);
