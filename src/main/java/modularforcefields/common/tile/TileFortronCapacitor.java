@@ -14,6 +14,7 @@ import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -47,8 +48,33 @@ public class TileFortronCapacitor extends TileFortronConnective {
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
-		fortron.set(fortron.get() - sendFortronTo(Math.min(fortron.get(), getTransfer()), entity -> !(entity instanceof TileCoercionDeriver)));
+		fortron.set(fortron.get() - sendFortronTo(Math.min(fortron.get(), getTransfer()), this::canSendTo));
 	}
+
+    protected boolean canSendTo(BlockEntity entity)
+    {
+        if(entity instanceof TileCoercionDeriver)
+        {
+            return false;
+        }
+        if(entity instanceof TileFortronCapacitor capacitor)
+        {
+            for(TileFortronConnective connective : connections)
+            {
+                if(connective instanceof TileFortronFieldProjector projector)
+                {
+                    if(projector.activeFields.isEmpty()) {
+                        continue;
+                    }
+                    if(capacitor.connections.contains(projector))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
 	@Override
 	public void onInventoryChange(ComponentInventory inv, int slot) {

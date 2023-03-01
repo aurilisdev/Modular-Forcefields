@@ -78,6 +78,6 @@ public class TileCoercionDeriver extends TileFortronConnective {
 
     @Override
     protected Predicate<BlockEntity> getConnectionTest() {
-        return b -> b.getType() == ModularForcefieldsBlockTypes.TILE_FORTRONCAPACITOR.get();
+        return b -> b instanceof TileFortronCapacitor;
     }
 }

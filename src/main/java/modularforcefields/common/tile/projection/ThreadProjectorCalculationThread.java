@@ -18,7 +18,7 @@ public class ThreadProjectorCalculationThread extends Thread {
 	@Override
 	public void run() {
 		if (!projector.isRemoved()) {
-			projector.status = FortronFieldStatus.CALCULATING;
+			projector.setStatus(FortronFieldStatus.CALCULATING);
 			projector.calculatedFieldPoints.clear();
 			ProjectionType type = projector.getProjectionType();
 			type.calculate(projector, this);
@@ -26,7 +26,7 @@ public class ThreadProjectorCalculationThread extends Thread {
 				projector.calculatedFieldPoints.clear();
 			}
 			projector.calculatedSize = projector.calculatedFieldPoints.size();
-			projector.status = FortronFieldStatus.PROJECTING;
+			projector.setStatus(FortronFieldStatus.PROJECTING);
 		}
 	}
 }
