@@ -10,14 +10,29 @@ import modularforcefields.common.block.FortronFieldColor;
 import modularforcefields.registers.ModularForcefieldsBlockTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class TileFortronField extends GenericTile {
 
     public final Property<Integer> fieldColorOrdinal = property(new Property<>(PropertyType.Integer, "fieldColor", FortronFieldColor.LIGHT_BLUE.ordinal()));
-    private final Property<BlockPos> projectorPos = property(new Property<>(PropertyType.BlockPos, "projectorPos", null));
+    private final Property<BlockPos> projectorPos = property(new Property<BlockPos>(PropertyType.BlockPos, "projectorPos", null).onChange(this::onPropertyChange).onLoad(this::onPropertyChange));
+
+    private void onPropertyChange(Property<BlockPos> t) {
+        final BlockPos pos = t.get();
+        if (pos != null) {
+            Scheduler.schedule(3, () -> {
+                if (level != null) {
+                    if (level.getBlockEntity(pos) instanceof TileFortronFieldProjector proj) {
+                        if (!level.isClientSide()) {
+                            fieldColorOrdinal.set(proj.getFieldColor().ordinal());
+                            proj.activeFields.add(this);
+                        }
+                    }
+                }
+            });
+        }
+    }
 
     public TileFortronField(BlockPos pos, BlockState state) {
         super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELD.get(), pos, state);
@@ -25,27 +40,17 @@ public class TileFortronField extends GenericTile {
         addComponent(new ComponentPacketHandler());
     }
 
+    @Override
+    public void load(@NotNull CompoundTag compound) {
+        super.load(compound);
+    }
+
     public void setConstructor(TileFortronFieldProjector projector) {
         if (!level.isClientSide()) {
             if (projector != null) {
-                fieldColorOrdinal.set(projector.getFieldColor().ordinal());
-                projectorPos.setAmbigous(projector.getBlockPos());
-                projectorPos.forceDirty();
-                projector.activeFields.add(this);
+                projectorPos.set(projector.getBlockPos());
             }
         }
-    }
-
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        Scheduler.schedule(3, () -> {
-            if (level.getBlockEntity(projectorPos.get()) instanceof TileFortronFieldProjector projector) {
-                setConstructor(projector);
-            } else {
-                level.setBlockAndUpdate(getBlockPos(), Blocks.AIR.defaultBlockState());
-            }
-        });
-        return super.getUpdateTag();
     }
 
     public FortronFieldColor getFieldColor() {

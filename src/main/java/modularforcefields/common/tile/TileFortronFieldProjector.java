@@ -260,8 +260,6 @@ public class TileFortronFieldProjector extends TileFortronConnective {
         if (level.getBlockEntity(fieldPoint) instanceof TileFortronField field) {
             field.setConstructor(this);
             activeFields.add(field);
-        } else {
-            System.out.println("wth");
         }
         return currentlyGenerated + 1;
     }
