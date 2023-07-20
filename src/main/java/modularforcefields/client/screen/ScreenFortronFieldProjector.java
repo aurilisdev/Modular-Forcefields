@@ -12,6 +12,7 @@ import electrodynamics.prefab.screen.component.types.ScreenComponentSlot;
 import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
 import modularforcefields.common.tile.TileFortronFieldProjector;
+import modularforcefields.prefab.utils.MFFSTextUtils;
 import modularforcefields.registers.ModularForcefieldsFluids;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,9 +43,9 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
 	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		super.renderLabels(matrixStack, mouseX, mouseY);
 		if (menu.getUnsafeHost() instanceof TileFortronFieldProjector projector) {
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.linked", projector.getConnections()), 25, 115, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(projector.getFortronUse() * 20, DisplayUnit.BUCKETS)), 25, 105, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.frequency", projector.getFrequency()), 25, 95, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.linked", projector.getConnections()), 25, 115, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort(projector.getFortronUse() * 20, DisplayUnit.BUCKETS)), 25, 105, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.frequency", projector.getFrequency()), 25, 95, 4210752);
 		}
 	}
 

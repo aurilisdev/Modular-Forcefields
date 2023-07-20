@@ -8,6 +8,7 @@ import electrodynamics.prefab.screen.GenericScreen;
 import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
 import modularforcefields.common.inventory.container.ContainerInterdictionMatrix;
 import modularforcefields.common.tile.TileInterdictionMatrix;
+import modularforcefields.prefab.utils.MFFSTextUtils;
 import modularforcefields.registers.ModularForcefieldsFluids;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,10 +38,10 @@ public class ScreenInterdictionMatrix extends GenericScreen<ContainerInterdictio
 	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		super.renderLabels(matrixStack, mouseX, mouseY);
 		if (menu.getUnsafeHost() instanceof TileInterdictionMatrix matrix) {
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.transfer", ChatFormatter.getChatDisplayShort(matrix.getFortronUse() * 20, DisplayUnit.BUCKETS) + " / s"), 25, 105, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.linked", matrix.getConnections()), 25, 95, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(matrix.getFortronUse() * 20, DisplayUnit.WATT)), 25, 85, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.frequency", matrix.getFrequency()), 25, 75, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(matrix.getFortronUse() * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 105, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.linked", matrix.getConnections()), 25, 95, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort(matrix.getFortronUse() * 20, DisplayUnit.WATT)), 25, 85, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.frequency", matrix.getFrequency()), 25, 75, 4210752);
 		}
 	}
 }

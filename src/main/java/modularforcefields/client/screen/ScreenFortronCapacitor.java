@@ -8,6 +8,7 @@ import electrodynamics.prefab.screen.GenericScreen;
 import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
 import modularforcefields.common.tile.TileFortronCapacitor;
+import modularforcefields.prefab.utils.MFFSTextUtils;
 import modularforcefields.registers.ModularForcefieldsFluids;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,9 +38,9 @@ public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapaci
 	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		super.renderLabels(matrixStack, mouseX, mouseY);
 		if (menu.getUnsafeHost() instanceof TileFortronCapacitor capacitor) {
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.transfer", ChatFormatter.getChatDisplayShort(capacitor.getTransfer() * 20, DisplayUnit.BUCKETS) + " / s"), 25, 45, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(capacitor.getTransfer() * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 45, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752);
 		}
 	}
 }

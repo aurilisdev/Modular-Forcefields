@@ -10,6 +10,7 @@ import electrodynamics.prefab.screen.component.types.guitab.ScreenComponentElect
 import electrodynamics.prefab.screen.component.utils.AbstractScreenComponentInfo;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.tile.TileCoercionDeriver;
+import modularforcefields.prefab.utils.MFFSTextUtils;
 import modularforcefields.registers.ModularForcefieldsFluids;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,10 +41,10 @@ public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDerive
 	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		super.renderLabels(matrixStack, mouseX, mouseY);
 		if (menu.getUnsafeHost() instanceof TileCoercionDeriver deriver) {
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.transfer", ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.BUCKETS) + " / s"), 25, 65, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.linked", deriver.getConnections()), 25, 55, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
-			font.draw(matrixStack, Component.translatable("gui.fortrondevice.frequency", deriver.getFrequency()), 25, 35, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 65, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.linked", deriver.getConnections()), 25, 55, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
+			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.frequency", deriver.getFrequency()), 25, 35, 4210752);
 		}
 	}
 }
