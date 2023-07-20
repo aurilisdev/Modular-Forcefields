@@ -1,12 +1,20 @@
 package modularforcefields.common.tile;
 
+import java.util.HashSet;
+import java.util.Map.Entry;
+
 import com.google.common.collect.Sets;
+
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.components.ComponentType;
-import electrodynamics.prefab.tile.components.type.*;
+import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
+import electrodynamics.prefab.tile.components.type.ComponentDirection;
+import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
+import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
+import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.registers.ModularForcefieldsBlockTypes;
@@ -18,9 +26,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.HashSet;
-import java.util.Map.Entry;
-
 public class TileFortronCapacitor extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity);
 	public static final int BASEENERGY = 100;
@@ -29,8 +34,8 @@ public class TileFortronCapacitor extends TileFortronConnective {
 
 	public TileFortronCapacitor(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_FORTRONCAPACITOR.get(), pos, state);
-		addComponent(new ComponentDirection());
-		addComponent(new ComponentPacketHandler());
+		addComponent(new ComponentDirection(this));
+		addComponent(new ComponentPacketHandler(this));
 		addComponent(new ComponentInventory(this, InventoryBuilder.newInv().forceSize(4)).valid((index, stack, inv) -> {
 			for (Entry<ISubtype, RegistryObject<Item>> en : ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
 				if (VALIDMODULES.contains(en.getKey())) {
@@ -42,7 +47,7 @@ public class TileFortronCapacitor extends TileFortronConnective {
 			return false;
 
 		}));
-		addComponent(new ComponentContainerProvider("container.fortroncapacitor").createMenu((id, player) -> new ContainerFortronCapacitor(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentContainerProvider("container.fortroncapacitor", this).createMenu((id, player) -> new ContainerFortronCapacitor(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override
@@ -51,30 +56,24 @@ public class TileFortronCapacitor extends TileFortronConnective {
 		fortron.set(fortron.get() - sendFortronTo(Math.min(fortron.get(), getTransfer()), this::canSendTo));
 	}
 
-    protected boolean canSendTo(BlockEntity entity)
-    {
-        if(entity instanceof TileCoercionDeriver)
-        {
-            return false;
-        }
-        if(entity instanceof TileFortronCapacitor capacitor)
-        {
-            for(TileFortronConnective connective : connections)
-            {
-                if(connective instanceof TileFortronFieldProjector projector)
-                {
-                    if(projector.activeFields.isEmpty()) {
-                        continue;
-                    }
-                    if(capacitor.connections.contains(projector))
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
+	protected boolean canSendTo(BlockEntity entity) {
+		if (entity instanceof TileCoercionDeriver) {
+			return false;
+		}
+		if (entity instanceof TileFortronCapacitor capacitor) {
+			for (TileFortronConnective connective : connections) {
+				if (connective instanceof TileFortronFieldProjector projector) {
+					if (projector.activeFields.isEmpty()) {
+						continue;
+					}
+					if (capacitor.connections.contains(projector)) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
 
 	@Override
 	public void onInventoryChange(ComponentInventory inv, int slot) {

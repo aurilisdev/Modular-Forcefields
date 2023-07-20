@@ -17,11 +17,11 @@ public class TileBiometricIdentifier extends GenericTile {
 
 	public TileBiometricIdentifier(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_BIOMETRICIDENTIFIER.get(), pos, state);
-		addComponent(new ComponentDirection());
-		addComponent(new ComponentTickable());
-		addComponent(new ComponentPacketHandler());
+		addComponent(new ComponentDirection(this));
+		addComponent(new ComponentTickable(this));
+		addComponent(new ComponentPacketHandler(this));
 		addComponent(new ComponentInventory(this, InventoryBuilder.newInv().forceSize(9)));
-		addComponent(new ComponentContainerProvider("container.biometricidentifier").createMenu((id, player) -> new ContainerBiometricIdentifier(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentContainerProvider("container.biometricidentifier", this).createMenu((id, player) -> new ContainerBiometricIdentifier(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 
 }

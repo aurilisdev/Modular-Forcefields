@@ -1,7 +1,5 @@
 package modularforcefields.registers;
 
-import static electrodynamics.registers.UnifiedElectrodynamicsRegister.supplier;
-
 import java.util.HashMap;
 
 import electrodynamics.api.ISubtype;
@@ -29,11 +27,11 @@ public class ModularForcefieldsBlocks {
 	public static BlockFortronField blockFortronField;
 
 	static {
-		BLOCKS.register("biometricidentifier", supplier(() -> blockBiometricIdentifier = new GenericMachineBlock(TileBiometricIdentifier::new)));
-		BLOCKS.register("coercionderiver", supplier(() -> blockCoercionDeriver = new GenericMachineBlock(TileCoercionDeriver::new)));
-		BLOCKS.register("fortroncapacitor", supplier(() -> blockFortronCapacitor = new GenericMachineBlock(TileFortronCapacitor::new)));
-		BLOCKS.register("fortronfieldprojector", supplier(() -> blockFortronFieldProjector = new GenericMachineBlock(TileFortronFieldProjector::new)));
-		BLOCKS.register("interdictionmatrix", supplier(() -> blockInterdictionMatrix = new GenericMachineBlock(TileInterdictionMatrix::new)));
-		BLOCKS.register("fortronfield", supplier(() -> blockFortronField = new BlockFortronField()));
+		BLOCKS.register("biometricidentifier", () -> blockBiometricIdentifier = new GenericMachineBlock(TileBiometricIdentifier::new));
+		BLOCKS.register("coercionderiver", () -> blockCoercionDeriver = new GenericMachineBlock(TileCoercionDeriver::new));
+		BLOCKS.register("fortroncapacitor", () -> blockFortronCapacitor = new GenericMachineBlock(TileFortronCapacitor::new));
+		BLOCKS.register("fortronfieldprojector", () -> blockFortronFieldProjector = new GenericMachineBlock(TileFortronFieldProjector::new));
+		BLOCKS.register("interdictionmatrix", () -> blockInterdictionMatrix = new GenericMachineBlock(TileInterdictionMatrix::new));
+		BLOCKS.register("fortronfield", () -> blockFortronField = new BlockFortronField());
 	}
 }

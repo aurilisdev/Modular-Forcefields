@@ -1,6 +1,5 @@
 package modularforcefields.registers;
 
-import static electrodynamics.registers.UnifiedElectrodynamicsRegister.supplier;
 import static modularforcefields.registers.ModularForcefieldsBlocks.blockBiometricIdentifier;
 import static modularforcefields.registers.ModularForcefieldsBlocks.blockCoercionDeriver;
 import static modularforcefields.registers.ModularForcefieldsBlocks.blockFortronCapacitor;
@@ -28,21 +27,21 @@ public class ModularForcefieldsItems {
 	public static final HashMap<Item, ISubtype> ITEMSUBTYPE_MAPPINGS = new HashMap<>();
 
 	static {
-		ITEMS.register("biometricidentifier", supplier(() -> new BlockItemDescriptable(() -> blockBiometricIdentifier, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("coercionderiver", supplier(() -> new BlockItemDescriptable(() -> blockCoercionDeriver, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("fortroncapacitor", supplier(() -> new BlockItemDescriptable(() -> blockFortronCapacitor, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("fortronfieldprojector", supplier(() -> new BlockItemDescriptable(() -> blockFortronFieldProjector, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("interdictionmatrix", supplier(() -> new BlockItemDescriptable(() -> blockInterdictionMatrix, new Item.Properties().tab(References.MODULARTAB))));
-		ITEMS.register("fortronfield", supplier(() -> new BlockItemDescriptable(() -> blockFortronField, new Item.Properties().tab(References.MODULARTAB))));
+		ITEMS.register("biometricidentifier", () -> new BlockItemDescriptable(() -> blockBiometricIdentifier, new Item.Properties().tab(References.MODULARTAB)));
+		ITEMS.register("coercionderiver", () -> new BlockItemDescriptable(() -> blockCoercionDeriver, new Item.Properties().tab(References.MODULARTAB)));
+		ITEMS.register("fortroncapacitor", () -> new BlockItemDescriptable(() -> blockFortronCapacitor, new Item.Properties().tab(References.MODULARTAB)));
+		ITEMS.register("fortronfieldprojector", () -> new BlockItemDescriptable(() -> blockFortronFieldProjector, new Item.Properties().tab(References.MODULARTAB)));
+		ITEMS.register("interdictionmatrix", () -> new BlockItemDescriptable(() -> blockInterdictionMatrix, new Item.Properties().tab(References.MODULARTAB)));
+		ITEMS.register("fortronfield", () -> new BlockItemDescriptable(() -> blockFortronField, new Item.Properties().tab(References.MODULARTAB)));
 		registerSubtypeItem(SubtypeModule.values());
 	}
-	public static final RegistryObject<Item> ITEM_FOCUSMATRIX = ITEMS.register("focusmatrix", supplier(() -> new Item(new Item.Properties().tab(References.MODULARTAB))));
-	public static final RegistryObject<Item> ITEM_IDENTIFICATIONCARD = ITEMS.register("identificationcard", supplier(() -> new ItemIdentificationCard(new Item.Properties().tab(References.MODULARTAB).stacksTo(1))));
-	public static final RegistryObject<Item> ITEM_FREQUENCYCARD = ITEMS.register("frequencycard", supplier(() -> new ItemFortronFrequencyCard(new Item.Properties().tab(References.MODULARTAB).stacksTo(1))));
+	public static final RegistryObject<Item> ITEM_FOCUSMATRIX = ITEMS.register("focusmatrix", () -> new Item(new Item.Properties().tab(References.MODULARTAB)));
+	public static final RegistryObject<Item> ITEM_IDENTIFICATIONCARD = ITEMS.register("identificationcard", () -> new ItemIdentificationCard(new Item.Properties().tab(References.MODULARTAB).stacksTo(1)));
+	public static final RegistryObject<Item> ITEM_FREQUENCYCARD = ITEMS.register("frequencycard", () -> new ItemFortronFrequencyCard(new Item.Properties().tab(References.MODULARTAB).stacksTo(1)));
 
 	private static void registerSubtypeItem(ISubtype[] array) {
 		for (ISubtype subtype : array) {
-			RegistryObject<Item> object = ITEMS.register(subtype.tag(), supplier(() -> new Item(new Item.Properties().tab(References.MODULARTAB)), subtype));
+			RegistryObject<Item> object = ITEMS.register(subtype.tag(), () -> new Item(new Item.Properties().tab(References.MODULARTAB)));
 			SUBTYPEITEMREGISTER_MAPPINGS.put(subtype, object);
 		}
 	}

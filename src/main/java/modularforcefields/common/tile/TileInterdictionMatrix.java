@@ -1,12 +1,24 @@
 package modularforcefields.common.tile;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.UUID;
+
 import com.google.common.collect.Sets;
+
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.components.ComponentType;
-import electrodynamics.prefab.tile.components.type.*;
+import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
+import electrodynamics.prefab.tile.components.type.ComponentDirection;
+import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
+import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
+import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.InventoryUtils;
 import modularforcefields.References;
 import modularforcefields.common.inventory.container.ContainerInterdictionMatrix;
@@ -38,9 +50,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.*;
-import java.util.Map.Entry;
-
 @EventBusSubscriber(bus = Bus.FORGE, modid = References.ID)
 public class TileInterdictionMatrix extends TileFortronConnective {
 	public static HashMap<TileInterdictionMatrix, AABB> matrices = new HashMap<>();
@@ -58,10 +67,10 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 
 	public TileInterdictionMatrix(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_INTERDICTIONMATRIX.get(), pos, state);
-		addComponent(new ComponentDirection());
-		addComponent(new ComponentPacketHandler());
+		addComponent(new ComponentDirection(this));
+		addComponent(new ComponentPacketHandler(this));
 		addComponent(new ComponentInventory(this, InventoryBuilder.newInv().forceSize(18)).valid((index, stack, inv) -> true).onChanged(this::onChanged));
-		addComponent(new ComponentContainerProvider("container.interdictionmatrix").createMenu((id, player) -> new ContainerInterdictionMatrix(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentContainerProvider("container.interdictionmatrix", this).createMenu((id, player) -> new ContainerInterdictionMatrix(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override

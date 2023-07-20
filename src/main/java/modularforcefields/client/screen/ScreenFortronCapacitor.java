@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import electrodynamics.api.electricity.formatting.ChatFormatter;
 import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
-import electrodynamics.prefab.screen.component.ScreenComponentFluid;
+import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
 import modularforcefields.common.tile.TileFortronCapacitor;
 import modularforcefields.registers.ModularForcefieldsFluids;
@@ -20,7 +20,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapacitor> {
 	public ScreenFortronCapacitor(ContainerFortronCapacitor container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title);
-		components.add(new ScreenComponentFluid(() -> {
+		addComponent(new ScreenComponentFluidGaugeInput(() -> {
 			TileFortronCapacitor capacitor = container.getHostFromIntArray();
 			if (capacitor != null) {
 				FluidTank tank = new FluidTank(capacitor.fortronCapacity.get());
@@ -28,7 +28,7 @@ public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapaci
 				return tank;
 			}
 			return null;
-		}, this, 8, 27));
+		}, 8, 27));
 		imageHeight += 40;
 		inventoryLabelY += 40;
 	}

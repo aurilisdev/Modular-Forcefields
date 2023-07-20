@@ -1,6 +1,5 @@
 package modularforcefields.registers;
 
-import static electrodynamics.registers.UnifiedElectrodynamicsRegister.supplier;
 import static modularforcefields.registers.ModularForcefieldsFluids.fluidFortron;
 
 import modularforcefields.References;
@@ -12,6 +11,6 @@ public class ModularForcefieldsFluidTypes {
 	public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, References.ID);
 
 	static {
-		FLUID_TYPES.register("fluidfortron", supplier(() -> fluidFortron.getFluidType()));
+		FLUID_TYPES.register("fluidfortron", () -> fluidFortron.getFluidType());
 	}
 }

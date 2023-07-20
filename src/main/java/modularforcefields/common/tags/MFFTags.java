@@ -27,7 +27,7 @@ public class MFFTags {
 		public static final TagKey<Fluid> FORTRON = forgeTag(FluidFortron.FORGE_TAG);
 
 		private static void init() {
-			
+
 		}
 
 		private static TagKey<Fluid> forgeTag(String name) {

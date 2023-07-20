@@ -1,11 +1,15 @@
 package modularforcefields.client.screen;
 
+import java.util.List;
+import java.util.Map.Entry;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import electrodynamics.api.electricity.formatting.ChatFormatter;
 import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
-import electrodynamics.prefab.screen.component.ScreenComponentFluid;
-import electrodynamics.prefab.screen.component.ScreenComponentSlot;
+import electrodynamics.prefab.screen.component.types.ScreenComponentSlot;
+import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.registers.ModularForcefieldsFluids;
@@ -17,14 +21,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-import java.util.List;
-import java.util.Map.Entry;
-
 @OnlyIn(Dist.CLIENT)
 public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronFieldProjector> {
 	public ScreenFortronFieldProjector(ContainerFortronFieldProjector container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title);
-		components.add(new ScreenComponentFluid(() -> {
+		addComponent(new ScreenComponentFluidGaugeInput(() -> {
 			TileFortronFieldProjector projector = container.getHostFromIntArray();
 			if (projector != null) {
 				FluidTank tank = new FluidTank(projector.fortronCapacity.get());
@@ -32,7 +33,7 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
 				return tank;
 			}
 			return null;
-		}, this, 8, 77));
+		}, 8, 77));
 		imageHeight += 71;
 		inventoryLabelY += 71;
 	}
