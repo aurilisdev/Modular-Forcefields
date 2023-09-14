@@ -3,11 +3,10 @@ package modularforcefields.client.screen;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import electrodynamics.api.electricity.formatting.ChatFormatter;
 import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
+import electrodynamics.prefab.screen.component.types.ScreenComponentMultiLabel;
 import electrodynamics.prefab.screen.component.types.ScreenComponentSlot;
 import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
@@ -35,18 +34,15 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
 			}
 			return null;
 		}, 8, 77));
+		addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
+			if (menu.getUnsafeHost() instanceof TileFortronFieldProjector projector) {
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", projector.getConnections()), 25, 115, 4210752);
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort(projector.getFortronUse() * 20, DisplayUnit.BUCKETS)), 25, 105, 4210752);
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", projector.getFrequency()), 25, 95, 4210752);
+			}
+		}));
 		imageHeight += 71;
 		inventoryLabelY += 71;
-	}
-
-	@Override
-	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-		super.renderLabels(matrixStack, mouseX, mouseY);
-		if (menu.getUnsafeHost() instanceof TileFortronFieldProjector projector) {
-			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.linked", projector.getConnections()), 25, 115, 4210752);
-			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort(projector.getFortronUse() * 20, DisplayUnit.BUCKETS)), 25, 105, 4210752);
-			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.frequency", projector.getFrequency()), 25, 95, 4210752);
-		}
 	}
 
 	@Override

@@ -1,10 +1,9 @@
 package modularforcefields.client.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import electrodynamics.api.electricity.formatting.ChatFormatter;
 import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
+import electrodynamics.prefab.screen.component.types.ScreenComponentMultiLabel;
 import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
 import modularforcefields.common.tile.TileFortronCapacitor;
@@ -30,17 +29,14 @@ public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapaci
 			}
 			return null;
 		}, 8, 27));
+		addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
+			if (menu.getUnsafeHost() instanceof TileFortronCapacitor capacitor) {
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(capacitor.getTransfer() * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 45, 4210752);
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752);
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752);
+			}
+		}));
 		imageHeight += 40;
 		inventoryLabelY += 40;
-	}
-
-	@Override
-	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-		super.renderLabels(matrixStack, mouseX, mouseY);
-		if (menu.getUnsafeHost() instanceof TileFortronCapacitor capacitor) {
-			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(capacitor.getTransfer() * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 45, 4210752);
-			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752);
-			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752);
-		}
 	}
 }
