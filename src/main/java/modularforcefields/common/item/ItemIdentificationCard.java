@@ -2,21 +2,22 @@ package modularforcefields.common.item;
 
 import java.util.List;
 
+import electrodynamics.common.item.ItemElectrodynamics;
+import modularforcefields.registers.ModularForcefieldsCreativeTabs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-public class ItemIdentificationCard extends Item {
+public class ItemIdentificationCard extends ItemElectrodynamics {
 
 	public ItemIdentificationCard(Properties pProperties) {
-		super(pProperties);
+		super(pProperties, () -> ModularForcefieldsCreativeTabs.MAIN.get());
 	}
 
 	public void onUsage(Player player, ItemStack stack) {

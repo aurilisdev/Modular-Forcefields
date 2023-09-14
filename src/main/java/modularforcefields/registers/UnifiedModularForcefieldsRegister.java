@@ -12,6 +12,7 @@ public class UnifiedModularForcefieldsRegister {
 		ModularForcefieldsFluids.FLUIDS.register(bus);
 		ModularForcefieldsFluidTypes.FLUID_TYPES.register(bus);
 		ModularForcefieldsSounds.SOUNDS.register(bus);
+		ModularForcefieldsCreativeTabs.CREATIVE_TABS.register(bus);
 	}
 
 }

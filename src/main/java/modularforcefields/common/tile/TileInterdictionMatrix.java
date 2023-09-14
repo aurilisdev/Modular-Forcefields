@@ -28,7 +28,6 @@ import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Monster;
@@ -136,12 +135,12 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 			}
 			if (list.contains(SubtypeModule.upgradeantifriendly)) {
 				if (entity instanceof Animal animal) {
-					animal.hurt(DamageSource.MAGIC, 5 + strength);
+					animal.hurt(animal.damageSources().magic(), 5 + strength);
 				}
 			}
 			if (list.contains(SubtypeModule.upgradeantihostile)) {
 				if (entity instanceof Monster monster) {
-					monster.hurt(DamageSource.MAGIC, 5 + strength);
+					monster.hurt(monster.damageSources().magic(), 5 + strength);
 				}
 			}
 			if (list.contains(SubtypeModule.upgradeconfiscate)) {
@@ -151,7 +150,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 			}
 			if (list.contains(SubtypeModule.upgradeantipersonnel)) {
 				if (entity instanceof Player player) {
-					player.hurt(DamageSource.MAGIC, 5 + strength);
+					player.hurt(player.damageSources().magic(), 5 + strength);
 				}
 			}
 			antispawn = list.contains(SubtypeModule.upgradeantispawn);

@@ -23,7 +23,7 @@ public class ItemFortronFrequencyCard extends Item {
 	}
 
 	public void onUsage(Player player, ItemStack stack) {
-		if (!player.level.isClientSide) {
+		if (!player.level().isClientSide) {
 			CompoundTag tag = stack.getOrCreateTag();
 			int freq = tag.getInt("frequency");
 			if (player.isShiftKeyDown()) {
