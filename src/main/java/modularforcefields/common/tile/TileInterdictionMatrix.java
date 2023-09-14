@@ -39,7 +39,7 @@ import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent.SpawnPlacementCheck;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.event.level.BlockEvent.EntityPlaceEvent;
@@ -184,10 +184,10 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	}
 
 	@SubscribeEvent
-	public static void spawnLiving(LivingSpawnEvent event) {
+	public static void spawnLiving(SpawnPlacementCheck event) {
 		for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
 			if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().antispawn) {
-				if (en.getValue().intersects(event.getEntity().getBoundingBox())) {
+				if (en.getValue().intersects(event.getEntityType().getAABB(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()))) {
 					event.setCanceled(true);
 					event.setResult(Result.DENY);
 					return;
