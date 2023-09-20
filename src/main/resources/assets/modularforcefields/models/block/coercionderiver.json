@@ -3,8 +3,8 @@
 	"parent": "minecraft:block/cube_all",
 	"texture_size": [64, 64],
 	"textures": {
-		"11": "modularforcefields:model/coercionderiver",
-		"particle": "modularforcefields:model/coercionderiver"
+		"11": "modularforcefields:block/model/coercionderiver",
+		"particle": "modularforcefields:block/model/coercionderiver"
 	},
 	"elements": [
 		{

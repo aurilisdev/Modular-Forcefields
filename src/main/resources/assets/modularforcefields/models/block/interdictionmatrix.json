@@ -3,8 +3,8 @@
 	"parent": "minecraft:block/cube_all",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "modularforcefields:model/interdictionmatrix",
-		"particle": "modularforcefields:model/interdictionmatrix"
+		"0": "modularforcefields:block/model/interdictionmatrix",
+		"particle": "modularforcefields:block/model/interdictionmatrix"
 	},
 	"elements": [
 		{

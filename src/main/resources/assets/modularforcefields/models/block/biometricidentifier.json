@@ -3,8 +3,8 @@
 	"parent": "minecraft:block/cube_all",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "modularforcefields:model/biometricidentifier",
-		"particle": "modularforcefields:model/biometricidentifier"
+		"0": "modularforcefields:block/model/biometricidentifier",
+		"particle": "modularforcefields:block/model/biometricidentifier"
 	},
 	"elements": [
 		{

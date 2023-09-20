@@ -6,8 +6,8 @@
 		64
 	],
 	"textures": {
-		"2": "modularforcefields:model/fortroncapacitor",
-		"particle": "modularforcefields:model/fortroncapacitor"
+		"2": "modularforcefields:block/model/fortroncapacitor",
+		"particle": "modularforcefields:block/model/fortroncapacitor"
 	},
 	"elements": [
 		{
