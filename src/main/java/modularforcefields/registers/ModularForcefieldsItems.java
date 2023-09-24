@@ -18,6 +18,10 @@ import modularforcefields.common.item.ItemFortronFrequencyCard;
 import modularforcefields.common.item.ItemIdentificationCard;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -53,4 +57,19 @@ public class ModularForcefieldsItems {
 		}
 	}
 
+	@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = References.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+	private static class ElectroCreativeRegistry {
+
+		@SubscribeEvent
+		public static void registerItems(BuildCreativeModeTabContentsEvent event) {
+
+			if (event.getTab() == ModularForcefieldsCreativeTabs.MAIN.get()) {
+				ITEMS.getEntries().forEach(reg -> {
+					event.accept(reg);
+				});
+			}
+
+		}
+
+	}
 }
