@@ -4,7 +4,7 @@ import electrodynamics.api.electricity.formatting.ChatFormatter;
 import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
 import electrodynamics.prefab.screen.component.types.ScreenComponentMultiLabel;
-import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
+import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGauge;
 import electrodynamics.prefab.screen.component.types.guitab.ScreenComponentElectricInfo;
 import electrodynamics.prefab.screen.component.utils.AbstractScreenComponentInfo;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
@@ -22,7 +22,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDeriver> {
 	public ScreenCoercionDeriver(ContainerCoercionDeriver container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title);
-		addComponent(new ScreenComponentFluidGaugeInput(() -> {
+		addComponent(new ScreenComponentFluidGauge(() -> {
 			TileCoercionDeriver deriver = container.getHostFromIntArray();
 			if (deriver != null) {
 				FluidTank tank = new FluidTank(deriver.fortronCapacity.get());

@@ -8,7 +8,7 @@ import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
 import electrodynamics.prefab.screen.component.types.ScreenComponentMultiLabel;
 import electrodynamics.prefab.screen.component.types.ScreenComponentSlot;
-import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
+import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGauge;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.prefab.utils.MFFSTextUtils;
@@ -25,7 +25,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronFieldProjector> {
 	public ScreenFortronFieldProjector(ContainerFortronFieldProjector container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title);
-		addComponent(new ScreenComponentFluidGaugeInput(() -> {
+		addComponent(new ScreenComponentFluidGauge(() -> {
 			TileFortronFieldProjector projector = container.getHostFromIntArray();
 			if (projector != null) {
 				FluidTank tank = new FluidTank(projector.fortronCapacity.get());

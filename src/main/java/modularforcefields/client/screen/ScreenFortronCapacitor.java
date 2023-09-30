@@ -4,7 +4,7 @@ import electrodynamics.api.electricity.formatting.ChatFormatter;
 import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
 import electrodynamics.prefab.screen.component.types.ScreenComponentMultiLabel;
-import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
+import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGauge;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
 import modularforcefields.common.tile.TileFortronCapacitor;
 import modularforcefields.prefab.utils.MFFSTextUtils;
@@ -20,7 +20,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapacitor> {
 	public ScreenFortronCapacitor(ContainerFortronCapacitor container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title);
-		addComponent(new ScreenComponentFluidGaugeInput(() -> {
+		addComponent(new ScreenComponentFluidGauge(() -> {
 			TileFortronCapacitor capacitor = container.getHostFromIntArray();
 			if (capacitor != null) {
 				FluidTank tank = new FluidTank(capacitor.fortronCapacity.get());
