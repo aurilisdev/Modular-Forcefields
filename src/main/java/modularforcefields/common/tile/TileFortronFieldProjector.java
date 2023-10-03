@@ -331,7 +331,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	}
 
 	public int getMaxFortron() {
-		return getFortronUse() * 40 + BASEENERGY;
+		return getFortronUse() * 200 + BASEENERGY;
 	}
 
 	public int getFortronUse() {

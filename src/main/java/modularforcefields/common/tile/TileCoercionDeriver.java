@@ -59,6 +59,9 @@ public class TileCoercionDeriver extends TileFortronConnective {
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
+		if (tickable.getTicks() % 20 == 0) {
+			onInventoryChange(getComponent(ComponentType.Inventory), 0);
+		}
 		ComponentElectrodynamic electro = getComponent(ComponentType.Electrodynamic);
 		fortron.set((int) (fortron.get() + electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity.get() - fortron.get()), electro.getVoltage()), false).getJoules()));
 		fortron.set(fortron.get() - sendFortronTo(Math.min(fortron.get(), getTransfer()), getConnectionTest()));
@@ -75,7 +78,7 @@ public class TileCoercionDeriver extends TileFortronConnective {
 	}
 
 	private int getMaxStored() {
-		return (int) (getTransfer() + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
+		return (int) (getTransfer() * 20 + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
 	}
 
 	public int getTransfer() {

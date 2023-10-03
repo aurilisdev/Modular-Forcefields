@@ -53,6 +53,9 @@ public class TileFortronCapacitor extends TileFortronConnective {
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
+		if (tickable.getTicks() % 20 == 0) {
+			onInventoryChange(getComponent(ComponentType.Inventory), 0);
+		}
 		fortron.set(fortron.get() - sendFortronTo(Math.min(fortron.get(), getTransfer()), this::canSendTo));
 	}
 
@@ -84,7 +87,7 @@ public class TileFortronCapacitor extends TileFortronConnective {
 	}
 
 	private int getMaxStored() {
-		return (int) (getTransfer() + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
+		return (int) (getTransfer() * 20 + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
 	}
 
 	public int getTransfer() {
