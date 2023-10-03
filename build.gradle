@@ -19,7 +19,7 @@ libsDirName = "../output"
 distsDirName = "../output"
 
 group = mffs_group
-version = mffs_version
+version = "${minecraft_version}-" + mffs_version
 
 base {
 
