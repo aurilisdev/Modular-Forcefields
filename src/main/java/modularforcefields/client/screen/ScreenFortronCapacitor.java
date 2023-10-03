@@ -23,17 +23,17 @@ public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapaci
 		addComponent(new ScreenComponentFluidGauge(() -> {
 			TileFortronCapacitor capacitor = container.getHostFromIntArray();
 			if (capacitor != null) {
-				FluidTank tank = new FluidTank(capacitor.fortronCapacity.get());
-				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, capacitor.fortron.get()));
+				FluidTank tank = new FluidTank(capacitor.fortronCapacity.get().intValue());
+				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, capacitor.fortron.get().intValue()));
 				return tank;
 			}
 			return null;
 		}, 8, 27));
 		addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
 			if (menu.getUnsafeHost() instanceof TileFortronCapacitor capacitor) {
-				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(capacitor.getTransfer() * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 45, 4210752);
-				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752);
-				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752);
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(capacitor.getTransfer()  / 1000 * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 45, 4210752, false);
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752, false);
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752, false);
 			}
 		}));
 		imageHeight += 40;
