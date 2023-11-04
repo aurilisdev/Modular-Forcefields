@@ -9,9 +9,8 @@ import com.google.common.collect.Sets;
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
-import electrodynamics.prefab.tile.components.ComponentType;
+import electrodynamics.prefab.tile.components.IComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentElectrodynamic;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
@@ -39,9 +38,8 @@ public class TileCoercionDeriver extends TileFortronConnective {
 
 	public TileCoercionDeriver(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_COERCIONDERIVER.get(), pos, state);
-		addComponent(new ComponentDirection(this));
 		addComponent(new ComponentPacketHandler(this));
-		addComponent(new ComponentElectrodynamic(this).voltage(Constants.COERCIONDERIVER_VOLTAGE).input(Direction.DOWN).output(Direction.DOWN));
+		addComponent(new ComponentElectrodynamic(this, false, true).voltage(Constants.COERCIONDERIVER_VOLTAGE).setInputDirections(Direction.DOWN));
 		addComponent(new ComponentInventory(this, InventoryBuilder.newInv().forceSize(4)).valid((index, stack, inv) -> {
 			for (Entry<ISubtype, RegistryObject<Item>> en : ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
 				if (VALIDMODULES.contains(en.getKey())) {
@@ -53,16 +51,16 @@ public class TileCoercionDeriver extends TileFortronConnective {
 			return false;
 
 		}));
-		addComponent(new ComponentContainerProvider("container.coercionderiver", this).createMenu((id, player) -> new ContainerCoercionDeriver(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentContainerProvider("container.coercionderiver", this).createMenu((id, player) -> new ContainerCoercionDeriver(id, player, getComponent(IComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
 		if (tickable.getTicks() % 20 == 0) {
-			onInventoryChange(getComponent(ComponentType.Inventory), 0);
+			onInventoryChange(getComponent(IComponentType.Inventory), 0);
 		}
-		ComponentElectrodynamic electro = getComponent(ComponentType.Electrodynamic);
+		ComponentElectrodynamic electro = getComponent(IComponentType.Electrodynamic);
 		fortron.set((int) (fortron.get() + electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity.get() - fortron.get()), electro.getVoltage()), false).getJoules()));
 		fortron.set(fortron.get() - sendFortronTo(Math.min(fortron.get(), getTransfer()), getConnectionTest()));
 	}
@@ -71,7 +69,7 @@ public class TileCoercionDeriver extends TileFortronConnective {
 	public void onInventoryChange(ComponentInventory inv, int slot) {
 		super.onInventoryChange(inv, slot);
 		int max = getMaxStored();
-		ComponentElectrodynamic electro = getComponent(ComponentType.Electrodynamic);
+		ComponentElectrodynamic electro = getComponent(IComponentType.Electrodynamic);
 		electro.maxJoules(max);
 		fortron.set(Mth.clamp(fortron.get(), 0, max));
 		fortronCapacity.set(max);
