@@ -31,7 +31,7 @@ public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapaci
 		}, 8, 27));
 		addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
 			if (menu.getUnsafeHost() instanceof TileFortronCapacitor capacitor) {
-				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(capacitor.getTransfer()  / 1000 * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 45, 4210752, false);
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(capacitor.getTransfer() / 1000 * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 45, 4210752, false);
 				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752, false);
 				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752, false);
 			}
