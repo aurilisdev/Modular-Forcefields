@@ -6,7 +6,6 @@ import electrodynamics.common.tile.machines.quarry.TileQuarry;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.GenericTile;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.utilities.Scheduler;
 import modularforcefields.common.block.FortronFieldColor;
@@ -37,7 +36,6 @@ public class TileFortronField extends GenericTile {
 
 	public TileFortronField(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELD.get(), pos, state);
-		addComponent(new ComponentDirection(this));
 		addComponent(new ComponentPacketHandler(this));
 	}
 

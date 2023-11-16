@@ -18,9 +18,8 @@ import com.google.common.collect.Sets;
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
-import electrodynamics.prefab.tile.components.ComponentType;
+import electrodynamics.prefab.tile.components.IComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
@@ -133,10 +132,9 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 
 	public TileFortronFieldProjector(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELDPROJECTOR.get(), pos, state);
-		addComponent(new ComponentDirection(this));
 		addComponent(new ComponentPacketHandler(this));
 		addComponent(new ComponentInventory(this, InventoryBuilder.newInv().forceSize(21)).valid((index, stack, inv) -> true).onChanged(this::onChanged));
-		addComponent(new ComponentContainerProvider("container.fortronfieldprojector", this).createMenu((id, player) -> new ContainerFortronFieldProjector(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentContainerProvider("container.fortronfieldprojector", this).createMenu((id, player) -> new ContainerFortronFieldProjector(id, player, getComponent(IComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override
@@ -147,7 +145,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			fortron.set(Mth.clamp(fortron.get(), 0, fortronCapacity.get()));
 		}
 		if (tickable.getTicks() % 1000 == 1) {
-			onChanged(getComponent(ComponentType.Inventory), -1);
+			onChanged(getComponent(IComponentType.Inventory), -1);
 		}
 		if (getStatus() == FortronFieldStatus.PROJECTED) {
 			if (activeFields.size() >= calculatedSize) {
@@ -415,7 +413,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	}
 
 	public ProjectionType getProjectionType() {
-		ComponentInventory inv = getComponent(ComponentType.Inventory);
+		ComponentInventory inv = getComponent(IComponentType.Inventory);
 		ItemStack stack = inv.getItem(ContainerFortronFieldProjector.SLOT_TYPE);
 		ISubtype subtype = null;
 		for (Entry<ISubtype, RegistryObject<Item>> en : ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {

@@ -12,9 +12,8 @@ import com.google.common.collect.Sets;
 import electrodynamics.api.ISubtype;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
-import electrodynamics.prefab.tile.components.ComponentType;
+import electrodynamics.prefab.tile.components.IComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
@@ -66,10 +65,9 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 
 	public TileInterdictionMatrix(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_INTERDICTIONMATRIX.get(), pos, state);
-		addComponent(new ComponentDirection(this));
 		addComponent(new ComponentPacketHandler(this));
 		addComponent(new ComponentInventory(this, InventoryBuilder.newInv().forceSize(18)).valid((index, stack, inv) -> true).onChanged(this::onChanged));
-		addComponent(new ComponentContainerProvider("container.interdictionmatrix", this).createMenu((id, player) -> new ContainerInterdictionMatrix(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentContainerProvider("container.interdictionmatrix", this).createMenu((id, player) -> new ContainerInterdictionMatrix(id, player, getComponent(IComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override
@@ -87,7 +85,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
 		if (tickable.getTicks() % 1000 == 1) {
-			onChanged(getComponent(ComponentType.Inventory), -1);
+			onChanged(getComponent(IComponentType.Inventory), -1);
 		}
 		int use = getFortronUse();
 		running = false;
@@ -101,7 +99,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 				for (Direction direction : Direction.values()) {
 					BlockEntity entity = level.getBlockEntity(worldPosition.offset(direction.getNormal()));
 					if (entity instanceof TileBiometricIdentifier identifier) {
-						for (ItemStack stack : identifier.<ComponentInventory>getComponent(ComponentType.Inventory).getItems()) {
+						for (ItemStack stack : identifier.<ComponentInventory>getComponent(IComponentType.Inventory).getItems()) {
 							if (stack.hasTag()) {
 								UUID id = stack.getTag().getUUID("player");
 								if (id != null) {
@@ -115,7 +113,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 				List<LivingEntity> entities = level.getEntities(EntityTypeTest.forClass(LivingEntity.class), aabb, LivingEntity::isAlive);
 				matrices.put(this, aabb);
 				List<SubtypeModule> list = new ArrayList<>();
-				for (ItemStack stack : this.<ComponentInventory>getComponent(ComponentType.Inventory).getItems()) {
+				for (ItemStack stack : this.<ComponentInventory>getComponent(IComponentType.Inventory).getItems()) {
 					ISubtype subtype = ModularForcefieldsItems.ITEMSUBTYPE_MAPPINGS.get(stack.getItem());
 					if (subtype instanceof SubtypeModule module) {
 						list.add(module);
