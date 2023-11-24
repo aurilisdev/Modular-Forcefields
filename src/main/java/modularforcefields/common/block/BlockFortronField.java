@@ -1,6 +1,5 @@
 package modularforcefields.common.block;
 
-import java.util.Arrays;
 import java.util.List;
 
 import electrodynamics.prefab.block.GenericEntityBlock;
@@ -14,7 +13,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.LootContext.Builder;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -36,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockFortronField extends GenericEntityBlock {
 
 	public BlockFortronField() {
-		super(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noOcclusion());
+		super(BlockBehaviour.Properties.of(Material.STONE).color(MaterialColor.STONE).strength(-1.0F, 3600000.0F).noOcclusion());
 	}
 
 	@Override
@@ -81,11 +79,6 @@ public class BlockFortronField extends GenericEntityBlock {
 			}
 		}
 		return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
-	}
-
-	@Override
-	public List<ItemStack> getDrops(BlockState state, Builder builder) {
-		return Arrays.asList(ItemStack.EMPTY);
 	}
 
 	@Override

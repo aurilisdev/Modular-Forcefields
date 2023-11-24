@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.GenericTile;
-import electrodynamics.prefab.tile.components.ComponentType;
+import electrodynamics.prefab.tile.components.IComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.WorldUtils;
@@ -87,13 +87,13 @@ public class TileFortronConnective extends GenericTile {
 	}
 
 	public int countModules(SubtypeModule module) {
-		ComponentInventory inv = getComponent(ComponentType.Inventory);
+		ComponentInventory inv = getComponent(IComponentType.Inventory);
 		RegistryObject<Item> object = ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
 		return object == null ? 0 : inv.countItem(object.get());
 	}
 
 	public int countModules(SubtypeModule module, int... slots) {
-		ComponentInventory inv = getComponent(ComponentType.Inventory);
+		ComponentInventory inv = getComponent(IComponentType.Inventory);
 		int count = 0;
 		for (int slot : slots) {
 			ItemStack itemstack = inv.getItem(slot);
@@ -106,7 +106,7 @@ public class TileFortronConnective extends GenericTile {
 	}
 
 	public boolean hasModule(SubtypeModule module) {
-		ComponentInventory inv = getComponent(ComponentType.Inventory);
+		ComponentInventory inv = getComponent(IComponentType.Inventory);
 		for (int slot = 0; slot < inv.getContainerSize(); slot++) {
 			ItemStack itemstack = inv.getItem(slot);
 			RegistryObject<Item> obj = ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
