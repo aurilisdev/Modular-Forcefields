@@ -1,6 +1,6 @@
 package modularforcefields.common.tab;
 
-import electrodynamics.common.block.subtype.SubtypeOre;
+import modularforcefields.registers.ModularForcefieldsBlocks;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
@@ -12,6 +12,6 @@ public class ItemGroupModularForcefields extends CreativeModeTab {
 
 	@Override
 	public ItemStack makeIcon() {
-		return new ItemStack(electrodynamics.DeferredRegisters.SUBTYPEBLOCKREGISTER_MAPPINGS.get(SubtypeOre.molybdenum).get());
+		return new ItemStack(ModularForcefieldsBlocks.blockCoercionDeriver);
 	}
 }

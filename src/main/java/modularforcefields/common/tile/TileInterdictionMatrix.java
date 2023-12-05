@@ -10,20 +10,22 @@ import java.util.UUID;
 import com.google.common.collect.Sets;
 
 import electrodynamics.api.ISubtype;
-import electrodynamics.prefab.tile.components.ComponentType;
+import electrodynamics.prefab.properties.Property;
+import electrodynamics.prefab.properties.PropertyType;
+import electrodynamics.prefab.tile.components.IComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
+import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.InventoryUtils;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.References;
 import modularforcefields.common.inventory.container.ContainerInterdictionMatrix;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.registers.ModularForcefieldsBlockTypes;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,10 +54,9 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	public static HashMap<TileInterdictionMatrix, AABB> matrices = new HashMap<>();
 	public static final int BASEENERGY = 100;
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
-	public int fortronCapacity;
-	public int fortron;
+	public Property<Integer> fortron = property(new Property<>(PropertyType.Integer, "fortron", 0));
+	public Property<Integer> fortronCapacity = property(new Property<>(PropertyType.Integer, "fortronCapacity", 0));
 	public int radius;
-	public int frequency;
 	public boolean running;
 	public boolean antispawn;
 	public boolean blockaccess;
@@ -64,54 +65,42 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	private int strength;
 
 	public TileInterdictionMatrix(BlockPos pos, BlockState state) {
-		super(DeferredRegisters.TILE_INTERDICTIONMATRIX.get(), pos, state);
-		addComponent(new ComponentDirection());
-		addComponent(new ComponentPacketHandler().guiPacketWriter(this::saveAdditional).guiPacketReader(this::load));
-		addComponent(new ComponentInventory(this).size(18).shouldSendInfo().valid((index, stack, inv) -> true).onChanged(this::onChanged));
-		addComponent(new ComponentContainerProvider("container.interdictionmatrix").createMenu((id, player) -> new ContainerInterdictionMatrix(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		super(ModularForcefieldsBlockTypes.TILE_INTERDICTIONMATRIX.get(), pos, state);
+		addComponent(new ComponentPacketHandler(this));
+		addComponent(new ComponentInventory(this, InventoryBuilder.newInv().forceSize(18)).valid((index, stack, inv) -> true).onChanged(this::onChanged));
+		addComponent(new ComponentContainerProvider("container.interdictionmatrix", this).createMenu((id, player) -> new ContainerInterdictionMatrix(id, player, getComponent(IComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override
 	protected void tickCommon(ComponentTickable tickable) {
 		super.tickCommon(tickable);
 		if (tickable.getTicks() % 20 == 0) {
-			fortronCapacity = getMaxFortron();
-			fortron = Mth.clamp(fortron, 0, fortronCapacity);
+			fortronCapacity.set(getMaxFortron());
+			fortron.set(Mth.clamp(fortron.get(), 0, fortronCapacity.get()));
 		}
 	}
 
-	@Override
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
-	}
-
-	@Override
-	public int getFrequency() {
-		return frequency;
-	}
-
-	private HashSet<UUID> validPlayers = new HashSet<>();
+	private final HashSet<UUID> validPlayers = new HashSet<>();
 
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
 		if (tickable.getTicks() % 1000 == 1) {
-			onChanged(getComponent(ComponentType.Inventory));
+			onChanged(getComponent(IComponentType.Inventory), -1);
 		}
 		int use = getFortronUse();
 		running = false;
-		if (fortron >= use) {
-			fortron -= use;
+		if (fortron.get() >= use) {
+			fortron.set(fortron.get() - use);
 			running = true;
 		}
-		running = true;
 		validPlayers.clear();
 		if (tickable.getTicks() % 10 == 0) {
 			if (running) {
 				for (Direction direction : Direction.values()) {
 					BlockEntity entity = level.getBlockEntity(worldPosition.offset(direction.getNormal()));
 					if (entity instanceof TileBiometricIdentifier identifier) {
-						for (ItemStack stack : identifier.<ComponentInventory>getComponent(ComponentType.Inventory).getItems()) {
+						for (ItemStack stack : identifier.<ComponentInventory>getComponent(IComponentType.Inventory).getItems()) {
 							if (stack.hasTag()) {
 								UUID id = stack.getTag().getUUID("player");
 								if (id != null) {
@@ -125,8 +114,8 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 				List<LivingEntity> entities = level.getEntities(EntityTypeTest.forClass(LivingEntity.class), aabb, LivingEntity::isAlive);
 				matrices.put(this, aabb);
 				List<SubtypeModule> list = new ArrayList<>();
-				for (ItemStack stack : this.<ComponentInventory>getComponent(ComponentType.Inventory).getItems()) {
-					ISubtype subtype = DeferredRegisters.ITEMSUBTYPE_MAPPINGS.get(stack.getItem());
+				for (ItemStack stack : this.<ComponentInventory>getComponent(IComponentType.Inventory).getItems()) {
+					ISubtype subtype = ModularForcefieldsItems.ITEMSUBTYPE_MAPPINGS.get(stack.getItem());
 					if (subtype instanceof SubtypeModule module) {
 						list.add(module);
 					}
@@ -155,37 +144,41 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 			}
 			if (list.contains(SubtypeModule.upgradeconfiscate)) {
 				if (entity instanceof Player player) {
-					BlockEntity above = level.getBlockEntity(worldPosition.above());
-					LazyOptional<IItemHandler> cap = above.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
-					if (cap.isPresent()) {
-						List<ItemStack> stacks = player.getInventory().items;
-						IItemHandler handler = cap.resolve().get();
-						for (int index = 0; index < stacks.size(); index++) {
-							ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
-							player.getInventory().items.set(index, back);
-						}
-						stacks = player.getInventory().items;
-						for (int index = 0; index < stacks.size(); index++) {
-							ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
-							player.getInventory().items.set(index, back);
-						}
-						stacks = player.getInventory().offhand;
-						for (int index = 0; index < stacks.size(); index++) {
-							ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
-							player.getInventory().items.set(index, back);
-						}
-
-					}
+					confiscateItems(player);
 				}
 			}
 			if (list.contains(SubtypeModule.upgradeantipersonnel)) {
 				if (entity instanceof Player player) {
-					player.hurt(DamageSource.MAGIC, 100);
+					player.hurt(DamageSource.MAGIC, 5 + strength);
 				}
 			}
 			antispawn = list.contains(SubtypeModule.upgradeantispawn);
 			blockaccess = list.contains(SubtypeModule.upgradeblockaccess);
 			blockalter = list.contains(SubtypeModule.upgradeblockalter);
+		}
+	}
+
+	private void confiscateItems(Player player) {
+		BlockEntity above = level.getBlockEntity(worldPosition.above());
+		LazyOptional<IItemHandler> cap = above.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
+		if (cap.isPresent()) {
+			List<ItemStack> stacks = player.getInventory().items;
+			IItemHandler handler = cap.resolve().get();
+			for (int index = 0; index < stacks.size(); index++) {
+				ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
+				player.getInventory().items.set(index, back);
+			}
+			stacks = player.getInventory().items;
+			for (int index = 0; index < stacks.size(); index++) {
+				ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
+				player.getInventory().items.set(index, back);
+			}
+			stacks = player.getInventory().offhand;
+			for (int index = 0; index < stacks.size(); index++) {
+				ItemStack back = InventoryUtils.addItemToItemHandler(handler, stacks.get(index), 0, handler.getSlots());
+				player.getInventory().items.set(index, back);
+			}
+
 		}
 	}
 
@@ -264,27 +257,11 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		tag.putInt("frequency", frequency);
-		tag.putInt("fortronCapacity", fortronCapacity);
-		tag.putInt("fortron", fortron);
-	}
-
-	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		frequency = tag.getInt("frequency");
-		fortronCapacity = tag.getInt("fortronCapacity");
-		fortron = tag.getInt("fortron");
-	}
-
-	@Override
 	protected boolean canRecieveFortron(TileFortronConnective tile) {
 		return tile instanceof TileFortronCapacitor;
 	}
 
-	private void onChanged(ComponentInventory inv) {
+	private void onChanged(ComponentInventory inv, int index) {
 		radius = countModules(SubtypeModule.manipulationscale);
 		strength = countModules(SubtypeModule.upgradestrength);
 		scaleEnergy = (BASEENERGY + strength) * radius * radius * radius;

@@ -3,7 +3,6 @@ package modularforcefields.common.tags;
 import java.util.ArrayList;
 import java.util.List;
 
-import electrodynamics.common.item.gear.tools.ItemCanister;
 import modularforcefields.common.fluid.types.FluidFortron;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
@@ -28,9 +27,7 @@ public class MFFTags {
 		public static final TagKey<Fluid> FORTRON = forgeTag(FluidFortron.FORGE_TAG);
 
 		private static void init() {
-			FLUID_TAGS.add(FORTRON);
 
-			ItemCanister.addTag(FORTRON);
 		}
 
 		private static TagKey<Fluid> forgeTag(String name) {

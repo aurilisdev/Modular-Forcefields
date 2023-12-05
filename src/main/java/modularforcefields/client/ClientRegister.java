@@ -1,13 +1,15 @@
 package modularforcefields.client;
 
-import modularforcefields.DeferredRegisters;
 import modularforcefields.References;
 import modularforcefields.client.screen.ScreenBiometricIdentifier;
 import modularforcefields.client.screen.ScreenCoercionDeriver;
 import modularforcefields.client.screen.ScreenFortronCapacitor;
 import modularforcefields.client.screen.ScreenFortronFieldProjector;
 import modularforcefields.client.screen.ScreenInterdictionMatrix;
+import modularforcefields.registers.ModularForcefieldsBlocks;
+import modularforcefields.registers.ModularForcefieldsMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,11 +27,13 @@ public class ClientRegister {
 	}
 
 	public static void setup() {
-		MenuScreens.register(DeferredRegisters.CONTAINER_COERCIONDERIVER.get(), ScreenCoercionDeriver::new);
-		MenuScreens.register(DeferredRegisters.CONTAINER_FORTRONCAPACITOR.get(), ScreenFortronCapacitor::new);
-		MenuScreens.register(DeferredRegisters.CONTAINER_FORTRONFIELDPROJECTOR.get(), ScreenFortronFieldProjector::new);
-		MenuScreens.register(DeferredRegisters.CONTAINER_INTERDICTIONMATRIX.get(), ScreenInterdictionMatrix::new);
-		MenuScreens.register(DeferredRegisters.CONTAINER_BIOMETRICIDENTIFIER.get(), ScreenBiometricIdentifier::new);
+		ItemBlockRenderTypes.setRenderLayer(ModularForcefieldsBlocks.blockFortronField, RenderType.translucent());
+		
+		MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_COERCIONDERIVER.get(), ScreenCoercionDeriver::new);
+		MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_FORTRONCAPACITOR.get(), ScreenFortronCapacitor::new);
+		MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_FORTRONFIELDPROJECTOR.get(), ScreenFortronFieldProjector::new);
+		MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_INTERDICTIONMATRIX.get(), ScreenInterdictionMatrix::new);
+		MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_BIOMETRICIDENTIFIER.get(), ScreenBiometricIdentifier::new);
 	}
 
 	@SubscribeEvent

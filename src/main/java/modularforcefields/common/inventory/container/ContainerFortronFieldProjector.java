@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import electrodynamics.prefab.inventory.container.GenericContainerBlockEntity;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.prefab.inventory.container.slot.item.type.SlotModule;
+import modularforcefields.registers.ModularForcefieldsMenuTypes;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,7 +40,7 @@ public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<
 	}
 
 	public ContainerFortronFieldProjector(int id, Inventory pinv, Container inv, ContainerData data) {
-		super(DeferredRegisters.CONTAINER_FORTRONFIELDPROJECTOR.get(), id, pinv, inv, data);
+		super(ModularForcefieldsMenuTypes.CONTAINER_FORTRONFIELDPROJECTOR.get(), id, pinv, inv, data);
 	}
 
 	@Override

@@ -4,13 +4,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
+import electrodynamics.prefab.properties.Property;
+import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.GenericTile;
-import electrodynamics.prefab.tile.components.ComponentType;
+import electrodynamics.prefab.tile.components.IComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.WorldUtils;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,11 +23,11 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class TileFortronConnective extends GenericTile {
 	protected HashSet<TileFortronConnective> connections = new HashSet<>();
-	protected int frequency = 0;
+	public Property<Integer> frequency = property(new Property<>(PropertyType.Integer, "frequency", 0));
 
 	protected TileFortronConnective(BlockEntityType<?> tileEntityTypeIn, BlockPos worldPos, BlockState blockState) {
 		super(tileEntityTypeIn, worldPos, blockState);
-		addComponent(new ComponentTickable().tickServer(this::tickServer).tickCommon(this::tickCommon));
+		addComponent(new ComponentTickable(this).tickServer(this::tickServer).tickCommon(this::tickCommon));
 	}
 
 	protected void tickCommon(ComponentTickable tickable) {
@@ -72,13 +74,8 @@ public class TileFortronConnective extends GenericTile {
 	protected int sendFortronTo(int send, Predicate<BlockEntity> valid) {
 		int sent = 0;
 		HashSet<TileFortronConnective> sendList = (HashSet<TileFortronConnective>) connections.clone();
-		Iterator<TileFortronConnective> it = sendList.iterator();
-		while (it.hasNext()) {
-			TileFortronConnective connective = it.next();
-			if (!connective.canRecieveFortron(this) || !valid.test(connective)) {
-				it.remove();
-			}
-		}
+		sendList.removeIf(connective -> !connective.canRecieveFortron(this) || !valid.test(connective));
+
 		int size = sendList.size();
 		for (TileFortronConnective connective : sendList) {
 			int ret = connective.recieveFortron(send / size);
@@ -90,17 +87,17 @@ public class TileFortronConnective extends GenericTile {
 	}
 
 	public int countModules(SubtypeModule module) {
-		ComponentInventory inv = getComponent(ComponentType.Inventory);
-		RegistryObject<Item> object = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
+		ComponentInventory inv = getComponent(IComponentType.Inventory);
+		RegistryObject<Item> object = ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
 		return object == null ? 0 : inv.countItem(object.get());
 	}
 
 	public int countModules(SubtypeModule module, int... slots) {
-		ComponentInventory inv = getComponent(ComponentType.Inventory);
+		ComponentInventory inv = getComponent(IComponentType.Inventory);
 		int count = 0;
 		for (int slot : slots) {
 			ItemStack itemstack = inv.getItem(slot);
-			RegistryObject<Item> object = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
+			RegistryObject<Item> object = ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
 			if (object != null && itemstack.getItem().equals(object.get())) {
 				count += itemstack.getCount();
 			}
@@ -109,10 +106,10 @@ public class TileFortronConnective extends GenericTile {
 	}
 
 	public boolean hasModule(SubtypeModule module) {
-		ComponentInventory inv = getComponent(ComponentType.Inventory);
+		ComponentInventory inv = getComponent(IComponentType.Inventory);
 		for (int slot = 0; slot < inv.getContainerSize(); slot++) {
 			ItemStack itemstack = inv.getItem(slot);
-			RegistryObject<Item> obj = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
+			RegistryObject<Item> obj = ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.get(module);
 			if (obj != null && itemstack.getItem() == obj.get()) {
 				return true;
 			}
@@ -124,11 +121,11 @@ public class TileFortronConnective extends GenericTile {
 	}
 
 	public int getFrequency() {
-		return frequency;
+		return frequency.get();
 	}
 
 	public void setFrequency(int frequency) {
-		this.frequency = frequency;
+		this.frequency.set(frequency);
 	}
 
 	protected Predicate<BlockEntity> getConnectionTest() {

@@ -6,34 +6,36 @@ import java.util.Map.Entry;
 import com.google.common.collect.Sets;
 
 import electrodynamics.api.ISubtype;
-import electrodynamics.prefab.tile.components.ComponentType;
+import electrodynamics.prefab.properties.Property;
+import electrodynamics.prefab.properties.PropertyType;
+import electrodynamics.prefab.tile.components.IComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
+import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.registers.ModularForcefieldsBlockTypes;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.RegistryObject;
 
 public class TileFortronCapacitor extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity);
 	public static final int BASEENERGY = 100;
-	public int fortron;
-	public int fortronCapacity;
+	public Property<Integer> fortron = property(new Property<>(PropertyType.Integer, "fortron", 0));
+	public Property<Integer> fortronCapacity = property(new Property<>(PropertyType.Integer, "fortronCapacity", 0));
 
 	public TileFortronCapacitor(BlockPos pos, BlockState state) {
-		super(DeferredRegisters.TILE_FORTRONCAPACITOR.get(), pos, state);
-		addComponent(new ComponentDirection());
-		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
-		addComponent(new ComponentInventory(this).size(4).shouldSendInfo().valid((index, stack, inv) -> {
-			for (Entry<ISubtype, RegistryObject<Item>> en : DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
+		super(ModularForcefieldsBlockTypes.TILE_FORTRONCAPACITOR.get(), pos, state);
+		addComponent(new ComponentPacketHandler(this));
+		addComponent(new ComponentInventory(this, InventoryBuilder.newInv().forceSize(4)).valid((index, stack, inv) -> {
+			for (Entry<ISubtype, RegistryObject<Item>> en : ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
 				if (VALIDMODULES.contains(en.getKey())) {
 					if (en.getValue().get() == stack.getItem()) {
 						return true;
@@ -43,38 +45,51 @@ public class TileFortronCapacitor extends TileFortronConnective {
 			return false;
 
 		}));
-		addComponent(new ComponentContainerProvider("container.fortroncapacitor").createMenu((id, player) -> new ContainerFortronCapacitor(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentContainerProvider("container.fortroncapacitor", this).createMenu((id, player) -> new ContainerFortronCapacitor(id, player, getComponent(IComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
-		ComponentPacketHandler packets = getComponent(ComponentType.PacketHandler);
 		if (tickable.getTicks() % 20 == 0) {
-			int max = getMaxStored();
-			fortron = Mth.clamp(fortron, 0, max);
-			fortronCapacity = max;
-			packets.sendGuiPacketToTracking();
+			onInventoryChange(getComponent(IComponentType.Inventory), 0);
 		}
-		fortron -= sendFortronTo(Math.min(fortron, getTransfer()), entity -> !(entity instanceof TileCoercionDeriver));
+		fortron.set(fortron.get() - sendFortronTo(Math.min(fortron.get(), getTransfer()), this::canSendTo));
+	}
+
+	protected boolean canSendTo(BlockEntity entity) {
+		if (entity instanceof TileCoercionDeriver) {
+			return false;
+		}
+		if (entity instanceof TileFortronCapacitor capacitor) {
+			for (TileFortronConnective connective : connections) {
+				if (connective instanceof TileFortronFieldProjector projector) {
+					if (projector.activeFields.isEmpty()) {
+						continue;
+					}
+					if (capacitor.connections.contains(projector)) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public void onInventoryChange(ComponentInventory inv, int slot) {
+		super.onInventoryChange(inv, slot);
+		int max = getMaxStored();
+		fortron.set(Mth.clamp(fortron.get(), 0, max));
+		fortronCapacity.set(max);
 	}
 
 	private int getMaxStored() {
-		return (int) (getTransfer() + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
+		return (int) (getTransfer() * 20 + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
 	}
 
 	public int getTransfer() {
 		return BASEENERGY * 30 + BASEENERGY * countModules(SubtypeModule.upgradespeed);
-	}
-
-	private void writeGuiPacket(CompoundTag compound) {
-		compound.putInt("fortron", fortron);
-		compound.putInt("fortronCapacity", fortronCapacity);
-	}
-
-	private void readGuiPacket(CompoundTag compound) {
-		fortron = compound.getInt("fortron");
-		fortronCapacity = compound.getInt("fortronCapacity");
 	}
 
 	@Override
@@ -84,8 +99,8 @@ public class TileFortronCapacitor extends TileFortronConnective {
 
 	@Override
 	protected int recieveFortron(int amount) {
-		int received = Math.max(0, Math.min(amount, fortronCapacity - fortron));
-		fortron += received;
+		int received = Math.max(0, Math.min(amount, fortronCapacity.get() - fortron.get()));
+		fortron.set(fortron.get() + received);
 		return received;
 	}
 }

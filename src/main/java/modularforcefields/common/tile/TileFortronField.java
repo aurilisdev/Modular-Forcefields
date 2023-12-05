@@ -1,65 +1,62 @@
 package modularforcefields.common.tile;
 
+import org.jetbrains.annotations.NotNull;
+
+import electrodynamics.common.tile.machines.quarry.TileQuarry;
+import electrodynamics.prefab.properties.Property;
+import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.GenericTile;
-import electrodynamics.prefab.tile.components.ComponentType;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
-import modularforcefields.DeferredRegisters;
+import electrodynamics.prefab.utilities.Scheduler;
 import modularforcefields.common.block.FortronFieldColor;
+import modularforcefields.registers.ModularForcefieldsBlockTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileFortronField extends GenericTile {
 
-	private FortronFieldColor fieldColor = FortronFieldColor.LIGHT_BLUE;
-	private BlockPos projectorPos = BlockPos.ZERO;
+	public final Property<Integer> fieldColorOrdinal = property(new Property<>(PropertyType.Integer, "fieldColor", FortronFieldColor.LIGHT_BLUE.ordinal()));
+	private final Property<BlockPos> projectorPos = property(new Property<>(PropertyType.BlockPos, "projectorPos", TileQuarry.OUT_OF_REACH).onChange(this::onPropertyChange).onLoad(this::onPropertyChange));
+
+	private void onPropertyChange(Property<BlockPos> t, BlockPos pos) {
+		if (pos != null) {
+			Scheduler.schedule(3, () -> {
+				if (level != null) {
+					if (level.getBlockEntity(pos) instanceof TileFortronFieldProjector proj) {
+						if (!level.isClientSide()) {
+							fieldColorOrdinal.set(proj.getFieldColor().ordinal());
+							proj.activeFields.add(this);
+						}
+					}
+				}
+			});
+		}
+	}
 
 	public TileFortronField(BlockPos pos, BlockState state) {
-		super(DeferredRegisters.TILE_FORTRONFIELD.get(), pos, state);
-		addComponent(new ComponentDirection());
-		addComponent(new ComponentPacketHandler().guiPacketWriter(this::saveAdditional).guiPacketReader(this::load));
+		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELD.get(), pos, state);
+		addComponent(new ComponentPacketHandler(this));
+	}
+
+	@Override
+	public void load(@NotNull CompoundTag compound) {
+		super.load(compound);
 	}
 
 	public void setConstructor(TileFortronFieldProjector projector) {
 		if (!level.isClientSide()) {
 			if (projector != null) {
-				fieldColor = projector.getFieldColor();
-				if (projectorPos != BlockPos.ZERO) {
-					projectorPos = new BlockPos(projector.getBlockPos());
-					ComponentPacketHandler handler = getComponent(ComponentType.PacketHandler);
-					handler.sendGuiPacketToTracking();
-				}
+				projectorPos.set(projector.getBlockPos());
 			}
 		}
 	}
 
-	@Override
-	public void saveAdditional(CompoundTag compound) {
-		super.saveAdditional(compound);
-		compound.putInt("fieldColor", fieldColor.ordinal());
-		if (projectorPos != BlockPos.ZERO && projectorPos != null) {
-			compound.putInt("px", projectorPos.getX());
-			compound.putInt("py", projectorPos.getY());
-			compound.putInt("pz", projectorPos.getZ());
-		}
-
-	}
-
-	@Override
-	public void load(CompoundTag compound) {
-		super.load(compound);
-		fieldColor = FortronFieldColor.values()[compound.getInt("fieldColor")];
-		if (compound.contains("px")) {
-			projectorPos = new BlockPos(compound.getInt("px"), compound.getInt("py"), compound.getInt("pz"));
-		}
-	}
-
 	public FortronFieldColor getFieldColor() {
-		return fieldColor;
+		return FortronFieldColor.values()[fieldColorOrdinal.get()];
 	}
 
 	public BlockPos getProjectorPos() {
-		return projectorPos;
+		return projectorPos.get();
 	}
 }

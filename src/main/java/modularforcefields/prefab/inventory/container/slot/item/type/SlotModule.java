@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import electrodynamics.prefab.inventory.container.slot.item.SlotGeneric;
-import electrodynamics.prefab.screen.component.ScreenComponentSlot.EnumSlotType;
-import modularforcefields.DeferredRegisters;
+import electrodynamics.prefab.screen.component.types.ScreenComponentSlot.IconType;
+import electrodynamics.prefab.screen.component.types.ScreenComponentSlot.SlotType;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,11 +18,11 @@ public class SlotModule extends SlotGeneric {
 	private List<Item> items;
 
 	public SlotModule(Container inventory, int index, int x, int y, SubtypeModule... valid) {
-		super(inventory, index, x, y);
+		super(SlotType.NORMAL, IconType.UPGRADE_DARK, inventory, index, x, y);
 
 		items = new ArrayList<>();
 		for (SubtypeModule upg : valid) {
-			RegistryObject<Item> object = DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.get(upg);
+			RegistryObject<Item> object = ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.get(upg);
 			if (object != null) {
 				items.add(object.get());
 			}
@@ -31,11 +32,6 @@ public class SlotModule extends SlotGeneric {
 	@Override
 	public boolean mayPlace(ItemStack stack) {
 		return items != null && items.contains(stack.getItem());
-	}
-
-	@Override
-	public EnumSlotType getSlotType() {
-		return EnumSlotType.SPEED;
 	}
 
 }
