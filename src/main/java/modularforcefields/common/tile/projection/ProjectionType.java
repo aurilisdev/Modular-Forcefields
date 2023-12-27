@@ -10,10 +10,10 @@ import net.minecraft.core.BlockPos;
 public enum ProjectionType {
 	NONE((proj, t) -> proj.calculatedFieldPoints.clear()),
 	CUBE((proj, t) -> {
-		for (int i = proj.xRadiusNeg; i <= proj.xRadiusPos; i++) {
-			for (int j = proj.yRadiusNeg; j <= proj.yRadiusPos; j++) {
-				for (int k = proj.zRadiusNeg; k <= proj.zRadiusPos; k++) {
-					boolean isEdge = i == proj.xRadiusNeg || i == proj.xRadiusPos || j == proj.yRadiusNeg || j == proj.yRadiusPos || k == proj.zRadiusNeg || k == proj.zRadiusPos;
+		for (int i = proj.xRadiusNeg.get(); i <= proj.xRadiusPos.get(); i++) {
+			for (int j = proj.yRadiusNeg.get(); j <= proj.yRadiusPos.get(); j++) {
+				for (int k = proj.zRadiusNeg.get(); k <= proj.zRadiusPos.get(); k++) {
+					boolean isEdge = i == proj.xRadiusNeg.get() || i == proj.xRadiusPos.get() || j == proj.yRadiusNeg.get() || j == proj.yRadiusPos.get() || k == proj.zRadiusNeg.get() || k == proj.zRadiusPos.get();
 					if (proj.isInterior() != isEdge) {
 						proj.calculatedFieldPoints.add(new HashDistanceBlockPos(i, j, k, 10000 - j));
 					}
@@ -23,12 +23,12 @@ public enum ProjectionType {
 	}),
 	SPHERE((proj, t) -> {
 		BlockPos shifted = proj.getShiftedPos();
-		for (int i = shifted.getY() - proj.radius; i <= shifted.getX() + proj.radius; i++) {
-			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY() - proj.radius); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + proj.radius); j++) {
-				for (int k = shifted.getZ() - proj.radius; k <= shifted.getZ() + proj.radius; k++) {
+		for (int i = shifted.getY() - proj.radius.get(); i <= shifted.getX() + proj.radius.get(); i++) {
+			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY() - proj.radius.get()); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + proj.radius.get()); j++) {
+				for (int k = shifted.getZ() - proj.radius.get(); k <= shifted.getZ() + proj.radius.get(); k++) {
 					Location loc = new Location(i + 0.5f, j + 0.5f, k + 0.5f);
 					int distance = (int) loc.distance(new Location(shifted));
-					if (proj.isInterior() ? distance <= proj.radius : distance == proj.radius) {
+					if (proj.isInterior() ? distance <= proj.radius.get() : distance == proj.radius.get()) {
 						proj.calculatedFieldPoints.add(new HashDistanceBlockPos(i, j, k, 10000 - j));
 					}
 				}
@@ -37,12 +37,12 @@ public enum ProjectionType {
 	}),
 	HEMISPHERE((proj, t) -> {
 		BlockPos shifted = proj.getShiftedPos();
-		for (int i = shifted.getY() - proj.radius; i <= shifted.getX() + proj.radius; i++) {
-			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY()); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + proj.radius); j++) {
-				for (int k = shifted.getZ() - proj.radius; k <= shifted.getZ() + proj.radius; k++) {
+		for (int i = shifted.getY() - proj.radius.get(); i <= shifted.getX() + proj.radius.get(); i++) {
+			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY()); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + proj.radius.get()); j++) {
+				for (int k = shifted.getZ() - proj.radius.get(); k <= shifted.getZ() + proj.radius.get(); k++) {
 					Location loc = new Location(i + 0.5f, j + 0.5f, k + 0.5f);
 					int distance = (int) loc.distance(new Location(shifted));
-					if (proj.isInterior() ? distance <= proj.radius : distance == proj.radius) {
+					if (proj.isInterior() ? distance <= proj.radius.get() : distance == proj.radius.get()) {
 						proj.calculatedFieldPoints.add(new HashDistanceBlockPos(i, j, k, 10000 - j));
 					}
 				}
@@ -51,15 +51,15 @@ public enum ProjectionType {
 	}),
 	PYRAMID((proj, t) -> {
 		BlockPos shifted = proj.getShiftedPos();
-		for (int i = shifted.getY() - proj.radius; i <= shifted.getX() + proj.radius; i++) {
-			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY()); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + proj.radius); j++) {
-				for (int k = shifted.getZ() - proj.radius; k <= shifted.getZ() + proj.radius; k++) {
+		for (int i = shifted.getY() - proj.radius.get(); i <= shifted.getX() + proj.radius.get(); i++) {
+			for (int j = Math.max(proj.getLevel().getMinBuildHeight(), shifted.getY()); j <= Math.min(proj.getLevel().getMaxBuildHeight(), shifted.getY() + proj.radius.get()); j++) {
+				for (int k = shifted.getZ() - proj.radius.get(); k <= shifted.getZ() + proj.radius.get(); k++) {
 					if (t.isInterrupted()) {
 						return;
 					}
 					Location loc = new Location(i + 0.5f, j + 0.5f, k + 0.5f);
 					int distance = (int) loc.distancelinear(new Location(shifted));
-					if (proj.isInterior() ? distance <= proj.radius : distance == proj.radius) {
+					if (proj.isInterior() ? distance <= proj.radius.get() : distance == proj.radius.get()) {
 						proj.calculatedFieldPoints.add(new HashDistanceBlockPos(i, j, k, 10000 - j));
 					}
 				}
@@ -67,7 +67,7 @@ public enum ProjectionType {
 		}
 	});
 
-	private BiConsumer<TileFortronFieldProjector, ThreadProjectorCalculationThread> calculate;
+	private final BiConsumer<TileFortronFieldProjector, ThreadProjectorCalculationThread> calculate;
 
 	ProjectionType(BiConsumer<TileFortronFieldProjector, ThreadProjectorCalculationThread> calculate) {
 		this.calculate = calculate;

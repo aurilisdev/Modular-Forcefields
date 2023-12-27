@@ -7,21 +7,23 @@ import java.util.function.Predicate;
 import com.google.common.collect.Sets;
 
 import electrodynamics.api.ISubtype;
-import electrodynamics.prefab.tile.components.ComponentType;
+import electrodynamics.prefab.properties.Property;
+import electrodynamics.prefab.properties.PropertyType;
+import electrodynamics.prefab.tile.components.IComponentType;
 import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentElectrodynamic;
 import electrodynamics.prefab.tile.components.type.ComponentInventory;
+import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.object.TransferPack;
-import modularforcefields.DeferredRegisters;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.settings.Constants;
+import modularforcefields.registers.ModularForcefieldsBlockTypes;
+import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,16 +33,15 @@ import net.minecraftforge.registries.RegistryObject;
 public class TileCoercionDeriver extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity);
 	public static final int BASEENERGY = 50;
-	public int fortron;
-	public int fortronCapacity;
+	public Property<Integer> fortron = property(new Property<>(PropertyType.Integer, "fortron", 0));
+	public Property<Integer> fortronCapacity = property(new Property<>(PropertyType.Integer, "fortronCapacity", 0));
 
 	public TileCoercionDeriver(BlockPos pos, BlockState state) {
-		super(DeferredRegisters.TILE_COERCIONDERIVER.get(), pos, state);
-		addComponent(new ComponentDirection());
-		addComponent(new ComponentPacketHandler().guiPacketWriter(this::writeGuiPacket).guiPacketReader(this::readGuiPacket));
-		addComponent(new ComponentElectrodynamic(this).voltage(Constants.COERCIONDERIVER_VOLTAGE).input(Direction.DOWN).output(Direction.DOWN));
-		addComponent(new ComponentInventory(this).size(4).shouldSendInfo().valid((index, stack, inv) -> {
-			for (Entry<ISubtype, RegistryObject<Item>> en : DeferredRegisters.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
+		super(ModularForcefieldsBlockTypes.TILE_COERCIONDERIVER.get(), pos, state);
+		addComponent(new ComponentPacketHandler(this));
+		addComponent(new ComponentElectrodynamic(this, false, true).voltage(Constants.COERCIONDERIVER_VOLTAGE).setInputDirections(Direction.DOWN));
+		addComponent(new ComponentInventory(this, InventoryBuilder.newInv().forceSize(4)).valid((index, stack, inv) -> {
+			for (Entry<ISubtype, RegistryObject<Item>> en : ModularForcefieldsItems.SUBTYPEITEMREGISTER_MAPPINGS.entrySet()) {
 				if (VALIDMODULES.contains(en.getKey())) {
 					if (en.getValue().get() == stack.getItem()) {
 						return true;
@@ -50,45 +51,40 @@ public class TileCoercionDeriver extends TileFortronConnective {
 			return false;
 
 		}));
-		addComponent(new ComponentContainerProvider("container.coercionderiver").createMenu((id, player) -> new ContainerCoercionDeriver(id, player, getComponent(ComponentType.Inventory), getCoordsArray())));
+		addComponent(new ComponentContainerProvider("container.coercionderiver", this).createMenu((id, player) -> new ContainerCoercionDeriver(id, player, getComponent(IComponentType.Inventory), getCoordsArray())));
 	}
 
 	@Override
 	protected void tickServer(ComponentTickable tickable) {
 		super.tickServer(tickable);
-		ComponentElectrodynamic electro = getComponent(ComponentType.Electrodynamic);
-		ComponentPacketHandler packets = getComponent(ComponentType.PacketHandler);
 		if (tickable.getTicks() % 20 == 0) {
-			int max = getMaxStored();
-			electro.maxJoules(max);
-			fortron = Mth.clamp(fortron, 0, max);
-			fortronCapacity = max;
-			packets.sendGuiPacketToTracking();
+			onInventoryChange(getComponent(IComponentType.Inventory), 0);
 		}
-		fortron += electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity - fortron), electro.getVoltage()), false).getJoules();
-		fortron -= sendFortronTo(Math.min(fortron, getTransfer()), getConnectionTest());
+		ComponentElectrodynamic electro = getComponent(IComponentType.Electrodynamic);
+		fortron.set((int) (fortron.get() + electro.extractPower(TransferPack.joulesVoltage(Math.min(getTransfer(), fortronCapacity.get() - fortron.get()), electro.getVoltage()), false).getJoules()));
+		fortron.set(fortron.get() - sendFortronTo(Math.min(fortron.get(), getTransfer()), getConnectionTest()));
+	}
+
+	@Override
+	public void onInventoryChange(ComponentInventory inv, int slot) {
+		super.onInventoryChange(inv, slot);
+		int max = getMaxStored();
+		ComponentElectrodynamic electro = getComponent(IComponentType.Electrodynamic);
+		electro.maxJoules(max);
+		fortron.set(Mth.clamp(fortron.get(), 0, max));
+		fortronCapacity.set(max);
 	}
 
 	private int getMaxStored() {
-		return (int) (getTransfer() + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
+		return (int) (getTransfer() * 20 + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
 	}
 
 	public int getTransfer() {
 		return BASEENERGY * 30 + BASEENERGY * countModules(SubtypeModule.upgradespeed);
 	}
 
-	private void writeGuiPacket(CompoundTag compound) {
-		compound.putInt("fortron", fortron);
-		compound.putInt("fortronCapacity", fortronCapacity);
-	}
-
-	private void readGuiPacket(CompoundTag compound) {
-		fortron = compound.getInt("fortron");
-		fortronCapacity = compound.getInt("fortronCapacity");
-	}
-
 	@Override
 	protected Predicate<BlockEntity> getConnectionTest() {
-		return b -> b.getType() == DeferredRegisters.TILE_FORTRONCAPACITOR.get();
+		return b -> b instanceof TileFortronCapacitor;
 	}
 }

@@ -3,20 +3,18 @@ package modularforcefields.client.screen;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import electrodynamics.api.electricity.formatting.ChatFormatter;
 import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
-import electrodynamics.prefab.screen.component.ScreenComponentFluid;
-import electrodynamics.prefab.screen.component.ScreenComponentSlot;
-import modularforcefields.DeferredRegisters;
+import electrodynamics.prefab.screen.component.types.ScreenComponentMultiLabel;
+import electrodynamics.prefab.screen.component.types.ScreenComponentSlot;
+import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGauge;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
-import modularforcefields.common.tile.TileFortronCapacitor;
 import modularforcefields.common.tile.TileFortronFieldProjector;
+import modularforcefields.prefab.utils.MFFSTextUtils;
+import modularforcefields.registers.ModularForcefieldsFluids;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,28 +26,25 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronFieldProjector> {
 	public ScreenFortronFieldProjector(ContainerFortronFieldProjector container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title);
-		components.add(new ScreenComponentFluid(() -> {
+		addComponent(new ScreenComponentFluidGauge(() -> {
 			TileFortronFieldProjector projector = container.getHostFromIntArray();
 			if (projector != null) {
-				FluidTank tank = new FluidTank(projector.fortronCapacity);
-				tank.setFluid(new FluidStack(DeferredRegisters.fluidFortron, projector.fortron));
+				FluidTank tank = new FluidTank(projector.fortronCapacity.get().intValue());
+				tank.setFluid(new FluidStack(ModularForcefieldsFluids.fluidFortron, projector.fortron.get().intValue()));
 				return tank;
 			}
 			return null;
-		}, this, 8, 77));
+		}, 8, 77));
+		addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
+			if (menu.getUnsafeHost() instanceof TileFortronFieldProjector projector) {
+				font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.linked", projector.getConnections()), 25, 115, 4210752);
+				font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort(projector.getFortronUse() / 1000 * 20, DisplayUnit.BUCKETS)).append(" / s"), 25, 105, 4210752);
+				font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.frequency", projector.getFrequency()), 25, 95, 4210752);
+				font.draw(matrixStack, MFFSTextUtils.gui("fieldprojector.status", projector.getStatus().name()), 8, 130, 4210752);
+			}
+		}));
 		imageHeight += 71;
 		inventoryLabelY += 71;
-	}
-
-	@Override
-	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-		super.renderLabels(matrixStack, mouseX, mouseY);
-		if (menu.getUnsafeHost() instanceof TileFortronCapacitor capacitor) {
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.transfer", ChatFormatter.getChatDisplayShort(capacitor.getTransfer(), DisplayUnit.BUCKETS)), 25, 65, 4210752);
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752);
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.usage", ChatFormatter.getChatDisplayShort(capacitor.getTransfer() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
-			font.draw(matrixStack, new TranslatableComponent("gui.fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752);
-		}
 	}
 
 	@Override
@@ -57,7 +52,7 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
 		ScreenComponentSlot component = super.createScreenSlot(slot);
 		for (Entry<List<Integer>, String> ent : ContainerFortronFieldProjector.SLOT_MAP.entrySet()) {
 			if (ent.getKey().contains(slot.index)) {
-				component.tooltip(() -> slot.getItem().isEmpty() ? new TextComponent(ent.getValue()) : slot.getItem().getHoverName());
+				component.tooltip(() -> slot.getItem().isEmpty() ? new TextComponent(ent.getValue()) : slot.getItem().getHoverName().copy());
 			}
 		}
 		return component;
