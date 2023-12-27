@@ -2,10 +2,10 @@ package modularforcefields.common.tile;
 
 import org.jetbrains.annotations.NotNull;
 
+import electrodynamics.common.tile.machines.quarry.TileQuarry;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
 import electrodynamics.prefab.tile.GenericTile;
-import electrodynamics.prefab.tile.components.type.ComponentDirection;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.utilities.Scheduler;
 import modularforcefields.common.block.FortronFieldColor;
@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileFortronField extends GenericTile {
 
 	public final Property<Integer> fieldColorOrdinal = property(new Property<>(PropertyType.Integer, "fieldColor", FortronFieldColor.LIGHT_BLUE.ordinal()));
-	private final Property<BlockPos> projectorPos = property(new Property<BlockPos>(PropertyType.BlockPos, "projectorPos", null).onChange(this::onPropertyChange).onLoad(this::onPropertyChange));
+	private final Property<BlockPos> projectorPos = property(new Property<>(PropertyType.BlockPos, "projectorPos", TileQuarry.OUT_OF_REACH).onChange(this::onPropertyChange).onLoad(this::onPropertyChange));
 
 	private void onPropertyChange(Property<BlockPos> t, BlockPos pos) {
 		if (pos != null) {
@@ -36,7 +36,6 @@ public class TileFortronField extends GenericTile {
 
 	public TileFortronField(BlockPos pos, BlockState state) {
 		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELD.get(), pos, state);
-		addComponent(new ComponentDirection(this));
 		addComponent(new ComponentPacketHandler(this));
 	}
 

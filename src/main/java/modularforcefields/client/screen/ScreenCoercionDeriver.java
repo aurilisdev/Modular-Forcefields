@@ -1,11 +1,10 @@
 package modularforcefields.client.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import electrodynamics.api.electricity.formatting.ChatFormatter;
 import electrodynamics.api.electricity.formatting.DisplayUnit;
 import electrodynamics.prefab.screen.GenericScreen;
-import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGaugeInput;
+import electrodynamics.prefab.screen.component.types.ScreenComponentMultiLabel;
+import electrodynamics.prefab.screen.component.types.gauges.ScreenComponentFluidGauge;
 import electrodynamics.prefab.screen.component.types.guitab.ScreenComponentElectricInfo;
 import electrodynamics.prefab.screen.component.utils.AbstractScreenComponentInfo;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
@@ -23,7 +22,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDeriver> {
 	public ScreenCoercionDeriver(ContainerCoercionDeriver container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title);
-		addComponent(new ScreenComponentFluidGaugeInput(() -> {
+		addComponent(new ScreenComponentFluidGauge(() -> {
 			TileCoercionDeriver deriver = container.getHostFromIntArray();
 			if (deriver != null) {
 				FluidTank tank = new FluidTank(deriver.fortronCapacity.get());
@@ -33,18 +32,15 @@ public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDerive
 			return null;
 		}, 8, 27));
 		addComponent(new ScreenComponentElectricInfo(-AbstractScreenComponentInfo.SIZE + 1, 2).wattage(electro -> electro.getHolder() instanceof TileCoercionDeriver deriver ? (double) deriver.fortron.get() : 0));
+		addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
+			if (menu.getUnsafeHost() instanceof TileCoercionDeriver deriver) {
+				font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(deriver.getTransfer() / 1000 * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 65, 4210752);
+				font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.linked", deriver.getConnections()), 25, 55, 4210752);
+				font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
+				font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.frequency", deriver.getFrequency()), 25, 35, 4210752);
+			}
+		}));
 		imageHeight += 40;
 		inventoryLabelY += 40;
-	}
-
-	@Override
-	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-		super.renderLabels(matrixStack, mouseX, mouseY);
-		if (menu.getUnsafeHost() instanceof TileCoercionDeriver deriver) {
-			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 65, 4210752);
-			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.linked", deriver.getConnections()), 25, 55, 4210752);
-			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort(deriver.getTransfer() * 20, DisplayUnit.WATT)), 25, 45, 4210752);
-			font.draw(matrixStack, MFFSTextUtils.gui("fortrondevice.frequency", deriver.getFrequency()), 25, 35, 4210752);
-		}
 	}
 }
