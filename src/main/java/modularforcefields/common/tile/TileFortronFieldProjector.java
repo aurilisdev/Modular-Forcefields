@@ -23,7 +23,7 @@ import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryB
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.object.Location;
-import modularforcefields.common.block.FortronFieldColor;
+import modularforcefields.common.block.BlockFortronField;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
 import modularforcefields.common.item.ItemModule;
 import modularforcefields.common.item.subtype.SubtypeModule;
@@ -38,6 +38,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -58,7 +59,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     public final Property<Integer> typeOrdinal = property(
 	    new Property<>(PropertyTypes.INTEGER, "type", ProjectionType.NONE.ordinal()));
     public final Property<Integer> fieldColorOrdinal = property(
-	    new Property<>(PropertyTypes.INTEGER, "fieldColorOrdinal", FortronFieldColor.LIGHT_BLUE.ordinal()));
+	    new Property<>(PropertyTypes.INTEGER, "fieldColorOrdinal", DyeColor.LIGHT_BLUE.ordinal()));
     public final Property<Integer> moduleCount = property(new Property<>(PropertyTypes.INTEGER, "moduleCount", 0));
     public final Property<Integer> fortronCapacity = property(
 	    new Property<>(PropertyTypes.INTEGER, "fortronCapacity", 0));
@@ -88,6 +89,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     public boolean shouldSponge = false;
     public boolean shouldDisintegrate = false;
     public boolean shouldStabilize = false;
+    public boolean shouldColor = false;
     public boolean hasCollectionModule = false;
     public boolean isInterior = false;
     public int totalGeneratedPerTick = 0;
@@ -258,6 +260,10 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     }
 
     private boolean integrateExistingFieldPoint(BlockPos fieldPoint) {
+	BlockState st = level.getBlockState(fieldPoint);
+	if (st.getValue(BlockFortronField.COLOR) != getFieldColor()) {
+	    level.setBlockAndUpdate(fieldPoint, st.setValue(BlockFortronField.COLOR, getFieldColor()));
+	}
 	TileFortronField field = (TileFortronField) level.getBlockEntity(fieldPoint);
 	if (field == null) {
 	    return false;
@@ -275,7 +281,8 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     }
 
     private int createNewFieldPoint(int currentlyGenerated, BlockPos fieldPoint) {
-	level.setBlockAndUpdate(fieldPoint, ModularForcefieldsBlocks.BLOCK_FORTRONFIELD.get().defaultBlockState());
+	level.setBlockAndUpdate(fieldPoint, ModularForcefieldsBlocks.BLOCK_FORTRONFIELD.get().defaultBlockState()
+		.setValue(BlockFortronField.COLOR, getFieldColor()));
 	if (level.getBlockEntity(fieldPoint) instanceof TileFortronField field) {
 	    field.setConstructor(this);
 	    activeFields.add(field);
@@ -413,6 +420,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	isInterior = hasModule(SubtypeModule.upgradeinterior);
 	shouldSponge = hasModule(SubtypeModule.upgradesponge);
 	shouldDisintegrate = hasModule(SubtypeModule.upgradedisintegration);
+	shouldColor = hasModule(SubtypeModule.upgradecolorchange);
 	shouldStabilize = hasModule(SubtypeModule.upgradestabilize);
 	hasCollectionModule = hasModule(SubtypeModule.upgradecollection);
 	totalGeneratedPerTick = 1
@@ -516,7 +524,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	return ProjectionType.NONE;
     }
 
-    public FortronFieldColor getFieldColor() {
-	return FortronFieldColor.values()[fieldColorOrdinal.get()];
+    public DyeColor getFieldColor() {
+	return DyeColor.values()[fieldColorOrdinal.get()];
     }
 }

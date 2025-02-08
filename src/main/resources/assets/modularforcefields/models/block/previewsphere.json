@@ -1,8 +1,8 @@
 {
 	"credit": "Made by aurilisdev",
 	"textures": {
-		"0": "modularforcefields:block/fortronfieldcoloredtranslucent",
-		"particle": "modularforcefields:block/fortronfieldcoloredtranslucent"
+		"0": "modularforcefields:block/fortronfield",
+		"particle": "modularforcefields:block/fortronfield"
 	},
 	"elements": [
 		{

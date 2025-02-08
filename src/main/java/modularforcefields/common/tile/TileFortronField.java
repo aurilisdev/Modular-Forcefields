@@ -6,15 +6,12 @@ import electrodynamics.prefab.tile.GenericTile;
 import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
 import electrodynamics.prefab.utilities.BlockEntityUtils;
 import electrodynamics.prefab.utilities.Scheduler;
-import modularforcefields.common.block.FortronFieldColor;
 import modularforcefields.registers.ModularForcefieldsTiles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileFortronField extends GenericTile {
 
-    public final Property<Integer> fieldColorOrdinal = property(
-	    new Property<>(PropertyTypes.INTEGER, "fieldColor", FortronFieldColor.LIGHT_BLUE.ordinal()));
     private final Property<BlockPos> projectorPos = property(
 	    new Property<>(PropertyTypes.BLOCK_POS, "projectorPos", BlockEntityUtils.OUT_OF_REACH)
 		    .onChange(this::onPropertyChange).onTileLoaded(prop -> onPropertyChange(prop, prop.get())));
@@ -28,7 +25,6 @@ public class TileFortronField extends GenericTile {
 				 // the first time.
 		if (level.getBlockEntity(pos) instanceof TileFortronFieldProjector proj) {
 		    if (!level.isClientSide()) {
-			fieldColorOrdinal.set(proj.getFieldColor().ordinal());
 			proj.activeFields.add(this);
 		    }
 		}
@@ -51,11 +47,9 @@ public class TileFortronField extends GenericTile {
 
     @Override
     public int hashCode() {
-	return (int) ((10000 - getBlockPos().getY())  + level.random.nextDouble() * 3 + (int)Math.sqrt(getBlockPos().distToCenterSqr(getProjectorPos().getX() + 0.5, getBlockPos().getY()+0.5, getProjectorPos().getZ()+0.5)));
-    }
-
-    public FortronFieldColor getFieldColor() {
-	return FortronFieldColor.values()[fieldColorOrdinal.get()];
+	return (int) ((10000 - getBlockPos().getY()) + level.random.nextDouble() * 3
+		+ (int) Math.sqrt(getBlockPos().distToCenterSqr(getProjectorPos().getX() + 0.5,
+			getBlockPos().getY() + 0.5, getProjectorPos().getZ() + 0.5)));
     }
 
     public BlockPos getProjectorPos() {
