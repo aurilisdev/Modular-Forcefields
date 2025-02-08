@@ -123,7 +123,8 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 
     @Override
     public void onBlockDestroyed() {
-	destroyField(true);
+	if (!level.isClientSide)
+	    destroyField(true);
     }
 
     @Override
