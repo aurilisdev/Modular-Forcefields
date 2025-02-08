@@ -67,6 +67,12 @@ public class MFFSLangKeyProvider extends ElectrodynamicsLangKeyProvider {
 			addContainer("fortronfieldprojector", "Fortron Field Projector");
 			addContainer("interdictionmatrix", "Interdiction Matrix");
 			addContainer("biometricidentifier", "Biometric Identifier");
+
+			addTooltip("coercionderiver", "Produces Fortron");
+			addTooltip("fortroncapacitor", "Buffers Fortron");
+			addTooltip("fortronfieldprojector", "Projects Fortron Field");
+			addTooltip("interdictionmatrix", "Enforces rules");
+			addTooltip("biometricidentifier", "Stores players");
 			
 			addGuiLabel("fortrondevice.transfer", "Transfer: %s");
 			addGuiLabel("fortrondevice.linked", "Linked Devices: %s");

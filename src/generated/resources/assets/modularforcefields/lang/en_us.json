@@ -50,5 +50,10 @@
   "item.modularforcefields.moduleupgradespeed": "Speed Upgrade",
   "item.modularforcefields.moduleupgradesponge": "Sponge Upgrade",
   "item.modularforcefields.moduleupgradestabilize": "Stabilization Upgrade",
-  "item.modularforcefields.moduleupgradestrength": "Strength Upgrade"
+  "item.modularforcefields.moduleupgradestrength": "Strength Upgrade",
+  "tooltip.modularforcefields.biometricidentifier": "Stores players",
+  "tooltip.modularforcefields.coercionderiver": "Produces Fortron",
+  "tooltip.modularforcefields.fortroncapacitor": "Buffers Fortron",
+  "tooltip.modularforcefields.fortronfieldprojector": "Projects Fortron Field",
+  "tooltip.modularforcefields.interdictionmatrix": "Enforces rules"
 }
