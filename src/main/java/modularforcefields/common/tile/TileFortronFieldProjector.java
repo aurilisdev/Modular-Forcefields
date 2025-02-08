@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.Sets;
 
+import electrodynamics.common.block.states.ElectrodynamicsBlockStates;
 import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyTypes;
 import electrodynamics.prefab.tile.components.IComponentType;
@@ -136,6 +137,12 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		if (tickable.getTicks() % 20 == 0) {
 			fortronCapacity.set(getMaxFortron());
 			fortron.set(Mth.clamp(fortron.get(), 0, fortronCapacity.get()));
+			boolean isLit = getBlockState().getValue(ElectrodynamicsBlockStates.LIT);
+			boolean shouldLit = fortron.get() > 0;
+			if (isLit != shouldLit) {
+			    level.setBlockAndUpdate(worldPosition,
+				getBlockState().setValue(ElectrodynamicsBlockStates.LIT, shouldLit));
+			}
 		}
 		if (tickable.getTicks() % 1000 == 1) {
 			onChanged(getComponent(IComponentType.Inventory), -1);
