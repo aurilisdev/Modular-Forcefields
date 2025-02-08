@@ -22,31 +22,32 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 @EventBusSubscriber(modid = References.ID, bus = EventBusSubscriber.Bus.MOD)
 public class ModularForcefields {
 
-	public ModularForcefields(IEventBus bus) {
-		ConfigurationHandler.registerConfig(Constants.class);
-		UnifiedModularForcefieldsRegister.register(bus);
-		MFFTags.init();
-	}
+    public ModularForcefields(IEventBus bus) {
+	ConfigurationHandler.registerConfig(Constants.class);
+	UnifiedModularForcefieldsRegister.register(bus);
+	MFFTags.init();
+    }
 
-	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
-	public static void onClientSetup(FMLClientSetupEvent event) {
-		event.enqueueWork(() -> {
-			ClientRegister.setup();
-		});
-	}
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void onClientSetup(FMLClientSetupEvent event) {
+	event.enqueueWork(() -> {
+	    ClientRegister.setup();
+	});
+    }
 
-	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
-	public static void onColorEvent(RegisterColorHandlersEvent.Block event) {
-		event.register(new BlockColorFortronField(), ModularForcefieldsBlocks.BLOCK_FORTRONFIELD.get());
-	}
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void onColorEvent(RegisterColorHandlersEvent.Block event) {
+	event.register(new BlockColorFortronField(), ModularForcefieldsBlocks.BLOCK_FORTRONFIELD.get());
+    }
 
-	@SubscribeEvent
-	public static void onCommonSetup(FMLCommonSetupEvent event) {
+    @SubscribeEvent
+    public static void onCommonSetup(FMLCommonSetupEvent event) {
 
-	}
-	public static final ResourceLocation rl(String path) {
-		return ResourceLocation.fromNamespaceAndPath(References.ID, path);
-	}
+    }
+
+    public static final ResourceLocation rl(String path) {
+	return ResourceLocation.fromNamespaceAndPath(References.ID, path);
+    }
 }

@@ -32,6 +32,11 @@ public class RenderFieldProjector extends AbstractTileRenderer<TileFortronFieldP
 	float rotZ = base;
 	BakedModel ibakedmodel = null;
 	if (tile.fortron.get() > 0) {
+	    poseStack.pushPose();
+	    poseStack.translate(0.5, 0.5, 0.5);
+	    RenderingUtils.renderModel(Minecraft.getInstance().getModelManager().getModel(ClientRegister.MODEL_FIELDFORTRON), tile, RenderType.translucent(), poseStack, bufferIn,
+		    combinedLightIn, combinedOverlayIn);
+	    poseStack.popPose();
 	    switch (ProjectionType.values()[tile.typeOrdinal.get()]) {
 	    case HEMISPHERE:
 		ibakedmodel = Minecraft.getInstance().getModelManager()

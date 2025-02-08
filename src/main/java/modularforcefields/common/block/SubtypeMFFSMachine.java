@@ -19,7 +19,7 @@ public enum SubtypeMFFSMachine implements ISubtype, IMachine {
     biometricidentifier(true, TileBiometricIdentifier::new),
     coercionderiver(true, TileCoercionDeriver::new, MachineProperties.builder().setLitBrightness(6)),
     fortroncapacitor(true, TileFortronCapacitor::new, MachineProperties.builder().setLitBrightness(11)),
-    fortronfieldprojector(true, TileFortronFieldProjector::new, MachineProperties.builder().setLitBrightness(16)),
+    fortronfieldprojector(true, TileFortronFieldProjector::new, MachineProperties.builder().setLitBrightness(15)),
     interdictionmatrix(true, TileInterdictionMatrix::new),
     ;
 

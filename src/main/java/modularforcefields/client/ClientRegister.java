@@ -36,6 +36,8 @@ public class ClientRegister {
 	    .standalone(ModularForcefields.rl("block/previewhalfsphere"));
     public static final ModelResourceLocation MODEL_PREVIEWPYRAMID = ModelResourceLocation
 	    .standalone(ModularForcefields.rl("block/previewpyramid"));
+    public static final ModelResourceLocation MODEL_FIELDFORTRON = ModelResourceLocation
+	    .standalone(ModularForcefields.rl("block/fortronfieldprojector_fortron"));
 
     @SubscribeEvent
     public static void onModelEvent(ModelEvent.RegisterAdditional event) {
@@ -43,6 +45,7 @@ public class ClientRegister {
 	event.register(MODEL_PREVIEWSPHERE);
 	event.register(MODEL_PREVIEWHALFSPHERE);
 	event.register(MODEL_PREVIEWPYRAMID);
+	event.register(MODEL_FIELDFORTRON);
     }
 
     @SubscribeEvent
