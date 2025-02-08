@@ -30,8 +30,7 @@ public class ScreenInterdictionMatrix extends GenericScreen<ContainerInterdictio
 			if (menu.getUnsafeHost() instanceof TileInterdictionMatrix matrix) {
 				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort(matrix.getFortronUse() / 1000 * 20, DisplayUnit.BUCKETS).append(" / s")), 25, 105, 4210752, false);
 				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", matrix.getConnections()), 25, 95, 4210752, false);
-				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort(matrix.getFortronUse() * 20, DisplayUnit.WATT)), 25, 85, 4210752, false);
-				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", matrix.getFrequency()), 25, 75, 4210752, false);
+				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", matrix.getFrequency()), 25, 85, 4210752, false);
 			}
 		}));
 		imageHeight += 51;
