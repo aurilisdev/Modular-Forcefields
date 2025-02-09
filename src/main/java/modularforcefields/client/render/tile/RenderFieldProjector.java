@@ -44,9 +44,13 @@ public class RenderFieldProjector extends AbstractTileRenderer<TileFortronFieldP
 	    RenderSystem.setShaderColor(r, g, b, 1);
 	    poseStack.pushPose();
 	    poseStack.translate(0.5, 0.5, 0.5);
-	    RenderingUtils.renderModel(
-		    Minecraft.getInstance().getModelManager().getModel(ClientRegister.MODEL_FIELDFORTRON), tile,
-		    RenderType.translucent(), poseStack, bufferIn, combinedLightIn, combinedOverlayIn);
+	    BakedModel shape = Minecraft.getInstance().getModelManager().getModel(ClientRegister.MODEL_FIELDFORTRON);
+	    RenderingUtils.renderModel(shape, tile, RenderType.translucent(), poseStack, bufferIn, combinedLightIn,
+		    combinedOverlayIn);
+	    for (BakedQuad quad : shape.getQuads(null, null, tile.getLevel().random)) {
+		bufferIn.getBuffer(RenderType.translucent()).putBulkData(poseStack.last(), quad, 222, 444, 222, 111,
+			combinedLightIn, combinedOverlayIn, true);
+	    }
 	    poseStack.popPose();
 	    switch (ProjectionType.values()[tile.typeOrdinal.get()]) {
 	    case HEMISPHERE:
@@ -72,11 +76,12 @@ public class RenderFieldProjector extends AbstractTileRenderer<TileFortronFieldP
 		poseStack.mulPose(MathUtils.rotQuaternionDeg(rotX, rotY, rotZ));
 		RenderingUtils.renderModel(ibakedmodel, tile, RenderType.translucent(), poseStack, bufferIn,
 			combinedLightIn, combinedOverlayIn);
-		for (BakedQuad quad : ibakedmodel.getQuads(null, null, tile.getLevel().random)) {
-		    bufferIn.getBuffer(RenderType.translucent()).putBulkData(poseStack.last(), quad, 222, 444, 222, 111,
-			    combinedLightIn, combinedOverlayIn, true);
-		}
-	    }
+		    for (BakedQuad quad : ibakedmodel.getQuads(null, null, tile.getLevel().random)) {
+			bufferIn.getBuffer(RenderType.translucent()).putBulkData(poseStack.last(), quad, 222, 444, 222, 111,
+				combinedLightIn, combinedOverlayIn, true);
+		    }
+            }
+
 	}
 	RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
