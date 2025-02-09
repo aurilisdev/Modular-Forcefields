@@ -68,7 +68,7 @@ public class TileCoercionDeriver extends TileFortronConnective {
     }
 
     private int getMaxStored() {
-	return (int) (getTransfer() * 20 + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
+	return (int) (getTransfer() * 20 + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 40.0);
     }
 
     public int getTransfer() {

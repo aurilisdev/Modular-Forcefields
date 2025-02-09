@@ -84,7 +84,7 @@ public class TileFortronCapacitor extends TileFortronConnective {
     }
 
     private int getMaxStored() {
-	return (int) (getTransfer() * 20 + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 2.0);
+	return (int) (getTransfer() * 20 + BASEENERGY * countModules(SubtypeModule.upgradecapacity) * 100.0);
     }
 
     public int getTransfer() {
