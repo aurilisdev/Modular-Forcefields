@@ -19,6 +19,7 @@ public class MFFSSoundProvider extends SoundDefinitionsProvider {
 
 	}
 
+	@SuppressWarnings("unused")
 	private void add(DeferredHolder<SoundEvent, SoundEvent> sound) {
 		add(sound.get(), SoundDefinition.definition().subtitle("subtitles." + References.ID + "." + sound.getId().getPath()).with(SoundDefinition.Sound.sound(sound.getId(), SoundDefinition.SoundType.SOUND)));
 	}

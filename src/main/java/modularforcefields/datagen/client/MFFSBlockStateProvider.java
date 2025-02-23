@@ -5,12 +5,10 @@ import modularforcefields.References;
 import modularforcefields.common.block.SubtypeMFFSMachine;
 import modularforcefields.registers.ModularForcefieldsBlocks;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MFFSBlockStateProvider extends ElectrodynamicsBlockStateProvider {
 
-    private static final ResourceLocation STEEL_CASING = ResourceLocation.fromNamespaceAndPath(electrodynamics.api.References.ID, "block/steelcasing");
 
     public MFFSBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, exFileHelper, References.ID);
