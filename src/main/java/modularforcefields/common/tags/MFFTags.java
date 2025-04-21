@@ -3,10 +3,10 @@ package modularforcefields.common.tags;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
+import voltaic.Voltaic;
 
 public class MFFTags {
 
@@ -29,7 +29,7 @@ public class MFFTags {
 		}
 
 		private static TagKey<Fluid> forgeTag(String name) {
-			return FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+			return FluidTags.create(Voltaic.commonrl(name));
 		}
 
 	}

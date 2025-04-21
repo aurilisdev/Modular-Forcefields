@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "electrodynamics"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
@@ -13,12 +19,12 @@
     }
   },
   "pattern": [
-    "PFP",
-    "PRP",
-    "PFP"
+    "FPF",
+    "FRF",
+    "FPF"
   ],
   "result": {
     "count": 1,
-    "id": "modularforcefields:fortroncapacitor"
+    "id": "modularforcefields:coercionderiver"
   }
 }

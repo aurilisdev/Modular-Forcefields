@@ -1,13 +1,13 @@
 package modularforcefields.client.guidebook.chapters;
 
-import electrodynamics.client.guidebook.utils.components.Chapter;
-import electrodynamics.client.guidebook.utils.components.Module;
-import electrodynamics.client.guidebook.utils.pagedata.graphics.AbstractGraphicWrapper;
-import electrodynamics.client.guidebook.utils.pagedata.graphics.ItemWrapperObject;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.prefab.utils.MFFSTextUtils;
 import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.network.chat.MutableComponent;
+import voltaic.client.guidebook.utils.components.Chapter;
+import voltaic.client.guidebook.utils.components.Module;
+import voltaic.client.guidebook.utils.pagedata.graphics.AbstractGraphicWrapper;
+import voltaic.client.guidebook.utils.pagedata.graphics.ItemWrapperObject;
 
 public class ChapterModules extends Chapter {
 

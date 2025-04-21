@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "electrodynamics"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:dusts/redstone"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "R#R",
+    "#D#",
+    "R#R"
+  ],
+  "result": {
+    "count": 8,
+    "id": "modularforcefields:focusmatrix"
+  }
+}

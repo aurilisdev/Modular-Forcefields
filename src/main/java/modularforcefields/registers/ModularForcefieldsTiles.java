@@ -2,7 +2,7 @@ package modularforcefields.registers;
 
 import com.google.common.collect.Sets;
 
-import modularforcefields.References;
+import modularforcefields.ModularForcefields;
 import modularforcefields.common.block.SubtypeMFFSMachine;
 import modularforcefields.common.tile.TileBiometricIdentifier;
 import modularforcefields.common.tile.TileCoercionDeriver;
@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModularForcefieldsTiles {
-	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, References.ID);
+	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, ModularForcefields.ID);
 
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileBiometricIdentifier>> TILE_BIOMETRICIDENTIFIER = BLOCK_ENTITY_TYPES.register("biometricidentifier", () -> new BlockEntityType<>(TileBiometricIdentifier::new, Sets.newHashSet(ModularForcefieldsBlocks.BLOCKS_MFFSMACHINE.getValue(SubtypeMFFSMachine.biometricidentifier)), null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileCoercionDeriver>> TILE_COERCIONDERIVER = BLOCK_ENTITY_TYPES.register("coercionderiver", () -> new BlockEntityType<>(TileCoercionDeriver::new, Sets.newHashSet(ModularForcefieldsBlocks.BLOCKS_MFFSMACHINE.getValue(SubtypeMFFSMachine.coercionderiver)), null));

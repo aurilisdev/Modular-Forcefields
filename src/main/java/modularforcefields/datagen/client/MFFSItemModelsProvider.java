@@ -1,15 +1,16 @@
 package modularforcefields.datagen.client;
 
-import electrodynamics.datagen.client.ElectrodynamicsItemModelsProvider;
-import modularforcefields.References;
+import modularforcefields.ModularForcefields;
 import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-public class MFFSItemModelsProvider extends ElectrodynamicsItemModelsProvider {
+import voltaic.datagen.utils.client.BaseItemModelsProvider;
+
+public class MFFSItemModelsProvider extends BaseItemModelsProvider {
 
 	public MFFSItemModelsProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-		super(output, existingFileHelper, References.ID);
+		super(output, existingFileHelper, ModularForcefields.ID);
 	}
 
 	@Override

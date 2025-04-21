@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import electrodynamics.prefab.inventory.container.types.GenericContainerBlockEntity;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.prefab.inventory.container.slot.item.type.SlotModule;
@@ -14,6 +13,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
+import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 
 public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<TileFortronFieldProjector> {
 	public static final int[] SLOT_UPGRADES = new int[] { 12, 13, 14, 15, 16, 17 };

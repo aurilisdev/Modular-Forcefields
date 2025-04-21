@@ -1,11 +1,11 @@
 package modularforcefields.common.item;
 
-import electrodynamics.common.item.ItemElectrodynamics;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.CreativeModeTab;
+import voltaic.common.item.ItemVoltaic;
 
-public class ItemModule extends ItemElectrodynamics {
+public class ItemModule extends ItemVoltaic {
 
     public final SubtypeModule subtype;
 

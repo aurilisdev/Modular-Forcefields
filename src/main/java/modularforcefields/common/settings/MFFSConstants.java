@@ -1,10 +1,10 @@
 package modularforcefields.common.settings;
 
-import electrodynamics.api.configuration.Configuration;
-import electrodynamics.api.configuration.DoubleValue;
+import voltaic.api.configuration.Configuration;
+import voltaic.api.configuration.DoubleValue;
 
 @Configuration(name = "Modular Forcefields")
-public class Constants {
+public class MFFSConstants {
 	@DoubleValue(def = 480.0)
 	public static double COERCIONDERIVER_VOLTAGE = 480.0;
 

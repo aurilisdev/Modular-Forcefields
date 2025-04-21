@@ -2,7 +2,6 @@ package modularforcefields.common.item;
 
 import java.util.List;
 
-import electrodynamics.common.item.ItemElectrodynamics;
 import modularforcefields.common.tile.TileFortronConnective;
 import modularforcefields.prefab.utils.MFFSTextUtils;
 import modularforcefields.registers.ModularForcefieldsCreativeTabs;
@@ -17,8 +16,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import voltaic.common.item.ItemVoltaic;
 
-public class ItemFortronFrequencyCard extends ItemElectrodynamics {
+public class ItemFortronFrequencyCard extends ItemVoltaic {
 
     public ItemFortronFrequencyCard(Properties pProperties) {
         super(pProperties, ModularForcefieldsCreativeTabs.MAIN);
