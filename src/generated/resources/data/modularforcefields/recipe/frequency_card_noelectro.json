@@ -1,9 +1,18 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "electrodynamics"
+      }
+    }
+  ],
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
     {
-      "item": "electrodynamics:wirecopper"
+      "tag": "c:ingots/copper"
     },
     {
       "item": "minecraft:paper"

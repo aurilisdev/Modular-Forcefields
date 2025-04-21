@@ -1,18 +1,18 @@
 package modularforcefields.datagen.client;
 
-import electrodynamics.datagen.client.ElectrodynamicsLangKeyProvider;
-import modularforcefields.References;
+import modularforcefields.ModularForcefields;
 import modularforcefields.common.block.SubtypeMFFSMachine;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.registers.ModularForcefieldsBlocks;
 import modularforcefields.registers.ModularForcefieldsFluids;
 import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.data.PackOutput;
+import voltaic.datagen.utils.client.BaseLangKeyProvider;
 
-public class MFFSLangKeyProvider extends ElectrodynamicsLangKeyProvider {
+public class MFFSLangKeyProvider extends BaseLangKeyProvider {
 
 	public MFFSLangKeyProvider(PackOutput output, Locale locale) {
-		super(output, locale, References.ID);
+		super(output, locale, ModularForcefields.ID);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class MFFSLangKeyProvider extends ElectrodynamicsLangKeyProvider {
 			addChatMessage("frequencycard.text", "Set frequency to: %s");
 			addChatMessage("frequencycard.freq", "Frequency: %s");
 
-			addGuidebook(References.ID, "MFFS");
+			addGuidebook(ModularForcefields.ID, "MFFS");
 
 			addGuidebook("chapter.blocks", "Blocks");
 			addGuidebook("chapter.modules", "Modules");

@@ -2,7 +2,6 @@ package modularforcefields.common.item;
 
 import java.util.List;
 
-import electrodynamics.common.item.ItemElectrodynamics;
 import modularforcefields.prefab.utils.MFFSTextUtils;
 import modularforcefields.registers.ModularForcefieldsCreativeTabs;
 import modularforcefields.registers.ModularForcefieldsDataComponentTypes;
@@ -15,8 +14,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import voltaic.common.item.ItemVoltaic;
 
-public class ItemIdentificationCard extends ItemElectrodynamics {
+public class ItemIdentificationCard extends ItemVoltaic {
 
 	public ItemIdentificationCard(Properties pProperties) {
 		super(pProperties, ModularForcefieldsCreativeTabs.MAIN);

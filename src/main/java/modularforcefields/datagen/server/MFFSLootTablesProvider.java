@@ -2,18 +2,18 @@ package modularforcefields.datagen.server;
 
 import java.util.List;
 
-import electrodynamics.datagen.server.ElectrodynamicsLootTablesProvider;
-import modularforcefields.References;
+import modularforcefields.ModularForcefields;
 import modularforcefields.common.block.SubtypeMFFSMachine;
 import modularforcefields.registers.ModularForcefieldsBlocks;
 import modularforcefields.registers.ModularForcefieldsTiles;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.Block;
+import voltaic.datagen.utils.server.loottable.BaseLootTablesProvider;
 
-public class MFFSLootTablesProvider extends ElectrodynamicsLootTablesProvider {
+public class MFFSLootTablesProvider extends BaseLootTablesProvider {
 
 	public MFFSLootTablesProvider(HolderLookup.Provider provider) {
-		super(References.ID, provider);
+		super(ModularForcefields.ID, provider);
 	}
 
 	@Override

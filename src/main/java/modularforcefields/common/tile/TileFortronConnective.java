@@ -4,13 +4,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
-import electrodynamics.prefab.properties.Property;
-import electrodynamics.prefab.properties.PropertyTypes;
-import electrodynamics.prefab.tile.GenericTile;
-import electrodynamics.prefab.tile.components.IComponentType;
-import electrodynamics.prefab.tile.components.type.ComponentInventory;
-import electrodynamics.prefab.tile.components.type.ComponentTickable;
-import electrodynamics.prefab.utilities.WorldUtils;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
@@ -19,11 +12,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import voltaic.prefab.properties.types.PropertyTypes;
+import voltaic.prefab.properties.variant.SingleProperty;
+import voltaic.prefab.tile.GenericTile;
+import voltaic.prefab.tile.components.IComponentType;
+import voltaic.prefab.tile.components.type.ComponentInventory;
+import voltaic.prefab.tile.components.type.ComponentTickable;
+import voltaic.prefab.utilities.WorldUtils;
 
 public class TileFortronConnective extends GenericTile {
 
     protected HashSet<TileFortronConnective> connections = new HashSet<>();
-    public Property<Integer> frequency = property(new Property<>(PropertyTypes.INTEGER, "frequency", 0));
+    public SingleProperty<Integer> frequency = property(new SingleProperty<>(PropertyTypes.INTEGER, "frequency", 0));
 
     protected TileFortronConnective(BlockEntityType<?> tileEntityTypeIn, BlockPos worldPos, BlockState blockState) {
         super(tileEntityTypeIn, worldPos, blockState);
@@ -120,11 +120,11 @@ public class TileFortronConnective extends GenericTile {
     }
 
     public int getFrequency() {
-        return frequency.get();
+        return frequency.getValue();
     }
 
     public void setFrequency(int frequency) {
-        this.frequency.set(frequency);
+        this.frequency.setValue(frequency);
     }
 
     protected Predicate<BlockEntity> getConnectionTest() {

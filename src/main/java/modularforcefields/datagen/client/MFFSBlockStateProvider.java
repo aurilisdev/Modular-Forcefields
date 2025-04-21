@@ -1,17 +1,17 @@
 package modularforcefields.datagen.client;
 
-import electrodynamics.datagen.client.ElectrodynamicsBlockStateProvider;
-import modularforcefields.References;
+import modularforcefields.ModularForcefields;
 import modularforcefields.common.block.SubtypeMFFSMachine;
 import modularforcefields.registers.ModularForcefieldsBlocks;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import voltaic.datagen.utils.client.BaseBlockstateProvider;
 
-public class MFFSBlockStateProvider extends ElectrodynamicsBlockStateProvider {
+public class MFFSBlockStateProvider extends BaseBlockstateProvider {
 
 
     public MFFSBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, exFileHelper, References.ID);
+        super(output, exFileHelper, ModularForcefields.ID);
     }
 
     @Override

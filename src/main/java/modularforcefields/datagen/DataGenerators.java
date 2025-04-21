@@ -4,8 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import electrodynamics.datagen.client.ElectrodynamicsLangKeyProvider.Locale;
-import modularforcefields.References;
+import modularforcefields.ModularForcefields;
 import modularforcefields.datagen.client.MFFSBlockStateProvider;
 import modularforcefields.datagen.client.MFFSItemModelsProvider;
 import modularforcefields.datagen.client.MFFSLangKeyProvider;
@@ -22,8 +21,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import voltaic.datagen.utils.client.BaseLangKeyProvider;
 
-@EventBusSubscriber(modid = References.ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = ModularForcefields.ID, bus = EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
 
 	@SubscribeEvent
@@ -47,7 +47,7 @@ public class DataGenerators {
 		if (event.includeClient()) {
 			generator.addProvider(true, new MFFSBlockStateProvider(output, helper));
 			generator.addProvider(true, new MFFSItemModelsProvider(output, helper));
-			generator.addProvider(true, new MFFSLangKeyProvider(output, Locale.EN_US));
+			generator.addProvider(true, new MFFSLangKeyProvider(output, BaseLangKeyProvider.Locale.EN_US));
 			generator.addProvider(true, new MFFSSoundProvider(output, helper));
 		}
 	}

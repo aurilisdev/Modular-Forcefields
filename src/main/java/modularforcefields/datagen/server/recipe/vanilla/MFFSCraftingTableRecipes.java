@@ -1,12 +1,8 @@
 package modularforcefields.datagen.server.recipe.vanilla;
 
 import electrodynamics.common.block.subtype.SubtypeWire;
-import electrodynamics.common.tags.ElectrodynamicsTags;
-import electrodynamics.datagen.utils.recipe.AbstractRecipeGenerator;
-import electrodynamics.datagen.utils.recipe.ShapedCraftingRecipeBuilder;
-import electrodynamics.datagen.utils.recipe.ShapelessCraftingRecipeBuilder;
 import electrodynamics.registers.ElectrodynamicsItems;
-import modularforcefields.References;
+import modularforcefields.ModularForcefields;
 import modularforcefields.common.block.SubtypeMFFSMachine;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.registers.ModularForcefieldsItems;
@@ -14,8 +10,17 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
+import net.neoforged.neoforge.common.conditions.NotCondition;
+import voltaic.common.tags.VoltaicTags;
+import voltaic.datagen.utils.server.recipe.AbstractRecipeGenerator;
+import voltaic.datagen.utils.server.recipe.ShapedCraftingRecipeBuilder;
+import voltaic.datagen.utils.server.recipe.ShapelessCraftingRecipeBuilder;
 
 public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
+
+	private static final ModLoadedCondition ELECTRO_LOADED = new ModLoadedCondition("electrodynamics");
+	private static final NotCondition ELECTRO_NOT_LOADED = new NotCondition(ELECTRO_LOADED);
 
 	@Override
 	public void addRecipes(RecipeOutput output) {
@@ -30,11 +35,31 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('R', Tags.Items.DUSTS_REDSTONE)
 				//
-				.addKey('#', ElectrodynamicsTags.Items.PLATE_STEEL)
+				.addKey('#', VoltaicTags.Items.PLATE_STEEL)
 				//
 				.addKey('D', Tags.Items.GEMS_DIAMOND)
 				//
-				.complete(References.ID, "focus_matrix", output);
+				.addConditions(ELECTRO_LOADED)
+				//
+				.complete(ModularForcefields.ID, "focus_matrix_electro", output);
+
+		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEM_FOCUSMATRIX.get(), 8)
+				//
+				.addPattern("R#R")
+				//
+				.addPattern("#D#")
+				//
+				.addPattern("R#R")
+				//
+				.addKey('R', Tags.Items.DUSTS_REDSTONE)
+				//
+				.addKey('#', Tags.Items.DUSTS_REDSTONE)
+				//
+				.addKey('D', Tags.Items.GEMS_DIAMOND)
+				//
+				.addConditions(ELECTRO_NOT_LOADED)
+				//
+				.complete(ModularForcefields.ID, "focus_matrix_noelectro", output);
 
 		ShapelessCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEM_FREQUENCYCARD.get(), 1)
 				//
@@ -42,7 +67,19 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addIngredient(Items.PAPER)
 				//
-				.complete(References.ID, "frequency_card", output);
+				.addConditions(ELECTRO_LOADED)
+				//
+				.complete(ModularForcefields.ID, "frequency_card_electro", output);
+
+		ShapelessCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEM_FREQUENCYCARD.get(), 1)
+				//
+				.addIngredient(Tags.Items.INGOTS_COPPER)
+				//
+				.addIngredient(Items.PAPER)
+				//
+				.addConditions(ELECTRO_NOT_LOADED)
+				//
+				.complete(ModularForcefields.ID, "frequency_card_noelectro", output);
 
 		ShapelessCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEM_IDENTIFICATIONCARD.get(), 1)
 				//
@@ -50,7 +87,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addIngredient(Items.PAPER)
 				//
-				.complete(References.ID, "identification_card", output);
+				.complete(ModularForcefields.ID, "identification_card", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.manipulationscale), 2)
 				//
@@ -58,7 +95,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
 				//
-				.complete(References.ID, "module_manipulation_scale", output);
+				.complete(ModularForcefields.ID, "module_manipulation_scale", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.manipulationtranslate), 2)
 				//
@@ -68,7 +105,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('S', ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.manipulationscale))
 				//
-				.complete(References.ID, "module_manipulation_translate", output);
+				.complete(ModularForcefields.ID, "module_manipulation_translate", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.shapecube), 1)
 				//
@@ -80,7 +117,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
 				//
-				.complete(References.ID, "module_shape_cube", output);
+				.complete(ModularForcefields.ID, "module_shape_cube", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.shapehemisphere), 1)
 				//
@@ -90,7 +127,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
 				//
-				.complete(References.ID, "module_shape_hemisphere", output);
+				.complete(ModularForcefields.ID, "module_shape_hemisphere", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.shapepyramid), 1)
 				//
@@ -102,7 +139,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
 				//
-				.complete(References.ID, "module_shape_pyramid", output);
+				.complete(ModularForcefields.ID, "module_shape_pyramid", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.shapesphere), 1)
 				//
@@ -114,7 +151,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
 				//
-				.complete(References.ID, "module_shape_sphere", output);
+				.complete(ModularForcefields.ID, "module_shape_sphere", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeantifriendly), 1)
 				//
@@ -134,7 +171,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('S', Tags.Items.SLIME_BALLS)
 				//
-				.complete(References.ID, "module_upgrade_antifriendly", output);
+				.complete(ModularForcefields.ID, "module_upgrade_antifriendly", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeantihostile), 1)
 				//
@@ -154,7 +191,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('G', Items.GHAST_TEAR)
 				//
-				.complete(References.ID, "module_upgrade_antihostile", output);
+				.complete(ModularForcefields.ID, "module_upgrade_antihostile", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeantipersonnel), 1)
 				//
@@ -166,7 +203,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('A', ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeantifriendly))
 				//
-				.complete(References.ID, "module_upgrade_antipersonnel", output);
+				.complete(ModularForcefields.ID, "module_upgrade_antipersonnel", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeantispawn), 1)
 				//
@@ -180,7 +217,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('A', ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeantifriendly))
 				//
-				.complete(References.ID, "module_upgrade_antispawn", output);
+				.complete(ModularForcefields.ID, "module_upgrade_antispawn", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeblockaccess), 1)
 				//
@@ -196,7 +233,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('B', Tags.Items.STORAGE_BLOCKS_IRON)
 				//
-				.complete(References.ID, "module_upgrade_blockaccess", output);
+				.complete(ModularForcefields.ID, "module_upgrade_blockaccess", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeblockalter), 1)
 				//
@@ -210,7 +247,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('B', Tags.Items.STORAGE_BLOCKS_GOLD)
 				//
-				.complete(References.ID, "module_upgrade_blockalter", output);
+				.complete(ModularForcefields.ID, "module_upgrade_blockalter", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradecapacity), 1)
 				//
@@ -220,7 +257,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('R', Items.REPEATER)
 				//
-				.complete(References.ID, "module_upgrade_capacity", output);
+				.complete(ModularForcefields.ID, "module_upgrade_capacity", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradecollection), 1)
 				//
@@ -234,7 +271,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('H', Items.HOPPER)
 				//
-				.complete(References.ID, "module_upgrade_collection", output);
+				.complete(ModularForcefields.ID, "module_upgrade_collection", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradecolorchange), 1)
 				//
@@ -248,7 +285,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('D', Tags.Items.DUSTS_GLOWSTONE)
 				//
-				.complete(References.ID, "module_upgrade_colorchange", output);
+				.complete(ModularForcefields.ID, "module_upgrade_colorchange", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeconfiscate), 1)
 				//
@@ -264,7 +301,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('Y', Items.ENDER_EYE)
 				//
-				.complete(References.ID, "module_upgrade_confiscate", output);
+				.complete(ModularForcefields.ID, "module_upgrade_confiscate", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradedisintegration), 1)
 				//
@@ -280,7 +317,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('R', Items.REPEATER)
 				//
-				.complete(References.ID, "module_upgrade_disintegration", output);
+				.complete(ModularForcefields.ID, "module_upgrade_disintegration", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeinterior), 1)
 				//
@@ -294,7 +331,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('B', Tags.Items.STORAGE_BLOCKS_LAPIS)
 				//
-				.complete(References.ID, "module_upgrade_interior", output);
+				.complete(ModularForcefields.ID, "module_upgrade_interior", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeshock), 1)
 				//
@@ -304,7 +341,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('D', Tags.Items.DUSTS_REDSTONE)
 				//
-				.complete(References.ID, "module_upgrade_shock", output);
+				.complete(ModularForcefields.ID, "module_upgrade_shock", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradespeed), 1)
 				//
@@ -318,7 +355,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('D', Tags.Items.DUSTS_REDSTONE)
 				//
-				.complete(References.ID, "module_upgrade_speed", output);
+				.complete(ModularForcefields.ID, "module_upgrade_speed", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradesponge), 1)
 				//
@@ -332,7 +369,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('B', Tags.Items.BUCKETS_EMPTY)
 				//
-				.complete(References.ID, "module_upgrade_sponge", output);
+				.complete(ModularForcefields.ID, "module_upgrade_sponge", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradestabilize), 1)
 				//
@@ -352,7 +389,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('A', Items.DIAMOND_AXE)
 				//
-				.complete(References.ID, "module_upgrade_stabilize", output);
+				.complete(ModularForcefields.ID, "module_upgrade_stabilize", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradestrength), 1)
 				//
@@ -362,7 +399,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('S', ModularForcefieldsItems.ITEMS_MODULE.getValue(SubtypeModule.upgradeshock))
 				//
-				.complete(References.ID, "module_upgrade_strength", output);
+				.complete(ModularForcefields.ID, "module_upgrade_strength", output);
 
 		addMachines(output);
 
@@ -380,11 +417,31 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
 				//
-				.addKey('P', ElectrodynamicsTags.Items.PLATE_STEEL)
+				.addKey('P', VoltaicTags.Items.PLATE_STEEL)
 				//
 				.addKey('#', Items.PAPER)
 				//
-				.complete(References.ID, "machine_biometricidentifier", output);
+				.addConditions(ELECTRO_LOADED)
+				//
+				.complete(ModularForcefields.ID, "machine_biometricidentifier_electro", output);
+
+		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MFFSMACHINE.getValue(SubtypeMFFSMachine.biometricidentifier), 1)
+				//
+				.addPattern("FPF")
+				//
+				.addPattern("P#P")
+				//
+				.addPattern("FPF")
+				//
+				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
+				//
+				.addKey('P', Tags.Items.INGOTS_IRON)
+				//
+				.addKey('#', Items.PAPER)
+				//
+				.addConditions(ELECTRO_NOT_LOADED)
+				//
+				.complete(ModularForcefields.ID, "machine_biometricidentifier_noelectro", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MFFSMACHINE.getValue(SubtypeMFFSMachine.coercionderiver), 1)
 				//
@@ -396,11 +453,31 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
 				//
-				.addKey('P', ElectrodynamicsTags.Items.PLATE_STEEL)
+				.addKey('P', VoltaicTags.Items.PLATE_STEEL)
 				//
 				.addKey('R', Items.REPEATER)
 				//
-				.complete(References.ID, "machine_coercionderiver", output);
+				.addConditions(ELECTRO_LOADED)
+				//
+				.complete(ModularForcefields.ID, "machine_coercionderiver_electro", output);
+
+		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MFFSMACHINE.getValue(SubtypeMFFSMachine.coercionderiver), 1)
+				//
+				.addPattern("FPF")
+				//
+				.addPattern("FRF")
+				//
+				.addPattern("FPF")
+				//
+				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
+				//
+				.addKey('P', Tags.Items.INGOTS_IRON)
+				//
+				.addKey('R', Items.REPEATER)
+				//
+				.addConditions(ELECTRO_NOT_LOADED)
+				//
+				.complete(ModularForcefields.ID, "machine_coercionderiver_noelectro", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MFFSMACHINE.getValue(SubtypeMFFSMachine.fortroncapacitor), 1)
 				//
@@ -412,11 +489,31 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
 				//
-				.addKey('P', ElectrodynamicsTags.Items.PLATE_STEEL)
+				.addKey('P', VoltaicTags.Items.PLATE_STEEL)
 				//
 				.addKey('R', Items.REPEATER)
 				//
-				.complete(References.ID, "machine_fortroncapacitor", output);
+				.addConditions(ELECTRO_LOADED)
+				//
+				.complete(ModularForcefields.ID, "machine_fortroncapacitor_electro", output);
+
+		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MFFSMACHINE.getValue(SubtypeMFFSMachine.fortroncapacitor), 1)
+				//
+				.addPattern("PFP")
+				//
+				.addPattern("PRP")
+				//
+				.addPattern("PFP")
+				//
+				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
+				//
+				.addKey('P', Tags.Items.INGOTS_IRON)
+				//
+				.addKey('R', Items.REPEATER)
+				//
+				.addConditions(ELECTRO_NOT_LOADED)
+				//
+				.complete(ModularForcefields.ID, "machine_fortroncapacitor_noelectro", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MFFSMACHINE.getValue(SubtypeMFFSMachine.fortronfieldprojector), 1)
 				//
@@ -430,11 +527,33 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
 				//
-				.addKey('P', ElectrodynamicsTags.Items.PLATE_STEEL)
+				.addKey('P', VoltaicTags.Items.PLATE_STEEL)
 				//
 				.addKey('R', Items.REPEATER)
 				//
-				.complete(References.ID, "machine_fortronfieldprojector", output);
+				.addConditions(ELECTRO_LOADED)
+				//
+				.complete(ModularForcefields.ID, "machine_fortronfieldprojector_electro", output);
+
+		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MFFSMACHINE.getValue(SubtypeMFFSMachine.fortronfieldprojector), 1)
+				//
+				.addPattern(" D ")
+				//
+				.addPattern("FFF")
+				//
+				.addPattern("PRP")
+				//
+				.addKey('D', Tags.Items.GEMS_DIAMOND)
+				//
+				.addKey('F', ModularForcefieldsItems.ITEM_FOCUSMATRIX.get())
+				//
+				.addKey('P', Tags.Items.INGOTS_IRON)
+				//
+				.addKey('R', Items.REPEATER)
+				//
+				.addConditions(ELECTRO_NOT_LOADED)
+				//
+				.complete(ModularForcefields.ID, "machine_fortronfieldprojector_noelectro", output);
 
 		ShapedCraftingRecipeBuilder.start(ModularForcefieldsItems.ITEMS_MFFSMACHINE.getValue(SubtypeMFFSMachine.interdictionmatrix), 1)
 				//
@@ -450,7 +569,7 @@ public class MFFSCraftingTableRecipes extends AbstractRecipeGenerator {
 				//
 				.addKey('C', Tags.Items.CHESTS_ENDER)
 				//
-				.complete(References.ID, "machine_interdictionmatrix", output);
+				.complete(ModularForcefields.ID, "machine_interdictionmatrix", output);
 
 
 	}
