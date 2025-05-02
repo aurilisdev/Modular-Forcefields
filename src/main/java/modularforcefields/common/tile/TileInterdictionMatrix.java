@@ -200,7 +200,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
         }
     }
 
-    private ItemStack addItemToItemHandler(ItemStack item, IItemHandler handler) {
+    private static ItemStack addItemToItemHandler(ItemStack item, IItemHandler handler) {
 
         for (int targetIndex = 0; targetIndex < handler.getSlots(); targetIndex++) {
 
