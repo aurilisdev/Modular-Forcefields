@@ -2,10 +2,10 @@ package modularforcefields.common.tile.projection;
 
 import java.util.function.BiConsumer;
 
-import electrodynamics.prefab.block.HashDistanceBlockPos;
-import electrodynamics.prefab.utilities.object.Location;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import net.minecraft.core.BlockPos;
+import voltaic.prefab.block.HashDistanceBlockPos;
+import voltaic.prefab.utilities.object.Location;
 
 public enum ProjectionType {
 	NONE((proj, t) -> proj.calculatedFieldPoints.clear()),

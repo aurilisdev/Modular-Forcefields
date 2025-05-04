@@ -1,6 +1,5 @@
 package modularforcefields.common.inventory.container;
 
-import electrodynamics.prefab.inventory.container.GenericContainerBlockEntity;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileCoercionDeriver;
 import modularforcefields.common.tile.TileFortronCapacitor;
@@ -11,6 +10,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
+import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 
 public class ContainerFortronCapacitor extends GenericContainerBlockEntity<TileFortronCapacitor> {
 

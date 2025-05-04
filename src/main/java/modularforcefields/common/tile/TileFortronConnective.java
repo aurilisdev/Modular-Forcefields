@@ -4,13 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
-import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
-import electrodynamics.prefab.tile.GenericTile;
-import electrodynamics.prefab.tile.components.IComponentType;
-import electrodynamics.prefab.tile.components.type.ComponentInventory;
-import electrodynamics.prefab.tile.components.type.ComponentTickable;
-import electrodynamics.prefab.utilities.WorldUtils;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
@@ -20,6 +14,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.RegistryObject;
+import voltaic.prefab.tile.GenericTile;
+import voltaic.prefab.tile.components.IComponentType;
+import voltaic.prefab.tile.components.type.ComponentInventory;
+import voltaic.prefab.tile.components.type.ComponentTickable;
+import voltaic.prefab.utilities.WorldUtils;
 
 public class TileFortronConnective extends GenericTile {
 	protected HashSet<TileFortronConnective> connections = new HashSet<>();

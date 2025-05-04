@@ -3,16 +3,14 @@ package modularforcefields.common.tile;
 import org.jetbrains.annotations.NotNull;
 
 import electrodynamics.common.tile.machines.quarry.TileQuarry;
-import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
-import electrodynamics.prefab.tile.GenericTile;
-import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
-import electrodynamics.prefab.utilities.Scheduler;
 import modularforcefields.common.block.FortronFieldColor;
 import modularforcefields.registers.ModularForcefieldsBlockTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
+import voltaic.prefab.tile.GenericTile;
+import voltaic.prefab.tile.components.type.ComponentPacketHandler;
 
 public class TileFortronField extends GenericTile {
 

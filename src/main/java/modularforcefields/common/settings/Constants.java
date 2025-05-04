@@ -1,7 +1,7 @@
 package modularforcefields.common.settings;
 
-import electrodynamics.api.configuration.Configuration;
-import electrodynamics.api.configuration.DoubleValue;
+import voltaic.api.configuration.Configuration;
+import voltaic.api.configuration.DoubleValue;
 
 @Configuration(name = "Modular Forcefields")
 public class Constants {

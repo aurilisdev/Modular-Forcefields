@@ -2,8 +2,6 @@ package modularforcefields.registers;
 
 import java.util.HashMap;
 
-import electrodynamics.api.ISubtype;
-import electrodynamics.prefab.block.GenericMachineBlock;
 import modularforcefields.References;
 import modularforcefields.common.block.BlockFortronField;
 import modularforcefields.common.tile.TileBiometricIdentifier;
@@ -15,6 +13,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import voltaic.api.ISubtype;
+import voltaic.prefab.block.GenericMachineBlock;
 
 public class ModularForcefieldsBlocks {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, References.ID);

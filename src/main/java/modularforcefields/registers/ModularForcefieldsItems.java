@@ -1,17 +1,8 @@
 package modularforcefields.registers;
 
-import static modularforcefields.registers.ModularForcefieldsBlocks.blockBiometricIdentifier;
-import static modularforcefields.registers.ModularForcefieldsBlocks.blockCoercionDeriver;
-import static modularforcefields.registers.ModularForcefieldsBlocks.blockFortronCapacitor;
-import static modularforcefields.registers.ModularForcefieldsBlocks.blockFortronField;
-import static modularforcefields.registers.ModularForcefieldsBlocks.blockFortronFieldProjector;
-import static modularforcefields.registers.ModularForcefieldsBlocks.blockInterdictionMatrix;
-
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import electrodynamics.api.ISubtype;
-import electrodynamics.common.blockitem.types.BlockItemDescriptable;
 import electrodynamics.common.item.ItemElectrodynamics;
 import modularforcefields.References;
 import modularforcefields.common.item.ItemFortronFrequencyCard;
@@ -25,6 +16,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import voltaic.api.ISubtype;
+import voltaic.common.blockitem.BlockItemDescriptable;
 
 public class ModularForcefieldsItems {
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, References.ID);

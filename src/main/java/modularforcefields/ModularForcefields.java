@@ -1,6 +1,5 @@
 package modularforcefields;
 
-import electrodynamics.prefab.configuration.ConfigurationHandler;
 import modularforcefields.client.ClientRegister;
 import modularforcefields.common.block.BlockColorFortronField;
 import modularforcefields.common.packet.NetworkHandler;
@@ -20,6 +19,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import voltaic.prefab.configuration.ConfigurationHandler;
 
 @Mod(References.ID)
 @EventBusSubscriber(modid = References.ID, bus = Bus.MOD)

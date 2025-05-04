@@ -2,7 +2,6 @@ package modularforcefields.common.block;
 
 import java.util.List;
 
-import electrodynamics.prefab.block.GenericEntityBlock;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.FortronFieldStatus;
 import modularforcefields.common.tile.TileFortronField;
@@ -29,6 +28,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import voltaic.prefab.block.GenericEntityBlock;
 
 public class BlockFortronField extends GenericEntityBlock {
 

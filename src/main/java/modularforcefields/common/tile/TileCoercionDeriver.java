@@ -6,17 +6,7 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.Sets;
 
-import electrodynamics.api.ISubtype;
-import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
-import electrodynamics.prefab.tile.components.IComponentType;
-import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
-import electrodynamics.prefab.tile.components.type.ComponentElectrodynamic;
-import electrodynamics.prefab.tile.components.type.ComponentInventory;
-import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
-import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
-import electrodynamics.prefab.tile.components.type.ComponentTickable;
-import electrodynamics.prefab.utilities.object.TransferPack;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.settings.Constants;
@@ -29,6 +19,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.RegistryObject;
+import voltaic.api.ISubtype;
+import voltaic.prefab.tile.components.IComponentType;
+import voltaic.prefab.tile.components.type.ComponentContainerProvider;
+import voltaic.prefab.tile.components.type.ComponentElectrodynamic;
+import voltaic.prefab.tile.components.type.ComponentInventory;
+import voltaic.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
+import voltaic.prefab.tile.components.type.ComponentPacketHandler;
+import voltaic.prefab.tile.components.type.ComponentTickable;
+import voltaic.prefab.utilities.object.TransferPack;
 
 public class TileCoercionDeriver extends TileFortronConnective {
 	public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity);

@@ -9,15 +9,7 @@ import java.util.UUID;
 
 import com.google.common.collect.Sets;
 
-import electrodynamics.api.ISubtype;
-import electrodynamics.prefab.properties.Property;
 import electrodynamics.prefab.properties.PropertyType;
-import electrodynamics.prefab.tile.components.IComponentType;
-import electrodynamics.prefab.tile.components.type.ComponentContainerProvider;
-import electrodynamics.prefab.tile.components.type.ComponentInventory;
-import electrodynamics.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
-import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
-import electrodynamics.prefab.tile.components.type.ComponentTickable;
 import electrodynamics.prefab.utilities.InventoryUtils;
 import modularforcefields.References;
 import modularforcefields.common.inventory.container.ContainerInterdictionMatrix;
@@ -47,6 +39,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.items.IItemHandler;
+import voltaic.api.ISubtype;
+import voltaic.prefab.tile.components.IComponentType;
+import voltaic.prefab.tile.components.type.ComponentContainerProvider;
+import voltaic.prefab.tile.components.type.ComponentInventory;
+import voltaic.prefab.tile.components.type.ComponentInventory.InventoryBuilder;
+import voltaic.prefab.tile.components.type.ComponentPacketHandler;
+import voltaic.prefab.tile.components.type.ComponentTickable;
 
 @EventBusSubscriber(bus = Bus.FORGE, modid = References.ID)
 public class TileInterdictionMatrix extends TileFortronConnective {
