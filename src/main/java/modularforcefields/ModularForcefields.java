@@ -1,9 +1,9 @@
 package modularforcefields;
 
-import modularforcefields.client.ClientRegister;
+import modularforcefields.client.MFFSClientRegister;
 import modularforcefields.common.block.BlockColorFortronField;
 import modularforcefields.common.settings.MFFSConstants;
-import modularforcefields.common.tags.MFFTags;
+import modularforcefields.common.tags.MFFSTags;
 import modularforcefields.registers.ModularForcefieldsBlocks;
 import modularforcefields.registers.UnifiedModularForcefieldsRegister;
 import net.minecraft.resources.ResourceLocation;
@@ -28,14 +28,14 @@ public class ModularForcefields {
     public ModularForcefields(IEventBus bus) {
         ConfigurationHandler.registerConfig(MFFSConstants.class);
         UnifiedModularForcefieldsRegister.register(bus);
-        MFFTags.init();
+        MFFSTags.init();
     }
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ClientRegister.setup();
+            MFFSClientRegister.setup();
         });
     }
 
