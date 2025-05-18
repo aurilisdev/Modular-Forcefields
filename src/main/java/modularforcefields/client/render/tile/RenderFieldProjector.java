@@ -3,7 +3,7 @@ package modularforcefields.client.render.tile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import modularforcefields.client.ClientRegister;
+import modularforcefields.client.MFFSClientRegister;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.common.tile.projection.ProjectionType;
 import net.minecraft.client.GraphicsStatus;
@@ -43,7 +43,7 @@ public class RenderFieldProjector extends AbstractTileRenderer<TileFortronFieldP
         if (tile.fortron.getValue() > 0) {
 
 
-            BakedModel shape = Minecraft.getInstance().getModelManager().getModel(ClientRegister.MODEL_FIELDFORTRON);
+            BakedModel shape = Minecraft.getInstance().getModelManager().getModel(MFFSClientRegister.MODEL_FIELDFORTRON);
 
             if (Minecraft.getInstance().options.graphicsMode().get() == GraphicsStatus.FABULOUS) {
                 RenderSystem.setShaderColor(color.rFloat(), color.gFloat(), color.bFloat(), 1);
@@ -60,16 +60,16 @@ public class RenderFieldProjector extends AbstractTileRenderer<TileFortronFieldP
             poseStack.popPose();
             switch (ProjectionType.values()[tile.typeOrdinal.getValue()]) {
                 case HEMISPHERE:
-                    ibakedmodel = Minecraft.getInstance().getModelManager().getModel(ClientRegister.MODEL_PREVIEWHALFSPHERE);
+                    ibakedmodel = Minecraft.getInstance().getModelManager().getModel(MFFSClientRegister.MODEL_PREVIEWHALFSPHERE);
                     break;
                 case PYRAMID:
-                    ibakedmodel = Minecraft.getInstance().getModelManager().getModel(ClientRegister.MODEL_PREVIEWPYRAMID);
+                    ibakedmodel = Minecraft.getInstance().getModelManager().getModel(MFFSClientRegister.MODEL_PREVIEWPYRAMID);
                     break;
                 case SPHERE:
-                    ibakedmodel = Minecraft.getInstance().getModelManager().getModel(ClientRegister.MODEL_PREVIEWSPHERE);
+                    ibakedmodel = Minecraft.getInstance().getModelManager().getModel(MFFSClientRegister.MODEL_PREVIEWSPHERE);
                     break;
                 case CUBE:
-                    ibakedmodel = Minecraft.getInstance().getModelManager().getModel(ClientRegister.MODEL_PREVIEWCUBE);
+                    ibakedmodel = Minecraft.getInstance().getModelManager().getModel(MFFSClientRegister.MODEL_PREVIEWCUBE);
                     break;
                 default:
                 case NONE:
