@@ -1,62 +1,54 @@
 package modularforcefields.common.tile;
 
-import org.jetbrains.annotations.NotNull;
-
-import electrodynamics.common.tile.machines.quarry.TileQuarry;
-import electrodynamics.prefab.properties.Property;
-import electrodynamics.prefab.properties.PropertyType;
-import electrodynamics.prefab.tile.GenericTile;
-import electrodynamics.prefab.tile.components.type.ComponentPacketHandler;
-import electrodynamics.prefab.utilities.Scheduler;
-import modularforcefields.common.block.FortronFieldColor;
-import modularforcefields.registers.ModularForcefieldsBlockTypes;
+import modularforcefields.registers.ModularForcefieldsTiles;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
+import voltaic.prefab.properties.types.PropertyTypes;
+import voltaic.prefab.properties.variant.SingleProperty;
+import voltaic.prefab.tile.GenericTile;
+import voltaic.prefab.tile.components.type.ComponentPacketHandler;
+import voltaic.prefab.utilities.BlockEntityUtils;
+import voltaic.prefab.utilities.Scheduler;
 
 public class TileFortronField extends GenericTile {
 
-	public final Property<Integer> fieldColorOrdinal = property(new Property<>(PropertyType.Integer, "fieldColor", FortronFieldColor.LIGHT_BLUE.ordinal()));
-	private final Property<BlockPos> projectorPos = property(new Property<>(PropertyType.BlockPos, "projectorPos", TileQuarry.OUT_OF_REACH).onChange(this::onPropertyChange).onLoad(this::onPropertyChange));
+    private final SingleProperty<BlockPos> projectorPos = property(new SingleProperty<>(PropertyTypes.BLOCK_POS, "projectorPos", BlockEntityUtils.OUT_OF_REACH).onChange(this::onPropertyChange).onTileLoaded(prop -> onPropertyChange(prop, prop.getValue())));
 
-	private void onPropertyChange(Property<BlockPos> t, BlockPos pos) {
-		if (pos != null) {
-			Scheduler.schedule(3, () -> {
-				if (level != null) {
-					if (level.getBlockEntity(pos) instanceof TileFortronFieldProjector proj) {
-						if (!level.isClientSide()) {
-							fieldColorOrdinal.set(proj.getFieldColor().ordinal());
-							proj.activeFields.add(this);
-						}
-					}
-				}
-			});
-		}
-	}
+    private void onPropertyChange(SingleProperty<BlockPos> t, BlockPos pos) {
+        if (pos == null) {
+            return;
+        }
+        Scheduler.schedule(1, () -> {
+            if (level != null) { // This check must be here, since it may be null when calling onPropertyChange
+                // the first time.
+                if (level.getBlockEntity(pos) instanceof TileFortronFieldProjector proj) {
+                    if (!level.isClientSide()) {
+                        proj.activeFields.add(this);
+                    }
+                }
+            }
+        });
+    }
 
-	public TileFortronField(BlockPos pos, BlockState state) {
-		super(ModularForcefieldsBlockTypes.TILE_FORTRONFIELD.get(), pos, state);
-		addComponent(new ComponentPacketHandler(this));
-	}
+    public TileFortronField(BlockPos pos, BlockState state) {
+        super(ModularForcefieldsTiles.TILE_FORTRONFIELD.get(), pos, state);
+        addComponent(new ComponentPacketHandler(this));
+    }
 
-	@Override
-	public void load(@NotNull CompoundTag compound) {
-		super.load(compound);
-	}
+    public void setConstructor(TileFortronFieldProjector projector) {
+        if (!level.isClientSide()) {
+            if (projector != null) {
+                projectorPos.setValue(projector.getBlockPos());
+            }
+        }
+    }
 
-	public void setConstructor(TileFortronFieldProjector projector) {
-		if (!level.isClientSide()) {
-			if (projector != null) {
-				projectorPos.set(projector.getBlockPos());
-			}
-		}
-	}
+    @Override
+    public int hashCode() {
+        return (int) ((10000 - getBlockPos().getY()) + level.random.nextDouble() * 3 + (int) Math.sqrt(getBlockPos().distToCenterSqr(getProjectorPos().getX() + 0.5, getBlockPos().getY() + 0.5, getProjectorPos().getZ() + 0.5)));
+    }
 
-	public FortronFieldColor getFieldColor() {
-		return FortronFieldColor.values()[fieldColorOrdinal.get()];
-	}
-
-	public BlockPos getProjectorPos() {
-		return projectorPos.get();
-	}
+    public BlockPos getProjectorPos() {
+        return projectorPos.getValue();
+    }
 }

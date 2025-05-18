@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    }
+  },
+  "pattern": [
+    "H H",
+    " F ",
+    "H H"
+  ],
+  "result": {
+    "item": "modularforcefields:moduleupgradecollection"
+  }
+}

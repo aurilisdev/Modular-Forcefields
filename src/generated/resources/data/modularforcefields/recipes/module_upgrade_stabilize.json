@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "minecraft:diamond_axe"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    },
+    "G": {
+      "tag": "forge:gems/diamond"
+    },
+    "P": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "S": {
+      "item": "minecraft:diamond_shovel"
+    }
+  },
+  "pattern": [
+    "FGF",
+    "PSA",
+    "FGF"
+  ],
+  "result": {
+    "item": "modularforcefields:moduleupgradestabilize"
+  }
+}
