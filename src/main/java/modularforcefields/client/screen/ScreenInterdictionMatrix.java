@@ -27,11 +27,16 @@ public class ScreenInterdictionMatrix extends GenericScreen<ContainerInterdictio
 			return null;
 		}, 8, 60));
 		addComponent(new ScreenComponentMultiLabel(0, 0, poseStack -> {
-			if (menu.getUnsafeHost() instanceof TileInterdictionMatrix matrix) {
-				font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort((int)(matrix.getFortronUse() / 1000.0 * 20), DisplayUnits.BUCKETS).append(" / s")), 25, 105, 4210752);
-				font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.linked", matrix.getConnections()), 25, 95, 4210752);
-				font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.frequency", matrix.getFrequency()), 25, 85, 4210752);
+			
+			TileInterdictionMatrix matrix = menu.getSafeHost();
+			
+			if(matrix == null) {
+				return;
 			}
+			
+			font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort((int)(matrix.getFortronUse() / 1000.0 * 20), DisplayUnits.BUCKETS).append(" / s")), 25, 105, 4210752);
+			font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.linked", matrix.getConnections()), 25, 95, 4210752);
+			font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.frequency", matrix.getFrequency()), 25, 85, 4210752);
 		}));
 		imageHeight += 51;
 		inventoryLabelY += 51;

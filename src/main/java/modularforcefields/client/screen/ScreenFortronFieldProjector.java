@@ -33,12 +33,17 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
             return null;
         }, 8, 77));
         addComponent(new ScreenComponentMultiLabel(0, 0, poseStack -> {
-            if (menu.getUnsafeHost() instanceof TileFortronFieldProjector projector) {
-            	font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.linked", projector.getConnections()), 25, 115, 4210752);
-            	font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort((int) (projector.getFortronUse() / 1000.0 * 20), DisplayUnits.BUCKETS)).append(" / s"), 25, 105, 4210752);
-            	font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.frequency", projector.getFrequency()), 25, 95, 4210752);
-            	font.draw(poseStack, MFFSTextUtils.gui("fieldprojector.status", projector.getStatus().name()), 8, 130, 4210752);
-            }
+        	
+        	TileFortronFieldProjector projector = menu.getSafeHost();
+        	
+        	if(projector == null) {
+        		return;
+        	}
+        	
+        	font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.linked", projector.getConnections()), 25, 115, 4210752);
+        	font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort((int) (projector.getFortronUse() / 1000.0 * 20), DisplayUnits.BUCKETS)).append(" / s"), 25, 105, 4210752);
+        	font.draw(poseStack, MFFSTextUtils.gui("fortrondevice.frequency", projector.getFrequency()), 25, 95, 4210752);
+        	font.draw(poseStack, MFFSTextUtils.gui("fieldprojector.status", projector.getStatus().name()), 8, 130, 4210752);
         }));
         imageHeight += 71;
         inventoryLabelY += 71;

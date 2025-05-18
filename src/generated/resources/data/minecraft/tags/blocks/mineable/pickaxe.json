@@ -1,10 +1,10 @@
 {
   "replace": false,
   "values": [
-    "modularforcefields:fortroncapacitor",
-    "modularforcefields:fortronfieldprojector",
     "modularforcefields:biometricidentifier",
     "modularforcefields:coercionderiver",
-    "modularforcefields:interdictionmatrix"
+    "modularforcefields:fortroncapacitor",
+    "modularforcefields:interdictionmatrix",
+    "modularforcefields:fortronfieldprojector"
   ]
 }
