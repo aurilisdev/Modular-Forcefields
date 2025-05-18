@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    },
+    "S": {
+      "item": "modularforcefields:modulemanipulationscale"
+    }
+  },
+  "pattern": [
+    "FSF"
+  ],
+  "result": {
+    "count": 2,
+    "item": "modularforcefields:modulemanipulationtranslate"
+  }
+}

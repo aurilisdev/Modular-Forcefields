@@ -1,6 +1,6 @@
 package modularforcefields.common.item.subtype;
 
-import electrodynamics.api.ISubtype;
+import voltaic.api.ISubtype;
 
 public enum SubtypeModule implements ISubtype {
 	manipulationscale,

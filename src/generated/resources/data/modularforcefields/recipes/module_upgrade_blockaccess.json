@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:storage_blocks/iron"
+    },
+    "C": {
+      "tag": "forge:chests"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    }
+  },
+  "pattern": [
+    " C ",
+    "BFB",
+    " C "
+  ],
+  "result": {
+    "item": "modularforcefields:moduleupgradeblockaccess"
+  }
+}

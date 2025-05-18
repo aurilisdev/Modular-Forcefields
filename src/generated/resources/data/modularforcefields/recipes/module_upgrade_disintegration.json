@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "tag": "forge:dusts/redstone"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    }
+  },
+  "pattern": [
+    " D ",
+    "RFR",
+    " D "
+  ],
+  "result": {
+    "item": "modularforcefields:moduleupgradedisintegration"
+  }
+}

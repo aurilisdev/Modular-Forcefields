@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "electrodynamics"
+      }
+    }
+  ],
+  "key": {
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    },
+    "P": {
+      "tag": "forge:ingots/iron"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    }
+  },
+  "pattern": [
+    " D ",
+    "FFF",
+    "PRP"
+  ],
+  "result": {
+    "item": "modularforcefields:fortronfieldprojector"
+  }
+}

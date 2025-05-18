@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    }
+  },
+  "pattern": [
+    "RFR"
+  ],
+  "result": {
+    "item": "modularforcefields:moduleupgradecapacity"
+  }
+}
