@@ -27,11 +27,13 @@ public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapaci
             return null;
         }, 8, 27));
         addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
-            if (menu.getUnsafeHost() instanceof TileFortronCapacitor capacitor) {
-                matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort((int) (capacitor.getTransfer() / 1000.0 * 20), DisplayUnits.BUCKETS).append(" / s")), 25, 45, 4210752, false);
-                matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752, false);
-                matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752, false);
-            }
+        	TileFortronCapacitor capacitor = menu.getSafeHost();
+        	if(capacitor == null) {
+        		return;
+        	}
+        	matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort((int) (capacitor.getTransfer() / 1000.0 * 20), DisplayUnits.BUCKETS).append(" / s")), 25, 45, 4210752, false);
+            matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", capacitor.getConnections()), 25, 55, 4210752, false);
+            matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", capacitor.getFrequency()), 25, 35, 4210752, false);
         }));
         imageHeight += 40;
         inventoryLabelY += 40;
