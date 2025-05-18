@@ -1,9 +1,9 @@
 {
   "values": [
-    "modularforcefields:biometricidentifier",
     "modularforcefields:fortroncapacitor",
+    "modularforcefields:biometricidentifier",
     "modularforcefields:fortronfieldprojector",
-    "modularforcefields:interdictionmatrix",
-    "modularforcefields:coercionderiver"
+    "modularforcefields:coercionderiver",
+    "modularforcefields:interdictionmatrix"
   ]
 }
