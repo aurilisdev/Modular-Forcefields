@@ -1,6 +1,6 @@
 package modularforcefields.registers;
 
-import modularforcefields.References;
+import modularforcefields.ModularForcefields;
 import modularforcefields.common.inventory.container.ContainerBiometricIdentifier;
 import modularforcefields.common.inventory.container.ContainerCoercionDeriver;
 import modularforcefields.common.inventory.container.ContainerFortronCapacitor;
@@ -15,7 +15,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModularForcefieldsMenuTypes {
-	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, References.ID);
+	
+	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, ModularForcefields.ID);
 
 	public static final RegistryObject<MenuType<ContainerCoercionDeriver>> CONTAINER_COERCIONDERIVER = register("coercionderiver", ContainerCoercionDeriver::new);
 	public static final RegistryObject<MenuType<ContainerFortronCapacitor>> CONTAINER_FORTRONCAPACITOR = register("fortroncapacitor", ContainerFortronCapacitor::new);

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "modularforcefields:block/biometricidentifier"
+    },
+    "facing=north": {
+      "model": "modularforcefields:block/biometricidentifier",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "modularforcefields:block/biometricidentifier",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "modularforcefields:block/biometricidentifier",
+      "y": 180
+    }
+  }
+}
