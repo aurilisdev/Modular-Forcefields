@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    },
+    "S": {
+      "item": "modularforcefields:moduleupgradeshock"
+    }
+  },
+  "pattern": [
+    "SFS"
+  ],
+  "result": {
+    "item": "modularforcefields:moduleupgradestrength"
+  },
+  "show_notification": false
+}

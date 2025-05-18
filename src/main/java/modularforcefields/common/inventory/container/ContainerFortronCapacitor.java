@@ -24,7 +24,7 @@ public class ContainerFortronCapacitor extends GenericContainerBlockEntity<TileF
 
 	@Override
 	public void addInventorySlots(Container inv, Inventory playerinv) {
-		playerInvOffset = 40;
+		setPlayerInvOffset(40);
 		SubtypeModule[] valid = TileCoercionDeriver.VALIDMODULES.toArray(new SubtypeModule[0]);
 		addSlot(new SlotModule(inv, nextIndex(), 9, 87, valid));
 		addSlot(new SlotModule(inv, nextIndex(), 154, 47, valid));

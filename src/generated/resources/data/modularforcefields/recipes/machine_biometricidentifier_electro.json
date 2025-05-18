@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "electrodynamics"
+    }
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:paper"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    },
+    "P": {
+      "tag": "forge:plates/steel"
+    }
+  },
+  "pattern": [
+    "FPF",
+    "P#P",
+    "FPF"
+  ],
+  "result": {
+    "item": "modularforcefields:biometricidentifier"
+  },
+  "show_notification": false
+}
