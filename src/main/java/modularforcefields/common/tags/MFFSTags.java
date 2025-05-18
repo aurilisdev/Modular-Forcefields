@@ -8,7 +8,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import voltaic.Voltaic;
 
-public class MFFTags {
+public class MFFSTags {
 
 	public static List<TagKey<Fluid>> FLUID_TAGS = new ArrayList<>();
 
