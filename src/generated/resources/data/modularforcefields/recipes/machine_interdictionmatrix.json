@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "FFF",
+    "FCF"
+  ],
+  "key": {
+    "#": {
+      "item": "modularforcefields:moduleupgradeshock"
+    },
+    "C": {
+      "tag": "forge:chests/ender"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    }
+  },
+  "result": {
+    "item": "modularforcefields:interdictionmatrix"
+  }
+}

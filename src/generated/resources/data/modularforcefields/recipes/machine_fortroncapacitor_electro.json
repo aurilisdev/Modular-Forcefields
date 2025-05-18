@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PFP",
+    "PRP",
+    "PFP"
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:plates/steel"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    }
+  },
+  "result": {
+    "item": "modularforcefields:fortroncapacitor"
+  },
+  "conditions": [
+    {
+      "modid": "electrodynamics",
+      "type": "forge:mod_loaded"
+    }
+  ]
+}

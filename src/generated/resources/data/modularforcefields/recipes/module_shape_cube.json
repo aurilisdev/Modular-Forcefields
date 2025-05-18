@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FFF",
+    "FFF",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    }
+  },
+  "result": {
+    "item": "modularforcefields:moduleshapecube"
+  }
+}

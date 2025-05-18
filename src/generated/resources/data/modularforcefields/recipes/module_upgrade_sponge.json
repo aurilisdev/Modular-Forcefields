@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "BFB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    }
+  },
+  "result": {
+    "item": "modularforcefields:moduleupgradesponge"
+  }
+}

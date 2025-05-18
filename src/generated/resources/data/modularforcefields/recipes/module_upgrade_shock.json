@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DFD"
+  ],
+  "key": {
+    "D": {
+      "tag": "forge:dusts/redstone"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    }
+  },
+  "result": {
+    "item": "modularforcefields:moduleupgradeshock"
+  }
+}

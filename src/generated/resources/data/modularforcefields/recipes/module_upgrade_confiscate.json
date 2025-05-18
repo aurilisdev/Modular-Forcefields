@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EYE",
+    "YFY",
+    "EYE"
+  ],
+  "key": {
+    "E": {
+      "tag": "forge:ender_pearls"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    },
+    "Y": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "result": {
+    "item": "modularforcefields:moduleupgradeconfiscate"
+  }
+}

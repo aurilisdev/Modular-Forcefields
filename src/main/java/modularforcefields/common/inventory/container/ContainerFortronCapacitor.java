@@ -1,6 +1,5 @@
 package modularforcefields.common.inventory.container;
 
-import electrodynamics.prefab.inventory.container.GenericContainerBlockEntity;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileCoercionDeriver;
 import modularforcefields.common.tile.TileFortronCapacitor;
@@ -11,6 +10,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
+import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 
 public class ContainerFortronCapacitor extends GenericContainerBlockEntity<TileFortronCapacitor> {
 
@@ -24,7 +24,7 @@ public class ContainerFortronCapacitor extends GenericContainerBlockEntity<TileF
 
 	@Override
 	public void addInventorySlots(Container inv, Inventory playerinv) {
-		playerInvOffset = 40;
+		setPlayerInvOffset(40);
 		SubtypeModule[] valid = TileCoercionDeriver.VALIDMODULES.toArray(new SubtypeModule[0]);
 		addSlot(new SlotModule(inv, nextIndex(), 9, 87, valid));
 		addSlot(new SlotModule(inv, nextIndex(), 154, 47, valid));

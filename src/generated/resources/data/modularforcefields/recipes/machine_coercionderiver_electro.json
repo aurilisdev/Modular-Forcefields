@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FPF",
+    "FRF",
+    "FPF"
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:plates/steel"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    }
+  },
+  "result": {
+    "item": "modularforcefields:coercionderiver"
+  },
+  "conditions": [
+    {
+      "modid": "electrodynamics",
+      "type": "forge:mod_loaded"
+    }
+  ]
+}

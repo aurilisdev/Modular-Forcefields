@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FPF",
+    "P#P",
+    "FPF"
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:ingots/iron"
+    },
+    "#": {
+      "item": "minecraft:paper"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    }
+  },
+  "result": {
+    "item": "modularforcefields:biometricidentifier"
+  },
+  "conditions": [
+    {
+      "value": {
+        "modid": "electrodynamics",
+        "type": "forge:mod_loaded"
+      },
+      "type": "forge:not"
+    }
+  ]
+}

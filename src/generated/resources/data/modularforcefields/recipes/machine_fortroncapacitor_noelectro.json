@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PFP",
+    "PRP",
+    "PFP"
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:ingots/iron"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "F": {
+      "item": "modularforcefields:focusmatrix"
+    }
+  },
+  "result": {
+    "item": "modularforcefields:fortroncapacitor"
+  },
+  "conditions": [
+    {
+      "value": {
+        "modid": "electrodynamics",
+        "type": "forge:mod_loaded"
+      },
+      "type": "forge:not"
+    }
+  ]
+}

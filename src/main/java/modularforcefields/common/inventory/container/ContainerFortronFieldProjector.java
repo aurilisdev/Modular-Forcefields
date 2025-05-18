@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import electrodynamics.prefab.inventory.container.GenericContainerBlockEntity;
 import modularforcefields.common.item.subtype.SubtypeModule;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.prefab.inventory.container.slot.item.type.SlotModule;
@@ -14,6 +13,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
+import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 
 public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<TileFortronFieldProjector> {
 	public static final int[] SLOT_UPGRADES = new int[] { 12, 13, 14, 15, 16, 17 };
@@ -45,7 +45,7 @@ public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<
 
 	@Override
 	public void addInventorySlots(Container inv, Inventory playerinv) {
-		playerInvOffset = 71;
+		setPlayerInvOffset(71);
 		SubtypeModule[] valid = TileFortronFieldProjector.VALIDMODULES.toArray(new SubtypeModule[0]);
 		for (int xSlot = 0; xSlot < 4; xSlot++) {
 			for (int ySlot = 0; ySlot < 4; ySlot++) {
@@ -59,7 +59,7 @@ public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<
 				addSlot(new SlotModule(inv, nextIndex(), 8 + 18 * xSlot, 27 + 18 * ySlot, valid));
 			}
 		}
-		addSlot(new SlotModule(inv, nextIndex(), 133, 120, valid));
+		addSlot(new SlotModule(inv, nextIndex(), 133, 100, valid));
 
 		addSlot(new SlotModule(inv, nextIndex(), 118, 45, valid));
 

@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "R#R",
+    "#D#",
+    "R#R"
+  ],
+  "key": {
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "#": {
+      "tag": "forge:dusts/redstone"
+    },
+    "D": {
+      "tag": "forge:gems/diamond"
+    }
+  },
+  "result": {
+    "item": "modularforcefields:focusmatrix",
+    "count": 8
+  },
+  "conditions": [
+    {
+      "value": {
+        "modid": "electrodynamics",
+        "type": "forge:mod_loaded"
+      },
+      "type": "forge:not"
+    }
+  ]
+}
