@@ -4,7 +4,7 @@ import modularforcefields.client.MFFSClientRegister;
 import modularforcefields.common.block.BlockColorFortronField;
 import modularforcefields.common.packet.NetworkHandler;
 import modularforcefields.common.settings.MFFSConstants;
-import modularforcefields.common.tags.MFFTags;
+import modularforcefields.common.tags.MFFSTags;
 import modularforcefields.registers.ModularForcefieldsBlocks;
 import modularforcefields.registers.UnifiedModularForcefieldsRegister;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +31,7 @@ public class ModularForcefields {
     	IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ConfigurationHandler.registerConfig(MFFSConstants.class);
         UnifiedModularForcefieldsRegister.register(bus);
-        MFFTags.init();
+        MFFSTags.init();
     }
 
     @SubscribeEvent
