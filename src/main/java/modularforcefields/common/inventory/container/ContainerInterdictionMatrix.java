@@ -14,7 +14,7 @@ import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 public class ContainerInterdictionMatrix extends GenericContainerBlockEntity<TileInterdictionMatrix> {
 
 	public ContainerInterdictionMatrix(int id, Inventory playerinv) {
-		this(id, playerinv, new SimpleContainer(18), new SimpleContainerData(3));
+		this(id, playerinv, new SimpleContainer(18), new SimpleContainerData(5));
 	}
 
 	public ContainerInterdictionMatrix(int id, Inventory pinv, Container inv, ContainerData data) {

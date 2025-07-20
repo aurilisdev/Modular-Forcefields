@@ -15,7 +15,7 @@ import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 public class ContainerFortronCapacitor extends GenericContainerBlockEntity<TileFortronCapacitor> {
 
 	public ContainerFortronCapacitor(int id, Inventory playerinv) {
-		this(id, playerinv, new SimpleContainer(4), new SimpleContainerData(3));
+		this(id, playerinv, new SimpleContainer(4), new SimpleContainerData(5));
 	}
 
 	public ContainerFortronCapacitor(int id, Inventory pinv, Container inv, ContainerData data) {
