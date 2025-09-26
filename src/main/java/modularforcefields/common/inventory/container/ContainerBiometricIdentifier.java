@@ -14,7 +14,7 @@ import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 public class ContainerBiometricIdentifier extends GenericContainerBlockEntity<TileBiometricIdentifier> {
 
 	public ContainerBiometricIdentifier(int id, Inventory playerinv) {
-		this(id, playerinv, new SimpleContainer(9), new SimpleContainerData(3));
+		this(id, playerinv, new SimpleContainer(9), new SimpleContainerData(5));
 	}
 
 	public ContainerBiometricIdentifier(int id, Inventory pinv, Container inv, ContainerData data) {

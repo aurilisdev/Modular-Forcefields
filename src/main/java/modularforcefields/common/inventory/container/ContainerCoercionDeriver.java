@@ -14,7 +14,7 @@ import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 public class ContainerCoercionDeriver extends GenericContainerBlockEntity<TileCoercionDeriver> {
 
 	public ContainerCoercionDeriver(int id, Inventory playerinv) {
-		this(id, playerinv, new SimpleContainer(4), new SimpleContainerData(3));
+		this(id, playerinv, new SimpleContainer(4), new SimpleContainerData(5));
 	}
 
 	public ContainerCoercionDeriver(int id, Inventory pinv, Container inv, ContainerData data) {
