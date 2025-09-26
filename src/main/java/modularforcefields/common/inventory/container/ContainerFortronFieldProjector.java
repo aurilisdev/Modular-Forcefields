@@ -36,7 +36,7 @@ public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<
 	}
 
 	public ContainerFortronFieldProjector(int id, Inventory playerinv) {
-		this(id, playerinv, new SimpleContainer(21), new SimpleContainerData(3));
+		this(id, playerinv, new SimpleContainer(21), new SimpleContainerData(5));
 	}
 
 	public ContainerFortronFieldProjector(int id, Inventory pinv, Container inv, ContainerData data) {
