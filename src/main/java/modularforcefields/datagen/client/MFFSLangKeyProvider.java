@@ -90,7 +90,9 @@ public class MFFSLangKeyProvider extends BaseLangKeyProvider {
 			addGuidebook("chapter.blocks", "Blocks");
 			addGuidebook("chapter.modules", "Modules");
 			addGuidebook("chapter.items", "Other Items");
-
+			
+			addConfiguration("common", "Common");
+    			addConfiguration("coercionderiver_voltage", "Coercion Deriver Voltage");
 		}
 
 	}

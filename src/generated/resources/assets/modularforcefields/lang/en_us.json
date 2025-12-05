@@ -51,6 +51,8 @@
   "item.modularforcefields.moduleupgradesponge": "Sponge Upgrade",
   "item.modularforcefields.moduleupgradestabilize": "Stabilization Upgrade",
   "item.modularforcefields.moduleupgradestrength": "Strength Upgrade",
+  "modularforcefields.configuration.coercionderiver_voltage": "Coercion Deriver Voltage",
+  "modularforcefields.configuration.common": "Common",
   "tooltip.modularforcefields.biometricidentifier": "Stores players",
   "tooltip.modularforcefields.coercionderiver": "Produces Fortron",
   "tooltip.modularforcefields.fortroncapacitor": "Buffers Fortron",
