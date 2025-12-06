@@ -17,6 +17,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -31,8 +32,9 @@ public final class ModularForcefields {
     public ModularForcefields(IEventBus bus, ModContainer container) {
 	MFFSConfig.INSTANCE = new MFFSConfig();
 	container.registerConfig(ModConfig.Type.COMMON, MFFSConfig.INSTANCE.SPEC);
-	container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-
+	if (FMLEnvironment.dist == Dist.CLIENT) {
+	    container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+	}
 	UnifiedModularForcefieldsRegister.register(bus);
 	MFFSTags.init();
     }
