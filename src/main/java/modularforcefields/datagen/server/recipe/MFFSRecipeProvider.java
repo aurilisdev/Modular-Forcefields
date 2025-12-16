@@ -13,6 +13,7 @@ public class MFFSRecipeProvider extends BaseRecipeProvider {
 		super(output);
 	}
 
+	@Override
 	public void addRecipes() {
 		generators.add(new MFFSCraftingTableRecipes());
 	}
