@@ -9,13 +9,13 @@ import voltaic.datagen.utils.server.recipe.BaseRecipeProvider;
 
 public class MFFSRecipeProvider extends BaseRecipeProvider {
 
-	public MFFSRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(output);
-	}
+    public MFFSRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+	super(output);
+    }
 
-	@Override
-	public void addRecipes() {
-		generators.add(new MFFSCraftingTableRecipes());
-	}
+    @Override
+    public void addRecipes() {
+	generators.add(new MFFSCraftingTableRecipes());
+    }
 
 }

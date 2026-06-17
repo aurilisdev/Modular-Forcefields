@@ -26,30 +26,31 @@ import voltaic.datagen.utils.client.BaseLangKeyProvider;
 @EventBusSubscriber(modid = ModularForcefields.ID, bus = EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
 
-	@SubscribeEvent
-	public static void gatherData(GatherDataEvent event) {
+    @SubscribeEvent
+    public static void gatherData(GatherDataEvent event) {
 
-		DataGenerator generator = event.getGenerator();
+	DataGenerator generator = event.getGenerator();
 
-		PackOutput output = generator.getPackOutput();
+	PackOutput output = generator.getPackOutput();
 
-		ExistingFileHelper helper = event.getExistingFileHelper();
+	ExistingFileHelper helper = event.getExistingFileHelper();
 
-		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+	CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-		if (event.includeServer()) {
+	if (event.includeServer()) {
 
-			generator.addProvider(true, new LootTableProvider(output, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(MFFSLootTablesProvider::new, LootContextParamSets.BLOCK))));
-			generator.addProvider(true, new MFFSRecipeProvider(output, lookupProvider));
-			MFFSTagsProvider.addTagProviders(generator, output, lookupProvider, helper);
+	    generator.addProvider(true, new LootTableProvider(output, Collections.emptySet(), List.of(
+		    new LootTableProvider.SubProviderEntry(MFFSLootTablesProvider::new, LootContextParamSets.BLOCK))));
+	    generator.addProvider(true, new MFFSRecipeProvider(output, lookupProvider));
+	    MFFSTagsProvider.addTagProviders(generator, output, lookupProvider, helper);
 
-		}
-		if (event.includeClient()) {
-			generator.addProvider(true, new MFFSBlockStateProvider(output, helper));
-			generator.addProvider(true, new MFFSItemModelsProvider(output, helper));
-			generator.addProvider(true, new MFFSLangKeyProvider(output, BaseLangKeyProvider.Locale.EN_US));
-			generator.addProvider(true, new MFFSSoundProvider(output, helper));
-		}
 	}
+	if (event.includeClient()) {
+	    generator.addProvider(true, new MFFSBlockStateProvider(output, helper));
+	    generator.addProvider(true, new MFFSItemModelsProvider(output, helper));
+	    generator.addProvider(true, new MFFSLangKeyProvider(output, BaseLangKeyProvider.Locale.EN_US));
+	    generator.addProvider(true, new MFFSSoundProvider(output, helper));
+	}
+    }
 
 }

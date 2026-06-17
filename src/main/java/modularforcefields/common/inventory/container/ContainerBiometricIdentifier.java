@@ -13,19 +13,20 @@ import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 
 public class ContainerBiometricIdentifier extends GenericContainerBlockEntity<TileBiometricIdentifier> {
 
-	public ContainerBiometricIdentifier(int id, Inventory playerinv) {
-		this(id, playerinv, new SimpleContainer(9), new SimpleContainerData(5));
-	}
+    public ContainerBiometricIdentifier(int id, Inventory playerinv) {
+	this(id, playerinv, new SimpleContainer(9), new SimpleContainerData(5));
+    }
 
-	public ContainerBiometricIdentifier(int id, Inventory pinv, Container inv, ContainerData data) {
-		super(ModularForcefieldsMenuTypes.CONTAINER_BIOMETRICIDENTIFIER.get(), id, pinv, inv, data);
-	}
+    public ContainerBiometricIdentifier(int id, Inventory pinv, Container inv, ContainerData data) {
+	super(ModularForcefieldsMenuTypes.CONTAINER_BIOMETRICIDENTIFIER.get(), id, pinv, inv, data);
+    }
 
-	@Override
-	public void addInventorySlots(Container inv, Inventory playerinv) {
-		for (int var4 = 0; var4 < 9; var4++) {
-			addSlot(new SlotRestricted(inv, var4, 8 + var4 * 18, 30).setRestriction(ModularForcefieldsItems.ITEM_IDENTIFICATIONCARD.get()));
-		}
+    @Override
+    public void addInventorySlots(Container inv, Inventory playerinv) {
+	for (int var4 = 0; var4 < 9; var4++) {
+	    addSlot(new SlotRestricted(inv, var4, 8 + var4 * 18, 30)
+		    .setRestriction(ModularForcefieldsItems.ITEM_IDENTIFICATIONCARD.get()));
 	}
+    }
 
 }

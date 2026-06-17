@@ -11,7 +11,7 @@ public class ItemModule extends ItemVoltaic {
     public final SubtypeModule subtype;
 
     public ItemModule(SubtypeModule subtype, Properties properties, Supplier<CreativeModeTab> creativeTab) {
-        super(properties, creativeTab);
-        this.subtype = subtype;
+	super(properties, creativeTab);
+	this.subtype = subtype;
     }
 }

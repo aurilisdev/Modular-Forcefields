@@ -13,16 +13,19 @@ import voltaic.common.block.BlockMachine;
 
 public class MFFSBlockTagsProvider extends BlockTagsProvider {
 
-    public MFFSBlockTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, ModularForcefields.ID, existingFileHelper);
+    public MFFSBlockTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider,
+	    ExistingFileHelper existingFileHelper) {
+	super(output, lookupProvider, ModularForcefields.ID, existingFileHelper);
     }
 
     @Override
     protected void addTags(Provider provider) {
 
-        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModularForcefieldsBlocks.BLOCKS_MFFSMACHINE.getAllValuesArray(new BlockMachine[0]));
+	tag(BlockTags.MINEABLE_WITH_PICKAXE)
+		.add(ModularForcefieldsBlocks.BLOCKS_MFFSMACHINE.getAllValuesArray(new BlockMachine[0]));
 
-        tag(BlockTags.NEEDS_STONE_TOOL).add(ModularForcefieldsBlocks.BLOCKS_MFFSMACHINE.getAllValuesArray(new BlockMachine[0]));
+	tag(BlockTags.NEEDS_STONE_TOOL)
+		.add(ModularForcefieldsBlocks.BLOCKS_MFFSMACHINE.getAllValuesArray(new BlockMachine[0]));
 
     }
 

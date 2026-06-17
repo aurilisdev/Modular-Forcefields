@@ -15,16 +15,23 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModularForcefieldsMenuTypes {
-	
-	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, ModularForcefields.ID);
 
-	public static final RegistryObject<MenuType<ContainerCoercionDeriver>> CONTAINER_COERCIONDERIVER = register("coercionderiver", ContainerCoercionDeriver::new);
-	public static final RegistryObject<MenuType<ContainerFortronCapacitor>> CONTAINER_FORTRONCAPACITOR = register("fortroncapacitor", ContainerFortronCapacitor::new);
-	public static final RegistryObject<MenuType<ContainerFortronFieldProjector>> CONTAINER_FORTRONFIELDPROJECTOR = register("fortronfieldprojector", ContainerFortronFieldProjector::new);
-	public static final RegistryObject<MenuType<ContainerInterdictionMatrix>> CONTAINER_INTERDICTIONMATRIX = register("interdictionmatrix", ContainerInterdictionMatrix::new);
-	public static final RegistryObject<MenuType<ContainerBiometricIdentifier>> CONTAINER_BIOMETRICIDENTIFIER = register("biometricidentifier", ContainerBiometricIdentifier::new);
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES,
+	    ModularForcefields.ID);
 
-	private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> register(String id, MenuSupplier<T> supplier) {
-		return MENU_TYPES.register(id, () -> new MenuType<>(supplier, FeatureFlags.VANILLA_SET));
-	}
+    public static final RegistryObject<MenuType<ContainerCoercionDeriver>> CONTAINER_COERCIONDERIVER = register(
+	    "coercionderiver", ContainerCoercionDeriver::new);
+    public static final RegistryObject<MenuType<ContainerFortronCapacitor>> CONTAINER_FORTRONCAPACITOR = register(
+	    "fortroncapacitor", ContainerFortronCapacitor::new);
+    public static final RegistryObject<MenuType<ContainerFortronFieldProjector>> CONTAINER_FORTRONFIELDPROJECTOR = register(
+	    "fortronfieldprojector", ContainerFortronFieldProjector::new);
+    public static final RegistryObject<MenuType<ContainerInterdictionMatrix>> CONTAINER_INTERDICTIONMATRIX = register(
+	    "interdictionmatrix", ContainerInterdictionMatrix::new);
+    public static final RegistryObject<MenuType<ContainerBiometricIdentifier>> CONTAINER_BIOMETRICIDENTIFIER = register(
+	    "biometricidentifier", ContainerBiometricIdentifier::new);
+
+    private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> register(String id,
+	    MenuSupplier<T> supplier) {
+	return MENU_TYPES.register(id, () -> new MenuType<>(supplier, FeatureFlags.VANILLA_SET));
+    }
 }

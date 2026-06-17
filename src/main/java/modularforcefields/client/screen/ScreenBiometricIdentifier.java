@@ -6,7 +6,8 @@ import net.minecraft.world.entity.player.Inventory;
 import voltaic.prefab.screen.GenericScreen;
 
 public class ScreenBiometricIdentifier extends GenericScreen<ContainerBiometricIdentifier> {
-	public ScreenBiometricIdentifier(ContainerBiometricIdentifier container, Inventory playerInventory, Component title) {
-		super(container, playerInventory, title);
-	}
+    public ScreenBiometricIdentifier(ContainerBiometricIdentifier container, Inventory playerInventory,
+	    Component title) {
+	super(container, playerInventory, title);
+    }
 }

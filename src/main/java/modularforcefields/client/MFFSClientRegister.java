@@ -19,34 +19,39 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(modid = ModularForcefields.ID, bus = EventBusSubscriber.Bus.MOD, value = {Dist.CLIENT})
+@EventBusSubscriber(modid = ModularForcefields.ID, bus = EventBusSubscriber.Bus.MOD, value = { Dist.CLIENT })
 public class MFFSClientRegister {
     public static final ResourceLocation MODEL_PREVIEWCUBE = ModularForcefields.rl("block/previewcube");
     public static final ResourceLocation MODEL_PREVIEWSPHERE = ModularForcefields.rl("block/previewsphere");
     public static final ResourceLocation MODEL_PREVIEWHALFSPHERE = ModularForcefields.rl("block/previewhalfsphere");
     public static final ResourceLocation MODEL_PREVIEWPYRAMID = ModularForcefields.rl("block/previewpyramid");
-    public static final ResourceLocation MODEL_FIELDFORTRON = ModularForcefields.rl("block/fortronfieldprojector_fortron");
+    public static final ResourceLocation MODEL_FIELDFORTRON = ModularForcefields
+	    .rl("block/fortronfieldprojector_fortron");
 
     @SubscribeEvent
     public static void onModelEvent(ModelEvent.RegisterAdditional event) {
-        event.register(MODEL_PREVIEWCUBE);
-        event.register(MODEL_PREVIEWSPHERE);
-        event.register(MODEL_PREVIEWHALFSPHERE);
-        event.register(MODEL_PREVIEWPYRAMID);
-        event.register(MODEL_FIELDFORTRON);
+	event.register(MODEL_PREVIEWCUBE);
+	event.register(MODEL_PREVIEWSPHERE);
+	event.register(MODEL_PREVIEWHALFSPHERE);
+	event.register(MODEL_PREVIEWPYRAMID);
+	event.register(MODEL_FIELDFORTRON);
     }
 
     @SubscribeEvent
     public static void registerEntities(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(ModularForcefieldsTiles.TILE_FORTRONFIELDPROJECTOR.get(), RenderFieldProjector::new);
+	event.registerBlockEntityRenderer(ModularForcefieldsTiles.TILE_FORTRONFIELDPROJECTOR.get(),
+		RenderFieldProjector::new);
     }
 
     public static void setup() {
-    	MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_COERCIONDERIVER.get(), ScreenCoercionDeriver::new);
-        MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_FORTRONCAPACITOR.get(), ScreenFortronCapacitor::new);
-        MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_FORTRONFIELDPROJECTOR.get(), ScreenFortronFieldProjector::new);
-        MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_INTERDICTIONMATRIX.get(), ScreenInterdictionMatrix::new);
-        MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_BIOMETRICIDENTIFIER.get(), ScreenBiometricIdentifier::new);
+	MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_COERCIONDERIVER.get(), ScreenCoercionDeriver::new);
+	MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_FORTRONCAPACITOR.get(), ScreenFortronCapacitor::new);
+	MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_FORTRONFIELDPROJECTOR.get(),
+		ScreenFortronFieldProjector::new);
+	MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_INTERDICTIONMATRIX.get(),
+		ScreenInterdictionMatrix::new);
+	MenuScreens.register(ModularForcefieldsMenuTypes.CONTAINER_BIOMETRICIDENTIFIER.get(),
+		ScreenBiometricIdentifier::new);
     }
 
 }

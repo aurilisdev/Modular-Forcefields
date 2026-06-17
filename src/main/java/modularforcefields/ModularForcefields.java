@@ -28,32 +28,32 @@ public class ModularForcefields {
     public static final String NAME = "Modular Forcefields";
 
     public ModularForcefields() {
-    	IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        ConfigurationHandler.registerConfig(MFFSConstants.class);
-        UnifiedModularForcefieldsRegister.register(bus);
-        MFFSTags.init();
+	IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+	ConfigurationHandler.registerConfig(MFFSConstants.class);
+	UnifiedModularForcefieldsRegister.register(bus);
+	MFFSTags.init();
     }
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            MFFSClientRegister.setup();
-        });
+	event.enqueueWork(() -> {
+	    MFFSClientRegister.setup();
+	});
     }
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void onColorEvent(RegisterColorHandlersEvent.Block event) {
-        event.register(new BlockColorFortronField(), ModularForcefieldsBlocks.BLOCK_FORTRONFIELD.get());
+	event.register(new BlockColorFortronField(), ModularForcefieldsBlocks.BLOCK_FORTRONFIELD.get());
     }
 
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {
-    	NetworkHandler.init();
+	NetworkHandler.init();
     }
 
     public static final ResourceLocation rl(String path) {
-        return new ResourceLocation(ModularForcefields.ID, path);
+	return new ResourceLocation(ModularForcefields.ID, path);
     }
 }

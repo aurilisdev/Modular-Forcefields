@@ -20,85 +20,86 @@ public enum SubtypeMFFSMachine implements ISubtype, IMachine {
     coercionderiver(true, TileCoercionDeriver::new, MachineProperties.builder().setLitBrightness(6)),
     fortroncapacitor(true, TileFortronCapacitor::new, MachineProperties.builder().setLitBrightness(11)),
     fortronfieldprojector(true, TileFortronFieldProjector::new, MachineProperties.builder().setLitBrightness(15)),
-    interdictionmatrix(true, TileInterdictionMatrix::new, MachineProperties.builder().setLitBrightness(11)),
-    ;
+    interdictionmatrix(true, TileInterdictionMatrix::new, MachineProperties.builder().setLitBrightness(11)),;
 
     private final BlockEntityType.BlockEntitySupplier<BlockEntity> blockEntitySupplier;
     private final boolean showInItemGroup;
     private final MachineProperties properties;
 
-    private SubtypeMFFSMachine(boolean showInItemGroup, BlockEntityType.BlockEntitySupplier<BlockEntity> blockEntitySupplier) {
-        this(showInItemGroup, blockEntitySupplier, MachineProperties.DEFAULT);
+    private SubtypeMFFSMachine(boolean showInItemGroup,
+	    BlockEntityType.BlockEntitySupplier<BlockEntity> blockEntitySupplier) {
+	this(showInItemGroup, blockEntitySupplier, MachineProperties.DEFAULT);
     }
 
-    private SubtypeMFFSMachine(boolean showInItemGroup, BlockEntityType.BlockEntitySupplier<BlockEntity> blockEntitySupplier, MachineProperties properties) {
-        this.showInItemGroup = showInItemGroup;
-        this.blockEntitySupplier = blockEntitySupplier;
-        this.properties = properties;
+    private SubtypeMFFSMachine(boolean showInItemGroup,
+	    BlockEntityType.BlockEntitySupplier<BlockEntity> blockEntitySupplier, MachineProperties properties) {
+	this.showInItemGroup = showInItemGroup;
+	this.blockEntitySupplier = blockEntitySupplier;
+	this.properties = properties;
     }
 
     @Override
     public BlockEntityType.BlockEntitySupplier<BlockEntity> getBlockEntitySupplier() {
-        return blockEntitySupplier;
+	return blockEntitySupplier;
     }
 
     @Override
     public int getLitBrightness() {
-        return properties.litBrightness;
+	return properties.litBrightness;
     }
 
     @Override
     public RenderShape getRenderShape() {
-        return properties.renderShape;
+	return properties.renderShape;
     }
 
     @Override
     public boolean isMultiblock() {
-        return properties.isMultiblock;
+	return properties.isMultiblock;
     }
 
     @Override
     public boolean propegatesLightDown() {
-        return properties.propegatesLightDown;
+	return properties.propegatesLightDown;
     }
 
     @Override
     public String tag() {
-        return name();
+	return name();
     }
 
     @Override
     public String forgeTag() {
-        return tag();
+	return tag();
     }
 
     @Override
     public boolean isItem() {
-        return false;
+	return false;
     }
 
     @Override
     public boolean isPlayerStorable() {
-        return false;
+	return false;
     }
 
     @Override
     public IMultiblockParentBlock.SubnodeWrapper getSubnodes() {
-        return properties.wrapper;
+	return properties.wrapper;
     }
 
     @Override
     public VoxelShapeProvider getVoxelShapeProvider() {
-        return properties.provider;
+	return properties.provider;
     }
 
     @Override
     public boolean usesLit() {
-        return properties.usesLit;
+	return properties.usesLit;
     }
 
     public boolean showInItemGroup() {
-        return showInItemGroup;
+	return showInItemGroup;
     }
 
 }
