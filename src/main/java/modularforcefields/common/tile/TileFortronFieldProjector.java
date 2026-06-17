@@ -137,7 +137,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 
     @Override
     protected Predicate<BlockEntity> getConnectionTest() {
-	return b -> b instanceof TileFortronCapacitor;
+	return TileFortronCapacitor.class::isInstance;
     }
 
     public TileFortronFieldProjector(BlockPos pos, BlockState state) {

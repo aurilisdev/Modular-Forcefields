@@ -11,20 +11,21 @@ import voltaic.client.guidebook.utils.pagedata.graphics.ItemWrapperObject;
 
 public class ChapterBlocks extends Chapter {
 
-    private static final ItemWrapperObject LOGO = new ItemWrapperObject(7, 10, 32, 32, 32, 2.0F, ModularForcefieldsItems.ITEMS_MFFSMACHINE.getValue(SubtypeMFFSMachine.fortronfieldprojector));
+    private static final ItemWrapperObject LOGO = new ItemWrapperObject(7, 10, 32, 32, 32, 2.0F,
+	    ModularForcefieldsItems.ITEMS_MFFSMACHINE.getValue(SubtypeMFFSMachine.fortronfieldprojector));
 
     public ChapterBlocks(Module module) {
-        super(module);
+	super(module);
     }
 
     @Override
     public AbstractGraphicWrapper<?> getLogo() {
-        return LOGO;
+	return LOGO;
     }
 
     @Override
     public MutableComponent getTitle() {
-        return MFFSTextUtils.guidebook("chapter.blocks");
+	return MFFSTextUtils.guidebook("chapter.blocks");
     }
 
     @Override

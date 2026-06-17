@@ -20,37 +20,49 @@ import voltaic.prefab.screen.component.types.ScreenComponentSlot;
 import voltaic.prefab.screen.component.types.gauges.ScreenComponentFluidGauge;
 
 public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronFieldProjector> {
-    public ScreenFortronFieldProjector(ContainerFortronFieldProjector container, Inventory playerInventory, Component title) {
-        super(container, playerInventory, title);
-        addComponent(new ScreenComponentFluidGauge(() -> {
-            TileFortronFieldProjector projector = container.getSafeHost();
-            if (projector != null) {
-                FluidTank tank = new FluidTank(projector.fortronCapacity.getValue().intValue());
-                tank.setFluid(new FluidStack(ModularForcefieldsFluids.FLUID_FORTRON, projector.fortron.getValue().intValue()));
-                return tank;
-            }
-            return null;
-        }, 8, 77));
-        addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
-            if (menu.getUnsafeHost() instanceof TileFortronFieldProjector projector) {
-                matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", projector.getConnections()), 25, 115, 4210752, false);
-                matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.usage", ChatFormatter.getChatDisplayShort((int) (projector.getFortronUse() / 1000.0 * 20), DisplayUnits.BUCKETS)).append(" / s"), 25, 105, 4210752, false);
-                matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", projector.getFrequency()), 25, 95, 4210752, false);
-                matrixStack.drawString(font, MFFSTextUtils.gui("fieldprojector.status", projector.getStatus().name()), 8, 130, 4210752, false);
-            }
-        }));
-        imageHeight += 71;
-        inventoryLabelY += 71;
+    public ScreenFortronFieldProjector(ContainerFortronFieldProjector container, Inventory playerInventory,
+	    Component title) {
+	super(container, playerInventory, title);
+	addComponent(new ScreenComponentFluidGauge(() -> {
+	    TileFortronFieldProjector projector = container.getSafeHost();
+	    if (projector != null) {
+		FluidTank tank = new FluidTank(projector.fortronCapacity.getValue().intValue());
+		tank.setFluid(new FluidStack(ModularForcefieldsFluids.FLUID_FORTRON,
+			projector.fortron.getValue().intValue()));
+		return tank;
+	    }
+	    return null;
+	}, 8, 77));
+	addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
+	    if (menu.getUnsafeHost() instanceof TileFortronFieldProjector projector) {
+		matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", projector.getConnections()), 25,
+			115, 4210752, false);
+		matrixStack.drawString(font,
+			MFFSTextUtils
+				.gui("fortrondevice.usage",
+					ChatFormatter.getChatDisplayShort(
+						(int) (projector.getFortronUse() / 1000.0 * 20), DisplayUnits.BUCKETS))
+				.append(" / s"),
+			25, 105, 4210752, false);
+		matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", projector.getFrequency()), 25,
+			95, 4210752, false);
+		matrixStack.drawString(font, MFFSTextUtils.gui("fieldprojector.status", projector.getStatus().name()),
+			8, 130, 4210752, false);
+	    }
+	}));
+	imageHeight += 71;
+	inventoryLabelY += 71;
     }
 
     @Override
     protected ScreenComponentSlot createScreenSlot(Slot slot) {
-        ScreenComponentSlot component = super.createScreenSlot(slot);
-        for (Entry<List<Integer>, String> ent : ContainerFortronFieldProjector.SLOT_MAP.entrySet()) {
-            if (ent.getKey().contains(slot.index)) {
-                component.tooltip(() -> slot.getItem().isEmpty() ? Component.literal(ent.getValue()) : slot.getItem().getHoverName());
-            }
-        }
-        return component;
+	ScreenComponentSlot component = super.createScreenSlot(slot);
+	for (Entry<List<Integer>, String> ent : ContainerFortronFieldProjector.SLOT_MAP.entrySet()) {
+	    if (ent.getKey().contains(slot.index)) {
+		component.tooltip(() -> slot.getItem().isEmpty() ? Component.literal(ent.getValue())
+			: slot.getItem().getHoverName());
+	    }
+	}
+	return component;
     }
 }

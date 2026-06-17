@@ -11,9 +11,11 @@ import voltaic.common.fluid.SimpleWaterBasedFluidType;
 import voltaic.prefab.utilities.math.Color;
 
 public class ModularForcefieldsFluids {
-	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID, ModularForcefields.ID);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID,
+	    ModularForcefields.ID);
 
-	public static final DeferredHolder<Fluid, FluidNonPlaceable> FLUID_FORTRON = FLUIDS.register("fluidfortron", () -> new FluidNonPlaceable(Items.AIR.builtInRegistryHolder(), new SimpleWaterBasedFluidType(ModularForcefields.ID, "fluidfortron", "fortron", Color.WHITE)));
-
+    public static final DeferredHolder<Fluid, FluidNonPlaceable> FLUID_FORTRON = FLUIDS.register("fluidfortron",
+	    () -> new FluidNonPlaceable(Items.AIR.builtInRegistryHolder(),
+		    new SimpleWaterBasedFluidType(ModularForcefields.ID, "fluidfortron", "fortron", Color.WHITE)));
 
 }

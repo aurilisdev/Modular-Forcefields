@@ -14,22 +14,22 @@ import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 
 public class ContainerFortronCapacitor extends GenericContainerBlockEntity<TileFortronCapacitor> {
 
-	public ContainerFortronCapacitor(int id, Inventory playerinv) {
-		this(id, playerinv, new SimpleContainer(4), new SimpleContainerData(3));
-	}
+    public ContainerFortronCapacitor(int id, Inventory playerinv) {
+	this(id, playerinv, new SimpleContainer(4), new SimpleContainerData(3));
+    }
 
-	public ContainerFortronCapacitor(int id, Inventory pinv, Container inv, ContainerData data) {
-		super(ModularForcefieldsMenuTypes.CONTAINER_FORTRONCAPACITOR.get(), id, pinv, inv, data);
-	}
+    public ContainerFortronCapacitor(int id, Inventory pinv, Container inv, ContainerData data) {
+	super(ModularForcefieldsMenuTypes.CONTAINER_FORTRONCAPACITOR.get(), id, pinv, inv, data);
+    }
 
-	@Override
-	public void addInventorySlots(Container inv, Inventory playerinv) {
-		setPlayerInvOffset(40);
-		SubtypeModule[] valid = TileCoercionDeriver.VALIDMODULES.toArray(new SubtypeModule[0]);
-		addSlot(new SlotModule(inv, nextIndex(), 9, 87, valid));
-		addSlot(new SlotModule(inv, nextIndex(), 154, 47, valid));
-		addSlot(new SlotModule(inv, nextIndex(), 154, 67, valid));
-		addSlot(new SlotModule(inv, nextIndex(), 154, 87, valid));
-	}
+    @Override
+    public void addInventorySlots(Container inv, Inventory playerinv) {
+	setPlayerInvOffset(40);
+	SubtypeModule[] valid = TileCoercionDeriver.VALIDMODULES.toArray(new SubtypeModule[0]);
+	addSlot(new SlotModule(inv, nextIndex(), 9, 87, valid));
+	addSlot(new SlotModule(inv, nextIndex(), 154, 47, valid));
+	addSlot(new SlotModule(inv, nextIndex(), 154, 67, valid));
+	addSlot(new SlotModule(inv, nextIndex(), 154, 87, valid));
+    }
 
 }

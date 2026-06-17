@@ -8,13 +8,13 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber(modid = ModularForcefields.ID, bus = EventBusSubscriber.Bus.MOD)
 public class NetworkHandler {
-	private static final String PROTOCOL_VERSION = "1";
+    private static final String PROTOCOL_VERSION = "1";
 
-	@SubscribeEvent
-	public static void registerPackets(final RegisterPayloadHandlersEvent event) {
-		@SuppressWarnings("unused")
-		final PayloadRegistrar registry = event.registrar(ModularForcefields.ID).versioned(PROTOCOL_VERSION).optional();
+    @SubscribeEvent
+    public static void registerPackets(final RegisterPayloadHandlersEvent event) {
+	@SuppressWarnings("unused")
+	final PayloadRegistrar registry = event.registrar(ModularForcefields.ID).versioned(PROTOCOL_VERSION).optional();
 
-	}
+    }
 
 }

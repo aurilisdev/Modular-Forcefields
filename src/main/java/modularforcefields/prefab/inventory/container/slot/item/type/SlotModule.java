@@ -16,14 +16,14 @@ public class SlotModule extends SlotGeneric {
     private final List<Item> items = new ArrayList<>();
 
     public SlotModule(Container inventory, int index, int x, int y, SubtypeModule... valid) {
-        super(ScreenComponentSlot.SlotType.NORMAL, ScreenComponentSlot.IconType.UPGRADE_DARK, inventory, index, x, y);
+	super(ScreenComponentSlot.SlotType.NORMAL, ScreenComponentSlot.IconType.UPGRADE_DARK, inventory, index, x, y);
 
-        items.addAll(ModularForcefieldsItems.ITEMS_MODULE.getAllValues());
+	items.addAll(ModularForcefieldsItems.ITEMS_MODULE.getAllValues());
     }
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        return items.contains(stack.getItem());
+	return items.contains(stack.getItem());
     }
 
 }

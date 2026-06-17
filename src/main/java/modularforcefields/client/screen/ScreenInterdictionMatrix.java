@@ -15,25 +15,31 @@ import voltaic.prefab.screen.component.types.ScreenComponentMultiLabel;
 import voltaic.prefab.screen.component.types.gauges.ScreenComponentFluidGauge;
 
 public class ScreenInterdictionMatrix extends GenericScreen<ContainerInterdictionMatrix> {
-	public ScreenInterdictionMatrix(ContainerInterdictionMatrix container, Inventory playerInventory, Component title) {
-		super(container, playerInventory, title);
-		addComponent(new ScreenComponentFluidGauge(() -> {
-			TileInterdictionMatrix matrix = container.getSafeHost();
-			if (matrix != null) {
-				FluidTank tank = new FluidTank(matrix.fortronCapacity.getValue());
-				tank.setFluid(new FluidStack(ModularForcefieldsFluids.FLUID_FORTRON, matrix.fortron.getValue()));
-				return tank;
-			}
-			return null;
-		}, 8, 60));
-		addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
-			if (menu.getUnsafeHost() instanceof TileInterdictionMatrix matrix) {
-				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter.getChatDisplayShort((int)(matrix.getFortronUse() / 1000.0 * 20), DisplayUnits.BUCKETS).append(" / s")), 25, 105, 4210752, false);
-				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", matrix.getConnections()), 25, 95, 4210752, false);
-				matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", matrix.getFrequency()), 25, 85, 4210752, false);
-			}
-		}));
-		imageHeight += 51;
-		inventoryLabelY += 51;
-	}
+    public ScreenInterdictionMatrix(ContainerInterdictionMatrix container, Inventory playerInventory, Component title) {
+	super(container, playerInventory, title);
+	addComponent(new ScreenComponentFluidGauge(() -> {
+	    TileInterdictionMatrix matrix = container.getSafeHost();
+	    if (matrix != null) {
+		FluidTank tank = new FluidTank(matrix.fortronCapacity.getValue());
+		tank.setFluid(new FluidStack(ModularForcefieldsFluids.FLUID_FORTRON, matrix.fortron.getValue()));
+		return tank;
+	    }
+	    return null;
+	}, 8, 60));
+	addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
+	    if (menu.getUnsafeHost() instanceof TileInterdictionMatrix matrix) {
+		matrixStack.drawString(font,
+			MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter
+				.getChatDisplayShort((int) (matrix.getFortronUse() / 1000.0 * 20), DisplayUnits.BUCKETS)
+				.append(" / s")),
+			25, 105, 4210752, false);
+		matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", matrix.getConnections()), 25, 95,
+			4210752, false);
+		matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.frequency", matrix.getFrequency()), 25,
+			85, 4210752, false);
+	    }
+	}));
+	imageHeight += 51;
+	inventoryLabelY += 51;
+    }
 }

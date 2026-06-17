@@ -7,13 +7,13 @@ import voltaic.datagen.utils.client.BaseSoundProvider;
 
 public class MFFSSoundProvider extends BaseSoundProvider {
 
-	public MFFSSoundProvider(PackOutput output, ExistingFileHelper helper) {
-		super(output, helper, ModularForcefields.ID);
-	}
+    public MFFSSoundProvider(PackOutput output, ExistingFileHelper helper) {
+	super(output, helper, ModularForcefields.ID);
+    }
 
-	@Override
-	public void registerSounds() {
+    @Override
+    public void registerSounds() {
 
-	}
+    }
 
 }

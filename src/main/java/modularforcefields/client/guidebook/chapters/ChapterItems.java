@@ -10,21 +10,21 @@ import voltaic.client.guidebook.utils.pagedata.graphics.ItemWrapperObject;
 
 public class ChapterItems extends Chapter {
 
-    private static final ItemWrapperObject LOGO = new ItemWrapperObject(7, 10, 32, 32, 32, 2.0F, ModularForcefieldsItems.ITEM_IDENTIFICATIONCARD.get());
-
+    private static final ItemWrapperObject LOGO = new ItemWrapperObject(7, 10, 32, 32, 32, 2.0F,
+	    ModularForcefieldsItems.ITEM_IDENTIFICATIONCARD.get());
 
     public ChapterItems(Module module) {
-        super(module);
+	super(module);
     }
 
     @Override
     public AbstractGraphicWrapper<?> getLogo() {
-        return LOGO;
+	return LOGO;
     }
 
     @Override
     public MutableComponent getTitle() {
-        return MFFSTextUtils.guidebook("chapter.items");
+	return MFFSTextUtils.guidebook("chapter.items");
     }
 
     @Override

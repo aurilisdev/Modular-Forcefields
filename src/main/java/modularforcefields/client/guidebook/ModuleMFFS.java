@@ -12,24 +12,25 @@ import voltaic.client.guidebook.utils.pagedata.graphics.ImageWrapperObject;
 
 public class ModuleMFFS extends Module {
 
-    private static final ImageWrapperObject LOGO = new ImageWrapperObject(0, 0, 0, 0, 32, 32, 32, 32, ModularForcefields.rl("textures/screen/guidebook/modularforcefieldslogo.png"));
+    private static final ImageWrapperObject LOGO = new ImageWrapperObject(0, 0, 0, 0, 32, 32, 32, 32,
+	    ModularForcefields.rl("textures/screen/guidebook/modularforcefieldslogo.png"));
 
     @Override
     public AbstractGraphicWrapper<?> getLogo() {
-        return LOGO;
+	return LOGO;
     }
 
     @Override
     public MutableComponent getTitle() {
-        return MFFSTextUtils.guidebook(ModularForcefields.ID);
+	return MFFSTextUtils.guidebook(ModularForcefields.ID);
     }
 
     @Override
     public void addChapters() {
 
-        chapters.add(new ChapterBlocks(this));
-        chapters.add(new ChapterModules(this));
-        chapters.add(new ChapterItems(this));
+	chapters.add(new ChapterBlocks(this));
+	chapters.add(new ChapterModules(this));
+	chapters.add(new ChapterItems(this));
 
     }
 

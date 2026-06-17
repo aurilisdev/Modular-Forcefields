@@ -11,10 +11,11 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MFFSTagsProvider {
 
-    public static void addTagProviders(DataGenerator generator, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper helper) {
-        MFFSBlockTagsProvider blockProvider = new MFFSBlockTagsProvider(output, lookupProvider, helper);
-        generator.addProvider(true, blockProvider);
-        generator.addProvider(true, new MFFSItemTagsProvider(output, lookupProvider, blockProvider, helper));
+    public static void addTagProviders(DataGenerator generator, PackOutput output,
+	    CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper helper) {
+	MFFSBlockTagsProvider blockProvider = new MFFSBlockTagsProvider(output, lookupProvider, helper);
+	generator.addProvider(true, blockProvider);
+	generator.addProvider(true, new MFFSItemTagsProvider(output, lookupProvider, blockProvider, helper));
     }
 
 }
