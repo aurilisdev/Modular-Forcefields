@@ -251,7 +251,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
             if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
                 if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
                 	Entity player = event.getEntity();
-                    if (en.getKey().validPlayers.contains(player.getUUID()) || (player instanceof Player pl && pl.isCreative())) {
+                    if (en.getKey().validPlayers.contains(player.getUUID()) || player instanceof Player pl && pl.isCreative()) {
                         continue;
                     }
                     event.setCanceled(true);
@@ -268,7 +268,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
             if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
                 if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
                 	Entity player = event.getEntity();
-                    if (en.getKey().validPlayers.contains(player.getUUID()) || (player instanceof Player pl && pl.isCreative())) {
+                    if (en.getKey().validPlayers.contains(player.getUUID()) || player instanceof Player pl && pl.isCreative()) {
                         continue;
                     }
                     event.setCanceled(true);
@@ -284,7 +284,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
             if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
                 if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
                 	Entity player = event.getEntity();
-                    if (en.getKey().validPlayers.contains(player.getUUID()) || (player instanceof Player pl && pl.isCreative())) {
+                    if (en.getKey().validPlayers.contains(player.getUUID()) || player instanceof Player pl && pl.isCreative()) {
                         continue;
                     }
                     event.setCanceled(true);
@@ -301,7 +301,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
             if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
                 if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
                 	Entity player = event.getEntity();
-                    if (en.getKey().validPlayers.contains(player.getUUID()) || (player instanceof Player pl && pl.isCreative())) {
+                    if (en.getKey().validPlayers.contains(player.getUUID()) || player instanceof Player pl && pl.isCreative()) {
                         continue;
                     }
                     event.setCanceled(true);

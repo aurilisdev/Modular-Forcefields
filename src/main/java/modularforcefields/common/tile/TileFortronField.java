@@ -45,7 +45,7 @@ public class TileFortronField extends GenericTile {
 
     @Override
     public int hashCode() {
-        return (int) ((10000 - getBlockPos().getY()) + level.random.nextDouble() * 3 + (int) Math.sqrt(getBlockPos().distToCenterSqr(getProjectorPos().getX() + 0.5, getBlockPos().getY() + 0.5, getProjectorPos().getZ() + 0.5)));
+        return (int) (10000 - getBlockPos().getY() + level.random.nextDouble() * 3 + (int) Math.sqrt(getBlockPos().distToCenterSqr(getProjectorPos().getX() + 0.5, getBlockPos().getY() + 0.5, getProjectorPos().getZ() + 0.5)));
     }
 
     public BlockPos getProjectorPos() {

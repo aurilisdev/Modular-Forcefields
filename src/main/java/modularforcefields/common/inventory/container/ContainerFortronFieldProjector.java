@@ -16,14 +16,14 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import voltaic.prefab.inventory.container.types.GenericContainerBlockEntity;
 
 public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<TileFortronFieldProjector> {
-	public static final int[] SLOT_UPGRADES = new int[] { 12, 13, 14, 15, 16, 17 };
-	public static final int[] SLOT_MODULES = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-	public static final Integer[] SLOT_NORTH = new Integer[] { 4, 6 };
-	public static final Integer[] SLOT_SOUTH = new Integer[] { 5, 7 };
-	public static final Integer[] SLOT_EAST = new Integer[] { 9, 10 };
-	public static final Integer[] SLOT_WEST = new Integer[] { 1, 2 };
-	public static final Integer[] SLOT_UP = new Integer[] { 0, 8 };
-	public static final Integer[] SLOT_DOWN = new Integer[] { 3, 11 };
+	public static final int[] SLOT_UPGRADES = { 12, 13, 14, 15, 16, 17 };
+	public static final int[] SLOT_MODULES = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+	public static final Integer[] SLOT_NORTH = { 4, 6 };
+	public static final Integer[] SLOT_SOUTH = { 5, 7 };
+	public static final Integer[] SLOT_EAST = { 9, 10 };
+	public static final Integer[] SLOT_WEST = { 1, 2 };
+	public static final Integer[] SLOT_UP = { 0, 8 };
+	public static final Integer[] SLOT_DOWN = { 3, 11 };
 	public static final int SLOT_TYPE = 19;
 	public static final HashMap<List<Integer>, String> SLOT_MAP = new HashMap<>();
 	static {
