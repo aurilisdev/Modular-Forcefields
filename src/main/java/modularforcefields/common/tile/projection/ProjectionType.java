@@ -16,7 +16,7 @@ public enum ProjectionType {
                 for (int k = proj.zRadiusNeg.getValue(); k <= proj.zRadiusPos.getValue(); k++) {
                     boolean isEdge = i == proj.xRadiusNeg.getValue() || i == proj.xRadiusPos.getValue() || j == proj.yRadiusNeg.getValue() || j == proj.yRadiusPos.getValue() || k == proj.zRadiusNeg.getValue() || k == proj.zRadiusPos.getValue();
                     if (proj.isInterior() != isEdge) {
-                        proj.calculatedFieldPoints.add(new HashDistanceBlockPos(i, j, k, (int) ((10000 - j) + rand.nextDouble() * 3 + (int) Math.sqrt(new BlockPos(i, j, k).distToCenterSqr(proj.getBlockPos().getX() + 0.5, j + 0.5, proj.getBlockPos().getZ() + 0.5)))));
+                        proj.calculatedFieldPoints.add(new HashDistanceBlockPos(i, j, k, (int) (10000 - j + rand.nextDouble() * 3 + (int) Math.sqrt(new BlockPos(i, j, k).distToCenterSqr(proj.getBlockPos().getX() + 0.5, j + 0.5, proj.getBlockPos().getZ() + 0.5)))));
                     }
                 }
             }

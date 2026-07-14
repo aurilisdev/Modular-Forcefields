@@ -6,6 +6,7 @@ import modularforcefields.common.block.SubtypeMFFSMachine;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +19,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import voltaic.api.registration.BulkRegistryObject;
 import voltaic.common.block.BlockMachine;
-import net.minecraft.world.InteractionResult;
 
 public class ModularForcefieldsBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ModularForcefields.ID);
