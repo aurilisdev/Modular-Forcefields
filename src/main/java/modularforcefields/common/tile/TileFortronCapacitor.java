@@ -63,7 +63,7 @@ public class TileFortronCapacitor extends TileFortronConnective {
 	if (entity instanceof TileFortronCapacitor capacitor) {
 	    for (TileFortronConnective connective : connections) {
 		if (connective instanceof TileFortronFieldProjector projector) {
-		    if (projector.activeFields.isEmpty()) {
+		    if (!projector.hasFieldBlocks()) {
 			continue;
 		    }
 		    if (capacitor.connections.contains(projector)) {

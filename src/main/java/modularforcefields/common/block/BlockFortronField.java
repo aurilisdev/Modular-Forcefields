@@ -3,11 +3,11 @@ package modularforcefields.common.block;
 import java.util.List;
 
 import modularforcefields.common.item.subtype.SubtypeModule;
-import modularforcefields.common.tile.FortronFieldStatus;
-import modularforcefields.common.tile.TileFortronField;
 import modularforcefields.common.tile.TileFortronFieldProjector;
+import modularforcefields.common.world.FortronFieldData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -15,9 +15,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -30,9 +27,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import voltaic.prefab.block.GenericEntityBlock;
 
-public class BlockFortronField extends GenericEntityBlock {
+public class BlockFortronField extends Block {
     public static final EnumProperty<DyeColor> COLOR = EnumProperty.create("color", DyeColor.class);
 
     public BlockFortronField() {
@@ -71,46 +67,46 @@ public class BlockFortronField extends GenericEntityBlock {
     }
 
     @Override
-    public void entityInside(BlockState state, Level lvl, BlockPos pos, Entity ent) {
-	if (!lvl.isClientSide()) {
-	    if (ent instanceof LivingEntity living) {
-		if (lvl.getBlockEntity(pos) instanceof TileFortronField field) {
-		    if (field.getProjectorPos() != null && lvl
-			    .getBlockEntity(field.getProjectorPos()) instanceof TileFortronFieldProjector projector) {
-			int count = projector.countModules(SubtypeModule.upgradeshock);
-			if (count > 0) {
-			    living.hurt(living.damageSources().magic(), count);
-			}
-		    }
-		}
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+
+	if (!(level instanceof ServerLevel serverLevel) || !(entity instanceof LivingEntity living)) {
+
+	    return;
+	}
+
+	FortronFieldData data = FortronFieldData.get(serverLevel);
+
+	int shock = 0;
+
+	for (long owner : data.getOwners(pos)) {
+
+	    TileFortronFieldProjector projector = data.getLoadedProjector(serverLevel, owner);
+
+	    if (projector != null) {
+		shock = Math.max(shock, projector.countModules(SubtypeModule.upgradeshock));
 	    }
+	}
+
+	if (shock > 0) {
+	    living.hurt(living.damageSources().magic(), shock);
 	}
     }
 
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest,
 	    FluidState fluid) {
-	if (level.getBlockEntity(pos) instanceof TileFortronField field) {
-	    BlockPos projectorPos = field.getProjectorPos();
-	    if (projectorPos != null
-		    && level.getBlockEntity(projectorPos) instanceof TileFortronFieldProjector projector) {
-		if (projector.getStatus() != FortronFieldStatus.DESTROYING) {
-		    return false;
-		}
-	    }
+
+	if (level instanceof ServerLevel serverLevel && FortronFieldData.get(serverLevel).hasOwners(pos)) {
+
+	    return false;
 	}
+
 	return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 
     @Override
     public VoxelShape getVisualShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
 	return Shapes.empty();
-    }
-
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level lvl, BlockState state,
-	    BlockEntityType<T> type) {
-	return null;
     }
 
     @Override
@@ -126,11 +122,6 @@ public class BlockFortronField extends GenericEntityBlock {
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
 	return true;
-    }
-
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-	return new TileFortronField(pos, state);
     }
 
 }

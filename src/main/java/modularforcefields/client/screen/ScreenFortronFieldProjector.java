@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
+import modularforcefields.common.settings.MFFSConstants;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.prefab.utils.MFFSTextUtils;
 import modularforcefields.registers.ModularForcefieldsFluids;
@@ -53,9 +54,32 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
 		    4210752, false);
 	    matrixStack.drawString(font, MFFSTextUtils.gui("fieldprojector.status", projector.getStatus().name()), 8,
 		    130, 4210752, false);
+	    double maxHealth = MFFSConstants.FORTRONFIELD_MAXHEALTH;
+	    double currentHealth = Math.max(0.0, Math.min(projector.health.getValue(), maxHealth));
+	    double healthPercent = maxHealth <= 0.0 ? 0.0 : currentHealth / maxHealth;
+
+	    int barX = 8;
+	    int barY = 143;
+	    int barWidth = 160;
+	    int barHeight = 10;
+	    int filledWidth = (int) Math.round(barWidth * healthPercent);
+
+	    matrixStack.fill(barX, barY, barX + barWidth, barY + barHeight, 0xFF202020);
+
+	    int healthColor = healthPercent > 0.5 ? 0xFF55FF55 : healthPercent > 0.25 ? 0xFFFFFF55 : 0xFFFF5555;
+	    matrixStack.fill(barX, barY, barX + filledWidth, barY + barHeight, healthColor);
+
+	    matrixStack.fill(barX, barY, barX + barWidth, barY + 1, 0xFF555555);
+	    matrixStack.fill(barX, barY + barHeight - 1, barX + barWidth, barY + barHeight, 0xFF555555);
+	    matrixStack.fill(barX, barY, barX + 1, barY + barHeight, 0xFF555555);
+	    matrixStack.fill(barX + barWidth - 1, barY, barX + barWidth, barY + barHeight, 0xFF555555);
+
+	    matrixStack.drawString(font, Component.literal(String.format("%.0f / %.0f HP", currentHealth, maxHealth)),
+		    25, 156, 4210752, false);
+
 	}));
-	imageHeight += 71;
-	inventoryLabelY += 71;
+	imageHeight += 93;
+	inventoryLabelY += 93;
     }
 
     @Override

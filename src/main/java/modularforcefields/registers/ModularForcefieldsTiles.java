@@ -7,7 +7,6 @@ import modularforcefields.common.block.SubtypeMFFSMachine;
 import modularforcefields.common.tile.TileBiometricIdentifier;
 import modularforcefields.common.tile.TileCoercionDeriver;
 import modularforcefields.common.tile.TileFortronCapacitor;
-import modularforcefields.common.tile.TileFortronField;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.common.tile.TileInterdictionMatrix;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -43,8 +42,4 @@ public class ModularForcefieldsTiles {
 	    .register("interdictionmatrix", () -> new BlockEntityType<>(TileInterdictionMatrix::new, Sets.newHashSet(
 		    ModularForcefieldsBlocks.BLOCKS_MFFSMACHINE.getValue(SubtypeMFFSMachine.interdictionmatrix)),
 		    null));
-    public static final RegistryObject<BlockEntityType<TileFortronField>> TILE_FORTRONFIELD = BLOCK_ENTITY_TYPES
-	    .register("fortronfield", () -> new BlockEntityType<>(TileFortronField::new,
-		    Sets.newHashSet(ModularForcefieldsBlocks.BLOCK_FORTRONFIELD.get()), null));
-
 }
