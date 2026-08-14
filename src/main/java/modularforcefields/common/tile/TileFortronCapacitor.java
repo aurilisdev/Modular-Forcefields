@@ -49,22 +49,22 @@ public class TileFortronCapacitor extends TileFortronConnective {
     }
 
     protected boolean canSendTo(BlockEntity entity) {
-        if (entity instanceof TileCoercionDeriver) {
-            return false;
-        }
-        if (entity instanceof TileFortronCapacitor capacitor) {
-            for (TileFortronConnective connective : connections) {
-                if (connective instanceof TileFortronFieldProjector projector) {
-                    if (projector.activeFields.isEmpty()) {
-                        continue;
-                    }
-                    if (capacitor.connections.contains(projector)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
+	if (entity instanceof TileCoercionDeriver) {
+	    return false;
+	}
+	if (entity instanceof TileFortronCapacitor capacitor) {
+	    for (TileFortronConnective connective : connections) {
+		if (connective instanceof TileFortronFieldProjector projector) {
+		    if (!projector.hasFieldBlocks()) {
+			continue;
+		    }
+		    if (capacitor.connections.contains(projector)) {
+			return false;
+		    }
+		}
+	    }
+	}
+	return true;
     }
 
     @Override

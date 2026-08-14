@@ -3,11 +3,11 @@ package modularforcefields.common.block;
 import java.util.List;
 
 import modularforcefields.common.item.subtype.SubtypeModule;
-import modularforcefields.common.tile.FortronFieldStatus;
-import modularforcefields.common.tile.TileFortronField;
 import modularforcefields.common.tile.TileFortronFieldProjector;
+import modularforcefields.common.world.FortronFieldData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,9 +16,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -31,99 +28,101 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import voltaic.prefab.block.GenericEntityBlock;
 
-public class BlockFortronField extends GenericEntityBlock {
+public class BlockFortronField extends Block {
     public static final EnumProperty<DyeColor> COLOR = EnumProperty.create("color", DyeColor.class);
 
     public BlockFortronField() {
-        super(BlockBehaviour.Properties.of(Material.PORTAL).color(MaterialColor.STONE).strength(-1.0F, 3600000.0F).noOcclusion());
-        registerDefaultState(stateDefinition.any().setValue(COLOR, DyeColor.LIGHT_BLUE));
+	super(BlockBehaviour.Properties.of(Material.PORTAL).color(MaterialColor.STONE).strength(-1.0F, 3600000.0F)
+		.noOcclusion());
+	registerDefaultState(stateDefinition.any().setValue(COLOR, DyeColor.LIGHT_BLUE));
     }
 
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(COLOR);
+	super.createBlockStateDefinition(builder);
+	builder.add(COLOR);
     }
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return 8;
+	return 8;
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        if (getter instanceof Level level) {
-            float bound = level.isClientSide() ? 0.01f : 0.0625F;
-            List<Player> players = level.getEntities(EntityTypeTest.forClass(Player.class), new AABB(pos.getX() - bound, pos.getY() - bound, pos.getZ() - bound, pos.getX() + 1 + bound, pos.getY() + 1 + bound, pos.getZ() + 1 + bound), t -> true);
-            for (Player player : players) {
-                if (player.isCreative()) {
-                    return Shapes.empty();
-                }
-            }
-            return Shapes.box(bound, bound, bound, 1 - bound, 1 - bound, 1 - bound);
-        }
-        return super.getCollisionShape(state, getter, pos, context);
+	if (getter instanceof Level level) {
+	    float bound = level.isClientSide() ? 0.01f : 0.0625F;
+	    List<Player> players = level.getEntities(
+		    EntityTypeTest.forClass(Player.class), new AABB(pos.getX() - bound, pos.getY() - bound,
+			    pos.getZ() - bound, pos.getX() + 1 + bound, pos.getY() + 1 + bound, pos.getZ() + 1 + bound),
+		    t -> true);
+	    for (Player player : players) {
+		if (player.isCreative()) {
+		    return Shapes.empty();
+		}
+	    }
+	    return Shapes.box(bound, bound, bound, 1 - bound, 1 - bound, 1 - bound);
+	}
+	return super.getCollisionShape(state, getter, pos, context);
     }
 
     @Override
-    public void entityInside(BlockState state, Level lvl, BlockPos pos, Entity ent) {
-        if (!lvl.isClientSide()) {
-            if (ent instanceof LivingEntity living) {
-                if (lvl.getBlockEntity(pos) instanceof TileFortronField field) {
-                    if (field.getProjectorPos() != null && lvl.getBlockEntity(field.getProjectorPos()) instanceof TileFortronFieldProjector projector) {
-                        int count = projector.countModules(SubtypeModule.upgradeshock);
-                        if (count > 0) {
-                            living.hurt(DamageSource.MAGIC, count);
-                        }
-                    }
-                }
-            }
-        }
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+
+	if (!(level instanceof ServerLevel serverLevel) || !(entity instanceof LivingEntity living)) {
+
+	    return;
+	}
+
+	FortronFieldData data = FortronFieldData.get(serverLevel);
+
+	int shock = 0;
+
+	for (long owner : data.getOwners(pos)) {
+
+	    TileFortronFieldProjector projector = data.getLoadedProjector(serverLevel, owner);
+
+	    if (projector != null) {
+		shock = Math.max(shock, projector.countModules(SubtypeModule.upgradeshock));
+	    }
+	}
+
+	if (shock > 0) {
+	    living.hurt(DamageSource.MAGIC, shock);
+	}
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
-        if (level.getBlockEntity(pos) instanceof TileFortronField field) {
-            BlockPos projectorPos = field.getProjectorPos();
-            if (projectorPos != null && level.getBlockEntity(projectorPos) instanceof TileFortronFieldProjector projector) {
-                if (projector.getStatus() != FortronFieldStatus.DESTROYING) {
-                    return false;
-                }
-            }
-        }
-        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest,
+	    FluidState fluid) {
+
+	if (level instanceof ServerLevel serverLevel && FortronFieldData.get(serverLevel).hasOwners(pos)) {
+
+	    return false;
+	}
+
+	return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 
     @Override
     public VoxelShape getVisualShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
-        return Shapes.empty();
-    }
-
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level lvl, BlockState state, BlockEntityType<T> type) {
-        return null;
+	return Shapes.empty();
     }
 
     @Override
     public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
-        return adjacentBlockState.is(this) || super.skipRendering(state, adjacentBlockState, side);
+	return adjacentBlockState.is(this) || super.skipRendering(state, adjacentBlockState, side);
     }
 
     @Override
     public float getShadeBrightness(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        return 1.0F;
+	return 1.0F;
     }
 
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new TileFortronField(pos, state);
+	return true;
     }
 
 }
