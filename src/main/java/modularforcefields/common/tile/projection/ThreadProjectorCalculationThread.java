@@ -24,8 +24,11 @@ public class ThreadProjectorCalculationThread extends Thread {
 	    type.calculate(projector, this);
 	    if (isInterrupted()) {
 		projector.calculatedFieldPoints.clear();
+		return;
 	    }
-	    projector.calculatedSize = projector.calculatedFieldPoints.size();
+
+	    projector.calculatedSize.setValue(projector.calculatedFieldPoints.size());
+
 	    projector.setStatus(FortronFieldStatus.PROJECTING);
 	}
     }

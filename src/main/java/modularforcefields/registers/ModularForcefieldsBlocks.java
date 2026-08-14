@@ -33,7 +33,7 @@ public class ModularForcefieldsBlocks {
 			for (DyeColor col : DyeColor.values()) {
 			    if (stack.is(col.getTag())) {
 				if (proj.fieldColorOrdinal.getValue() != col.ordinal()) {
-				    proj.destroyField(false);
+				    proj.destroyField();
 				}
 				proj.fieldColorOrdinal.setValue(col.ordinal());
 				break;

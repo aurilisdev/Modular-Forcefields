@@ -45,7 +45,7 @@ public class ContainerFortronFieldProjector extends GenericContainerBlockEntity<
 
     @Override
     public void addInventorySlots(Container inv, Inventory playerinv) {
-	setPlayerInvOffset(71);
+	setPlayerInvOffset(93);
 	SubtypeModule[] valid = TileFortronFieldProjector.VALIDMODULES.toArray(new SubtypeModule[0]);
 	for (int xSlot = 0; xSlot < 4; xSlot++) {
 	    for (int ySlot = 0; ySlot < 4; ySlot++) {
