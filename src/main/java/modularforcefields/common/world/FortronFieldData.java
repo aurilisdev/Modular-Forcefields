@@ -1,5 +1,8 @@
 package modularforcefields.common.world;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -473,6 +476,10 @@ public final class FortronFieldData extends SavedData {
 
 	    projectorTag.putLong("pos", projector.projectorPos);
 
+	    if (projector.protectionRegion != null) {
+		projectorTag.put("protection", projector.protectionRegion.save());
+	    }
+
 	    ListTag chunkList = new ListTag();
 
 	    for (Long2ObjectMap.Entry<LongOpenHashSet> chunkEntry : projector.fieldsByChunk.long2ObjectEntrySet()) {
@@ -525,6 +532,10 @@ public final class FortronFieldData extends SavedData {
 
 	    ProjectorData projector = new ProjectorData(projectorTag.getLong("pos"));
 
+	    if (projectorTag.contains("protection", Tag.TAG_COMPOUND)) {
+		projector.protectionRegion = FortronProtectionRegion.load(id, projectorTag.getCompound("protection"));
+	    }
+
 	    ListTag chunkList = projectorTag.getList("chunks", Tag.TAG_COMPOUND);
 
 	    for (Tag rawChunk : chunkList) {
@@ -571,11 +582,52 @@ public final class FortronFieldData extends SavedData {
 	return data;
     }
 
+    public void setProtectionRegion(long projectorId, FortronProtectionRegion region) {
+	ProjectorData projector = projectors.get(projectorId);
+
+	if (projector == null) {
+	    return;
+	}
+
+	projector.protectionRegion = region;
+	setDirty();
+    }
+
+    public void clearProtectionRegion(long projectorId) {
+	ProjectorData projector = projectors.get(projectorId);
+
+	if (projector == null || projector.protectionRegion == null) {
+	    return;
+	}
+
+	projector.protectionRegion = null;
+	setDirty();
+    }
+
+    public boolean hasProtectionRegion(long projectorId) {
+	ProjectorData projector = projectors.get(projectorId);
+	return projector != null && projector.protectionRegion != null;
+    }
+
+    public List<FortronProtectionRegion> getProtectionRegions(BlockPos center, int radius) {
+	List<FortronProtectionRegion> result = new ArrayList<>();
+	for (ProjectorData projector : projectors.values()) {
+	    FortronProtectionRegion region = projector.protectionRegion;
+
+	    if (region != null && region.intersects(center, radius)) {
+		result.add(region);
+	    }
+	}
+
+	return result;
+    }
+
     private static final class ProjectorData {
 
 	private final long projectorPos;
 
 	private final Long2ObjectOpenHashMap<LongOpenHashSet> fieldsByChunk = new Long2ObjectOpenHashMap<>();
+	private @Nullable FortronProtectionRegion protectionRegion;
 
 	private ProjectorData(long projectorPos) {
 	    this.projectorPos = projectorPos;
