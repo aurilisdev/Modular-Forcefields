@@ -17,7 +17,7 @@ public class MFFSConfig {
 	COERCIONDERIVER_VOLTAGE = builder.defineInRange("coercionderiver_voltage", 480.0, 0, Double.MAX_VALUE);
 	FORTRONFIELD_MAXHEALTH = builder.defineInRange("fortronfield_maxhealth", 10_000_000, 1, Double.MAX_VALUE);
 	BROKEN_FIELD_REBUILD_DELAY = builder.defineInRange("broken_field_rebuild_delay", 20 * 60, 1, Integer.MAX_VALUE);
-	BROKEN_FIELD_REBUILD_DELAY = builder.defineInRange("field_cleanup_per_tick", 512, 1, Integer.MAX_VALUE);
+	FIELD_CLEANUP_PER_TICK = builder.defineInRange("field_cleanup_per_tick", 512, 1, Integer.MAX_VALUE);
 	builder.pop();
 	SPEC = builder.build();
     }
