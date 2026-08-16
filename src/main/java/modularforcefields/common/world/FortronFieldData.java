@@ -1,5 +1,8 @@
 package modularforcefields.common.world;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -355,9 +358,7 @@ public final class FortronFieldData extends SavedData {
      * Removes up to {@code budget} orphaned physical field blocks.
      */
     public void tickCleanup(ServerLevel level, int budget) {
-
 	boolean changed = false;
-
 	while (budget-- > 0 && !cleanupPositions.isEmpty()) {
 
 	    int index = level.random.nextInt(cleanupPositions.size());
@@ -414,7 +415,6 @@ public final class FortronFieldData extends SavedData {
     }
 
     private boolean hasOwners(long chunkKey, long packedPos) {
-
 	Long2ObjectOpenHashMap<LongOpenHashSet> chunkOwners = ownersByChunk.get(chunkKey);
 
 	if (chunkOwners == null) {
@@ -427,28 +427,21 @@ public final class FortronFieldData extends SavedData {
     }
 
     private static void removePhysicalField(ServerLevel level, BlockPos pos) {
-
 	if (level.getBlockState(pos).is(ModularForcefieldsBlocks.BLOCK_FORTRONFIELD)) {
 	    level.removeBlock(pos, false);
 	}
     }
 
     private void rebuildOwners() {
-
 	ownersByChunk.clear();
-
 	for (Long2ObjectMap.Entry<ProjectorData> projectorEntry : projectors.long2ObjectEntrySet()) {
-
 	    long projectorId = projectorEntry.getLongKey();
-
 	    for (Long2ObjectMap.Entry<LongOpenHashSet> chunkEntry : projectorEntry.getValue().fieldsByChunk
 		    .long2ObjectEntrySet()) {
-
 		long chunkKey = chunkEntry.getLongKey();
 
 		Long2ObjectOpenHashMap<LongOpenHashSet> chunkOwners = ownersByChunk.computeIfAbsent(chunkKey,
 			key -> new Long2ObjectOpenHashMap<>());
-
 		for (long packedPos : chunkEntry.getValue()) {
 
 		    chunkOwners.computeIfAbsent(packedPos, key -> new LongOpenHashSet()).add(projectorId);
@@ -459,7 +452,6 @@ public final class FortronFieldData extends SavedData {
 
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
-
 	tag.putLong("nextProjectorId", nextProjectorId);
 
 	ListTag projectorList = new ListTag();
@@ -467,12 +459,14 @@ public final class FortronFieldData extends SavedData {
 	for (Long2ObjectMap.Entry<ProjectorData> projectorEntry : projectors.long2ObjectEntrySet()) {
 
 	    CompoundTag projectorTag = new CompoundTag();
-
 	    projectorTag.putLong("id", projectorEntry.getLongKey());
 
 	    ProjectorData projector = projectorEntry.getValue();
-
 	    projectorTag.putLong("pos", projector.projectorPos);
+
+	    if (projector.protectionRegion != null) {
+		projectorTag.put("protection", projector.protectionRegion.save());
+	    }
 
 	    ListTag chunkList = new ListTag();
 
@@ -482,42 +476,32 @@ public final class FortronFieldData extends SavedData {
 
 		chunkTag.putLong("chunk", chunkEntry.getLongKey());
 		chunkTag.putLongArray("positions", chunkEntry.getValue().toLongArray());
-
 		chunkList.add(chunkTag);
 	    }
 
 	    projectorTag.put("chunks", chunkList);
-
 	    projectorList.add(projectorTag);
 	}
-
 	tag.put("projectors", projectorList);
 
 	ListTag pendingList = new ListTag();
-
 	for (Long2ObjectMap.Entry<LongOpenHashSet> entry : pendingRemovals.long2ObjectEntrySet()) {
 
 	    CompoundTag chunkTag = new CompoundTag();
-
 	    chunkTag.putLong("chunk", entry.getLongKey());
 	    chunkTag.putLongArray("positions", entry.getValue().toLongArray());
 
 	    pendingList.add(chunkTag);
 	}
-
 	tag.put("pendingRemovals", pendingList);
-
 	return tag;
     }
 
     public static FortronFieldData load(CompoundTag tag, HolderLookup.Provider registries) {
-
 	FortronFieldData data = new FortronFieldData();
-
 	data.nextProjectorId = Math.max(1, tag.getLong("nextProjectorId"));
 
 	ListTag projectorList = tag.getList("projectors", Tag.TAG_COMPOUND);
-
 	for (Tag rawProjector : projectorList) {
 
 	    CompoundTag projectorTag = (CompoundTag) rawProjector;
@@ -525,17 +509,18 @@ public final class FortronFieldData extends SavedData {
 	    long id = projectorTag.getLong("id");
 
 	    ProjectorData projector = new ProjectorData(projectorTag.getLong("pos"));
+	    if (projectorTag.contains("protection", Tag.TAG_COMPOUND)) {
+		projector.protectionRegion = FortronProtectionRegion.load(id, projectorTag.getCompound("protection"));
+	    }
 
 	    ListTag chunkList = projectorTag.getList("chunks", Tag.TAG_COMPOUND);
 
 	    for (Tag rawChunk : chunkList) {
-
 		CompoundTag chunkTag = (CompoundTag) rawChunk;
 
 		long chunkKey = chunkTag.getLong("chunk");
 
 		LongOpenHashSet positions = new LongOpenHashSet();
-
 		for (long packedPos : chunkTag.getLongArray("positions")) {
 		    positions.add(packedPos);
 		}
@@ -546,7 +531,6 @@ public final class FortronFieldData extends SavedData {
 	    }
 
 	    data.projectors.put(id, projector);
-
 	    data.nextProjectorId = Math.max(data.nextProjectorId, id + 1);
 	}
 
@@ -572,11 +556,53 @@ public final class FortronFieldData extends SavedData {
 	return data;
     }
 
+    public void setProtectionRegion(long projectorId, FortronProtectionRegion region) {
+	ProjectorData projector = projectors.get(projectorId);
+
+	if (projector == null) {
+	    return;
+	}
+
+	projector.protectionRegion = region;
+	setDirty();
+    }
+
+    public void clearProtectionRegion(long projectorId) {
+	ProjectorData projector = projectors.get(projectorId);
+
+	if (projector == null || projector.protectionRegion == null) {
+	    return;
+	}
+
+	projector.protectionRegion = null;
+	setDirty();
+    }
+
+    public boolean hasProtectionRegion(long projectorId) {
+	ProjectorData projector = projectors.get(projectorId);
+	return projector != null && projector.protectionRegion != null;
+    }
+
+    public List<FortronProtectionRegion> getProtectionRegions(BlockPos center, int radius) {
+	List<FortronProtectionRegion> result = new ArrayList<>();
+	for (ProjectorData projector : projectors.values()) {
+	    FortronProtectionRegion region = projector.protectionRegion;
+
+	    if (region != null && region.intersects(center, radius)) {
+		result.add(region);
+	    }
+	}
+
+	return result;
+    }
+
     private static final class ProjectorData {
 
 	private final long projectorPos;
 
 	private final Long2ObjectOpenHashMap<LongOpenHashSet> fieldsByChunk = new Long2ObjectOpenHashMap<>();
+
+	private @Nullable FortronProtectionRegion protectionRegion;
 
 	private ProjectorData(long projectorPos) {
 	    this.projectorPos = projectorPos;

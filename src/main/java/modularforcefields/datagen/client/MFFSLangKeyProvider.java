@@ -111,6 +111,9 @@ public class MFFSLangKeyProvider extends BaseLangKeyProvider {
 
 	    addConfiguration("common", "Common");
 	    addConfiguration("coercionderiver_voltage", "Coercion Deriver Voltage");
+	    addConfiguration("fortronfield_maxhealth", "Fortron Field Max Health");
+	    addConfiguration("broken_field_rebuild_delay", "Broken Field Rebuild Delay (Ticks)");
+	    addConfiguration("field_cleanup_per_tick", "Field Cleanup Per Tick");
 	}
 
     }

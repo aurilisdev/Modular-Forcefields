@@ -8,6 +8,8 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.Sets;
@@ -20,6 +22,7 @@ import modularforcefields.common.settings.MFFSConfig;
 import modularforcefields.common.tile.projection.ProjectionType;
 import modularforcefields.common.tile.projection.ThreadProjectorCalculationThread;
 import modularforcefields.common.world.FortronFieldData;
+import modularforcefields.common.world.FortronProtectionRegion;
 import modularforcefields.registers.ModularForcefieldsBlocks;
 import modularforcefields.registers.ModularForcefieldsItems;
 import modularforcefields.registers.ModularForcefieldsTiles;
@@ -150,10 +153,13 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	    onChanged(getComponent(IComponentType.Inventory), -1);
 	}
 	if (getStatus() == FortronFieldStatus.PROJECTED && level instanceof ServerLevel serverLevel) {
-
-	    if (FortronFieldData.get(serverLevel).getFieldCount(projectorId.getValue()) >= calculatedSize.getValue()) {
-
+	    FortronFieldData data = FortronFieldData.get(serverLevel);
+	    if (data.getFieldCount(projectorId.getValue()) >= calculatedSize.getValue()) {
 		setStatus(FortronFieldStatus.PROJECTED_SEALED);
+		FortronProtectionRegion protection = createProtectionRegion();
+		if (protection != null) {
+		    data.setProtectionRegion(projectorId.getValue(), protection);
+		}
 	    }
 	}
 	ProjectionType projectedType = getProjectionType();
@@ -194,6 +200,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 			     */
 			    if (rebuildAt > 0L) {
 				rebuildAtGameTime.setValue(0L);
+				health.setValue(1.0);
 			    }
 			    if (ticksUntilProjection > 0) {
 				if (fortron.getValue() > use) {
@@ -418,7 +425,9 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     }
 
     public void destroyField() {
-
+	if (level instanceof ServerLevel serverLevel) {
+	    FortronFieldData.get(serverLevel).clearProtectionRegion(projectorId.getValue());
+	}
 	setStatus(FortronFieldStatus.DESTROYING);
 
 	calculatedSize.setValue(0);
@@ -630,5 +639,32 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     public boolean hasFieldBlocks() {
 	return level instanceof ServerLevel serverLevel
 		&& FortronFieldData.get(serverLevel).hasFields(projectorId.getValue());
+    }
+
+    public @Nullable FortronProtectionRegion createProtectionRegion() {
+
+	if (isInterior()) {
+	    return null;
+	}
+
+	ProjectionType type = ProjectionType.values()[typeOrdinal.getValue()];
+	long id = projectorId.getValue();
+
+	return switch (type) {
+	case CUBE -> FortronProtectionRegion.cube(id, Math.min(xRadiusNeg.getValue(), xRadiusPos.getValue()),
+		Math.min(yRadiusNeg.getValue(), yRadiusPos.getValue()),
+		Math.min(zRadiusNeg.getValue(), zRadiusPos.getValue()),
+		Math.max(xRadiusNeg.getValue(), xRadiusPos.getValue()),
+		Math.max(yRadiusNeg.getValue(), yRadiusPos.getValue()),
+		Math.max(zRadiusNeg.getValue(), zRadiusPos.getValue()));
+
+	case SPHERE -> FortronProtectionRegion.sphere(id, getShiftedPos(), radius.getValue());
+
+	case HEMISPHERE -> FortronProtectionRegion.hemisphere(id, getShiftedPos(), radius.getValue());
+
+	case PYRAMID -> FortronProtectionRegion.pyramid(id, getShiftedPos(), radius.getValue());
+
+	default -> null;
+	};
     }
 }

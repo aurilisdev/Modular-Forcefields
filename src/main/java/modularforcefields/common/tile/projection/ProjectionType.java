@@ -210,6 +210,29 @@ public enum ProjectionType {
 		}
 	    }
 	}
+	if (hemisphere && !interior && centerY > proj.getLevel().getMinBuildHeight()) {
+	    int y = centerY - 1;
+
+	    for (int x = minX; x <= maxX; x++) {
+		if (thread.isInterrupted()) {
+		    return;
+		}
+
+		int dx = x - centerX;
+		int dxSq = dx * dx;
+
+		for (int z = minZ; z <= maxZ; z++) {
+		    int dz = z - centerZ;
+
+		    if (dxSq + dz * dz >= outerSq) {
+			continue;
+		    }
+
+		    proj.calculatedFieldPoints
+			    .add(new HashDistanceBlockPos(x, y, z, (int) (10000 - y + rand.nextDouble() * 3)));
+		}
+	    }
+	}
     }
 
     private static void calculatePyramid(TileFortronFieldProjector proj, ThreadProjectorCalculationThread thread) {
@@ -255,6 +278,27 @@ public enum ProjectionType {
 			proj.calculatedFieldPoints
 				.add(new HashDistanceBlockPos(x, y, z, (int) (10000 - y + rand.nextDouble() * 3)));
 		    }
+		}
+	    }
+	}
+	if (!interior && centerY > proj.getLevel().getMinBuildHeight()) {
+	    int y = centerY - 1;
+
+	    for (int x = centerX - radius; x <= centerX + radius; x++) {
+		if (thread.isInterrupted()) {
+		    return;
+		}
+
+		int dx = Math.abs(x - centerX);
+		for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+		    int dz = Math.abs(z - centerZ);
+
+		    if (dx + dz > radius) {
+			continue;
+		    }
+
+		    proj.calculatedFieldPoints
+			    .add(new HashDistanceBlockPos(x, y, z, (int) (10000 - y + rand.nextDouble() * 3)));
 		}
 	    }
 	}
