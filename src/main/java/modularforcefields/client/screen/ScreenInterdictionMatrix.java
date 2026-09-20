@@ -18,7 +18,7 @@ public class ScreenInterdictionMatrix extends GenericScreen<ContainerInterdictio
     public ScreenInterdictionMatrix(ContainerInterdictionMatrix container, Inventory playerInventory, Component title) {
 	super(container, playerInventory, title);
 	addComponent(new ScreenComponentFluidGauge(() -> {
-	    TileInterdictionMatrix matrix = container.getSafeHost();
+	    TileInterdictionMatrix matrix = container.getSafeHost().orElse(null);
 	    if (matrix != null) {
 		FluidTank tank = new FluidTank(matrix.fortronCapacity.getValue());
 		tank.setFluid(new FluidStack(ModularForcefieldsFluids.FLUID_FORTRON, matrix.fortron.getValue()));
@@ -27,7 +27,7 @@ public class ScreenInterdictionMatrix extends GenericScreen<ContainerInterdictio
 	    return null;
 	}, 8, 60));
 	addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
-	    if (menu.getUnsafeHost() instanceof TileInterdictionMatrix matrix) {
+	    if (container.getSafeHost().orElse(null) instanceof TileInterdictionMatrix matrix) {
 		matrixStack.drawString(font,
 			MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter
 				.getChatDisplayShort((int) (matrix.getFortronUse() / 1000.0 * 20), DisplayUnits.BUCKETS)

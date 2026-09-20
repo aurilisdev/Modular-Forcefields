@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
 import voltaic.client.render.AbstractTileRenderer;
 import voltaic.prefab.tile.components.IComponentType;
 import voltaic.prefab.tile.components.type.ComponentTickable;
@@ -30,7 +31,11 @@ public class RenderFieldProjector extends AbstractTileRenderer<TileFortronFieldP
     @Override
     public void render(TileFortronFieldProjector tile, float partialTicks, PoseStack poseStack,
 	    MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
-	double ticks = tile.<ComponentTickable>getComponent(IComponentType.Tickable).getTicks();
+	Level level = tile.getLevel();
+	if (level == null)
+	    return;
+
+	double ticks = tile.<ComponentTickable>requireComponent(IComponentType.Tickable).getTicks();
 	float base = (float) ((ticks + partialTicks) * 1 % 360);
 	float rotX = base;
 	float rotY = base;
@@ -50,12 +55,12 @@ public class RenderFieldProjector extends AbstractTileRenderer<TileFortronFieldP
 		RenderSystem.setShaderColor(color.rFloat(), color.gFloat(), color.bFloat(), 1);
 		poseStack.pushPose();
 		poseStack.translate(0.5, 0.5, 0.5);
-		RenderingUtils.renderModel(shape, tile, RenderType.translucent(), poseStack, bufferIn, combinedLightIn,
+		RenderingUtils.renderModel(shape, RenderType.translucent(), poseStack, bufferIn, combinedLightIn,
 			combinedOverlayIn);
 	    } else {
 		poseStack.pushPose();
 	    }
-	    for (BakedQuad quad : shape.getQuads(null, null, tile.getLevel().random)) {
+	    for (BakedQuad quad : shape.getQuads(null, null, level.random)) {
 		bufferIn.getBuffer(RenderType.translucent()).putBulkData(poseStack.last(), quad, color.rFloat(),
 			color.gFloat(), color.bFloat(), 1.0F, combinedLightIn, combinedOverlayIn, true);
 	    }
@@ -86,10 +91,10 @@ public class RenderFieldProjector extends AbstractTileRenderer<TileFortronFieldP
 		poseStack.scale(0.25f, 0.25f, 0.25f);
 		poseStack.mulPose(MathUtils.rotQuaternionDeg(rotX, rotY, rotZ));
 		if (Minecraft.getInstance().options.graphicsMode().get() == GraphicsStatus.FABULOUS) {
-		    RenderingUtils.renderModel(ibakedmodel, tile, RenderType.translucent(), poseStack, bufferIn,
+		    RenderingUtils.renderModel(ibakedmodel, RenderType.translucent(), poseStack, bufferIn,
 			    combinedLightIn, combinedOverlayIn);
 		}
-		for (BakedQuad quad : ibakedmodel.getQuads(null, null, tile.getLevel().random)) {
+		for (BakedQuad quad : ibakedmodel.getQuads(null, null, level.random)) {
 		    bufferIn.getBuffer(RenderType.translucent()).putBulkData(poseStack.last(), quad, color.rFloat(),
 			    color.gFloat(), color.bFloat(), 1.0F, combinedLightIn, combinedOverlayIn, true);
 		}

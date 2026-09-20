@@ -9,6 +9,7 @@ import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,24 +24,25 @@ import voltaic.prefab.utilities.WorldUtils;
 public class TileFortronConnective extends GenericTile {
 
     protected HashSet<TileFortronConnective> connections = new HashSet<>();
-    public SingleProperty<Integer> frequency = property(new SingleProperty<>(PropertyTypes.INTEGER, "frequency", 0));
+    public SingleProperty<Integer> frequency = property(
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "frequency", 0));
 
     protected TileFortronConnective(BlockEntityType<?> tileEntityTypeIn, BlockPos worldPos, BlockState blockState) {
 	super(tileEntityTypeIn, worldPos, blockState);
 	addComponent(new ComponentTickable(this).tickServer(this::tickServer).tickCommon(this::tickCommon));
     }
 
-    protected void tickCommon(ComponentTickable tickable) {
+    protected void tickCommon(Level level, ComponentTickable tickable) {
 	long ticks = tickable.getTicks();
 	if (ticks % 200 == 1) {
-	    findConnections();
+	    findConnections(level);
 	}
 	if (ticks % 20 == 0) {
 	    validateConnections();
 	}
     }
 
-    protected void findConnections() {
+    protected void findConnections(Level level) {
 	Predicate<BlockEntity> predicate = getConnectionTest();
 	for (BlockEntity entity : WorldUtils.getNearbyTiles(level, worldPosition, 5)) {
 	    if (entity != this && entity instanceof TileFortronConnective connection && predicate.test(entity)) {
@@ -87,12 +89,12 @@ public class TileFortronConnective extends GenericTile {
     }
 
     public int countModules(SubtypeModule module) {
-	ComponentInventory inv = getComponent(IComponentType.Inventory);
+	ComponentInventory inv = requireComponent(IComponentType.Inventory);
 	return inv.countItem(ModularForcefieldsItems.ITEMS_MODULE.getValue(module));
     }
 
     public int countModules(SubtypeModule module, int... slots) {
-	ComponentInventory inv = getComponent(IComponentType.Inventory);
+	ComponentInventory inv = requireComponent(IComponentType.Inventory);
 	Item moduleItem = ModularForcefieldsItems.ITEMS_MODULE.getValue(module);
 	int count = 0;
 	for (int slot : slots) {
@@ -105,7 +107,7 @@ public class TileFortronConnective extends GenericTile {
     }
 
     public boolean hasModule(SubtypeModule module) {
-	ComponentInventory inv = getComponent(IComponentType.Inventory);
+	ComponentInventory inv = requireComponent(IComponentType.Inventory);
 	Item moduleItem = ModularForcefieldsItems.ITEMS_MODULE.getValue(module);
 	for (int slot = 0; slot < inv.getContainerSize(); slot++) {
 	    ItemStack itemstack = inv.getItem(slot);
@@ -116,7 +118,7 @@ public class TileFortronConnective extends GenericTile {
 	return false;
     }
 
-    protected void tickServer(ComponentTickable tickable) {
+    protected void tickServer(Level level, ComponentTickable tickable) {
     }
 
     public int getFrequency() {

@@ -18,7 +18,7 @@ public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapaci
     public ScreenFortronCapacitor(ContainerFortronCapacitor container, Inventory playerInventory, Component title) {
 	super(container, playerInventory, title);
 	addComponent(new ScreenComponentFluidGauge(() -> {
-	    TileFortronCapacitor capacitor = container.getSafeHost();
+	    TileFortronCapacitor capacitor = container.getSafeHost().orElse(null);
 	    if (capacitor != null) {
 		FluidTank tank = new FluidTank(capacitor.fortronCapacity.getValue().intValue());
 		tank.setFluid(new FluidStack(ModularForcefieldsFluids.FLUID_FORTRON,
@@ -28,7 +28,7 @@ public class ScreenFortronCapacitor extends GenericScreen<ContainerFortronCapaci
 	    return null;
 	}, 8, 27));
 	addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
-	    if (menu.getUnsafeHost() instanceof TileFortronCapacitor capacitor) {
+	    if (container.getSafeHost().orElse(null) instanceof TileFortronCapacitor capacitor) {
 		matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter
 			.getChatDisplayShort((int) (capacitor.getTransfer() / 1000.0 * 20), DisplayUnits.BUCKETS)
 			.append(" / s")), 25, 45, 4210752, false);

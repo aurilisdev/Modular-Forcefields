@@ -20,7 +20,7 @@ public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDerive
     public ScreenCoercionDeriver(ContainerCoercionDeriver container, Inventory playerInventory, Component title) {
 	super(container, playerInventory, title);
 	addComponent(new ScreenComponentFluidGauge(() -> {
-	    TileCoercionDeriver deriver = container.getSafeHost();
+	    TileCoercionDeriver deriver = container.getSafeHost().orElse(null);
 	    if (deriver != null) {
 		FluidTank tank = new FluidTank(deriver.fortronCapacity.getValue());
 		tank.setFluid(new FluidStack(ModularForcefieldsFluids.FLUID_FORTRON, deriver.fortron.getValue()));
@@ -33,7 +33,7 @@ public class ScreenCoercionDeriver extends GenericScreen<ContainerCoercionDerive
 			? (double) deriver.fortron.getValue()
 			: 0));
 	addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
-	    if (menu.getUnsafeHost() instanceof TileCoercionDeriver deriver) {
+	    if (container.getSafeHost().orElse(null) instanceof TileCoercionDeriver deriver) {
 		matrixStack.drawString(font,
 			MFFSTextUtils.gui("fortrondevice.transfer", ChatFormatter
 				.getChatDisplayShort((int) (deriver.getTransfer() / 1000.0 * 20), DisplayUnits.BUCKETS)

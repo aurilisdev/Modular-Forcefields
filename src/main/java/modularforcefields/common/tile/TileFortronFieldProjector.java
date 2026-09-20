@@ -3,14 +3,12 @@ package modularforcefields.common.tile;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
-
-import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.Sets;
 
@@ -26,6 +24,7 @@ import modularforcefields.common.world.FortronProtectionRegion;
 import modularforcefields.registers.ModularForcefieldsBlocks;
 import modularforcefields.registers.ModularForcefieldsItems;
 import modularforcefields.registers.ModularForcefieldsTiles;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -35,6 +34,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -49,30 +49,29 @@ import voltaic.prefab.properties.variant.SingleProperty;
 import voltaic.prefab.tile.components.IComponentType;
 import voltaic.prefab.tile.components.type.ComponentContainerProvider;
 import voltaic.prefab.tile.components.type.ComponentInventory;
-import voltaic.prefab.tile.components.type.ComponentPacketHandler;
 import voltaic.prefab.tile.components.type.ComponentTickable;
 import voltaic.prefab.utilities.object.Location;
 
 public class TileFortronFieldProjector extends TileFortronConnective {
     public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
     public static final int BASEENERGY = 100;
-    private ThreadProjectorCalculationThread calculationThread;
     public Set<BlockPos> calculatedFieldPoints = Collections.synchronizedSet(new HashSet<>());
     public final SingleProperty<Integer> typeOrdinal = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "type", ProjectionType.NONE.ordinal()));
-    public final SingleProperty<Integer> fieldColorOrdinal = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "fieldColorOrdinal", DyeColor.LIGHT_BLUE.ordinal()));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "type", ProjectionType.NONE.ordinal()));
+    public final SingleProperty<Integer> fieldColorOrdinal = property(new SingleProperty<>(getPropertyManager(),
+	    PropertyTypes.INTEGER, "fieldColorOrdinal", DyeColor.LIGHT_BLUE.ordinal()));
     public final SingleProperty<Integer> moduleCount = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "moduleCount", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "moduleCount", 0));
     public final SingleProperty<Integer> fortronCapacity = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "fortronCapacity", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "fortronCapacity", 0));
     public final SingleProperty<Double> health = property(
-	    new SingleProperty<>(PropertyTypes.DOUBLE, "health", 1.0).setNoUpdateServer());
-    public final SingleProperty<Integer> fortron = property(new SingleProperty<>(PropertyTypes.INTEGER, "fortron", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.DOUBLE, "health", 1.0));
+    public final SingleProperty<Integer> fortron = property(
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "fortron", 0));
     public final SingleProperty<Integer> fortronUse = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "fortronUse", 0));
-    private final SingleProperty<Integer> statusInteger = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "statusInteger", FortronFieldStatus.PROJECTING.ordinal()));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "fortronUse", 0));
+    private final SingleProperty<Integer> statusInteger = property(new SingleProperty<>(getPropertyManager(),
+	    PropertyTypes.INTEGER, "statusInteger", FortronFieldStatus.PROJECTING.ordinal()));
 
     public FortronFieldStatus getStatus() {
 	return FortronFieldStatus.values()[statusInteger.getValue()];
@@ -83,18 +82,19 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     }
 
     public final SingleProperty<Integer> xRadiusPos = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "xRadiusPos", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "xRadiusPos", 0));
     public final SingleProperty<Integer> yRadiusPos = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "yRadiusPos", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "yRadiusPos", 0));
     public final SingleProperty<Integer> zRadiusPos = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "zRadiusPos", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "zRadiusPos", 0));
     public final SingleProperty<Integer> xRadiusNeg = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "xRadiusNeg", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "xRadiusNeg", 0));
     public final SingleProperty<Integer> yRadiusNeg = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "yRadiusNeg", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "yRadiusNeg", 0));
     public final SingleProperty<Integer> zRadiusNeg = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "zRadiusNeg", 0));
-    public final SingleProperty<Integer> radius = property(new SingleProperty<>(PropertyTypes.INTEGER, "radius", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "zRadiusNeg", 0));
+    public final SingleProperty<Integer> radius = property(
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "radius", 0));
     public int scaleEnergy;
     public int speedEnergy;
     public boolean shouldSponge = false;
@@ -107,13 +107,15 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     public float tickGenerationProgress = 0;
     public int ticksUntilProjection;
     public final SingleProperty<BlockPos> shiftedPosition = property(
-	    new SingleProperty<>(PropertyTypes.BLOCK_POS, "shiftedPosition", BlockPos.ZERO));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.BLOCK_POS, "shiftedPosition", BlockPos.ZERO));
     public final SingleProperty<Integer> calculatedSize = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "calculatedSize", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "calculatedSize", 0));
     public final SingleProperty<Long> rebuildAtGameTime = property(
-	    new SingleProperty<>(PropertyTypes.LONG, "rebuildAtGameTime", 0L));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.LONG, "rebuildAtGameTime", 0L));
     public final SingleProperty<Long> projectorId = property(
-	    new SingleProperty<>(PropertyTypes.LONG, "projectorId", 0L).setNoUpdateServer());
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.LONG, "projectorId", 0L));
+
+    private @Nullable ThreadProjectorCalculationThread calculationThread;
 
     @Override
     protected int recieveFortron(int amount) {
@@ -129,17 +131,16 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 
     public TileFortronFieldProjector(BlockPos pos, BlockState state) {
 	super(ModularForcefieldsTiles.TILE_FORTRONFIELDPROJECTOR.get(), pos, state);
-	addComponent(new ComponentPacketHandler(this));
 	addComponent(new ComponentInventory(this, ComponentInventory.InventoryBuilder.newInv().forceSize(21))
 		.valid((index, stack, inv) -> true).onChanged(this::onChanged));
 	addComponent(new ComponentContainerProvider("fortronfieldprojector", this)
 		.createMenu((id, player) -> new ContainerFortronFieldProjector(id, player,
-			getComponent(IComponentType.Inventory), getCoordsArray())));
+			requireComponent(IComponentType.Inventory), getCoordsArray())));
     }
 
     @Override
-    protected void tickServer(ComponentTickable tickable) {
-	super.tickServer(tickable);
+    protected void tickServer(Level level, ComponentTickable tickable) {
+	super.tickServer(level, tickable);
 	if (tickable.getTicks() % 20 == 0) {
 	    fortronCapacity.setValue(getMaxFortron());
 	    fortron.setValue(Mth.clamp(fortron.getValue(), 0, fortronCapacity.getValue()));
@@ -150,7 +151,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	    }
 	}
 	if (tickable.getTicks() % 1000 == 1) {
-	    onChanged(getComponent(IComponentType.Inventory), -1);
+	    onChanged(requireComponent(IComponentType.Inventory), -1);
 	}
 	if (getStatus() == FortronFieldStatus.PROJECTED && level instanceof ServerLevel serverLevel) {
 	    FortronFieldData data = FortronFieldData.get(serverLevel);
@@ -211,12 +212,12 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 				setStatus(FortronFieldStatus.CALCULATING);
 				calculationThread = new ThreadProjectorCalculationThread(this);
 				calculationThread.start();
-				Logger.getGlobal().log(Level.INFO,
+				Logger.getGlobal().log(java.util.logging.Level.INFO,
 					"Started forcefield calculation thread at: " + new Location(worldPosition));
 			    }
 			}
 		    } else if (getStatus() != FortronFieldStatus.CALCULATING && !calculatedFieldPoints.isEmpty()) {
-			projectField();
+			projectField(level);
 		    } else if (getStatus() == FortronFieldStatus.PROJECTING) {
 			setStatus(FortronFieldStatus.PROJECTED);
 		    }
@@ -233,11 +234,11 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	    if (currentHealth < 0.0) {
 		health.setValue(0.0);
 		rebuildAtGameTime
-			.setValue(level.getGameTime() + MFFSConfig.INSTANCE.BROKEN_FIELD_REBUILD_DELAY.getAsInt());
+			.setValue(level.getGameTime() + MFFSConfig.getInstance().BROKEN_FIELD_REBUILD_DELAY.getAsInt());
 		destroyField();
 		return;
 	    }
-	    double maxHealth = MFFSConfig.INSTANCE.FORTRONFIELD_MAXHEALTH.getAsDouble();
+	    double maxHealth = MFFSConfig.getInstance().FORTRONFIELD_MAXHEALTH.getAsDouble();
 
 	    if (calculatedSize.getValue() <= 0 || totalGeneratedPerTick <= 0.0F) {
 		return;
@@ -252,7 +253,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	}
     }
 
-    private void projectField() {
+    private void projectField(Level level) {
 	setStatus(FortronFieldStatus.PROJECTING);
 	Set<BlockPos> finishedQueueItems = new HashSet<>();
 	int currentlyGenerated = 0;
@@ -266,7 +267,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		BlockState state = level.getBlockState(fieldPoint);
 		Block block = state.getBlock();
 		if (state.is(ModularForcefieldsBlocks.BLOCK_FORTRONFIELD)) {
-		    if (integrateExistingFieldPoint(fieldPoint)) {
+		    if (integrateExistingFieldPoint(level, fieldPoint)) {
 			continue;
 		    }
 		}
@@ -274,14 +275,14 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		    // TODO: IMPLEMENT SPONGE MODULE
 		}
 		if (shouldDisintegrate) {
-		    state = disintegrate(fieldPoint, state);
+		    state = disintegrate(level, fieldPoint, state);
 		}
 		if (state.canBeReplaced(new BlockPlaceContext(level, null, InteractionHand.MAIN_HAND,
 			new ItemStack(block), new BlockHitResult(Vec3.ZERO, Direction.DOWN, fieldPoint, false)))) {
 		    if (shouldStabilize) {
-			stabilizeFieldPoint(fieldPoint);
+			stabilizeFieldPoint(level, fieldPoint);
 		    } else {
-			currentlyGenerated = createNewFieldPoint(currentlyGenerated, fieldPoint);
+			currentlyGenerated = createNewFieldPoint(level, currentlyGenerated, fieldPoint);
 		    }
 		} else if (state.getDestroySpeed(level, fieldPoint) == -1) {
 		    calculatedSize.setValue(calculatedSize.getValue() - 1);
@@ -293,7 +294,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 
     }
 
-    private boolean integrateExistingFieldPoint(BlockPos fieldPoint) {
+    private boolean integrateExistingFieldPoint(Level level, BlockPos fieldPoint) {
 
 	BlockState state = level.getBlockState(fieldPoint);
 
@@ -311,7 +312,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	return true;
     }
 
-    private int createNewFieldPoint(int currentlyGenerated, BlockPos fieldPoint) {
+    private int createNewFieldPoint(Level level, int currentlyGenerated, BlockPos fieldPoint) {
 
 	level.setBlockAndUpdate(fieldPoint, ModularForcefieldsBlocks.BLOCK_FORTRONFIELD.get().defaultBlockState()
 		.setValue(BlockFortronField.COLOR, getFieldColor()));
@@ -324,7 +325,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	return currentlyGenerated + 1;
     }
 
-    private void stabilizeFieldPoint(BlockPos fieldPoint) {
+    private void stabilizeFieldPoint(Level level, BlockPos fieldPoint) {
 	boolean broken = false;
 	for (Direction dir : Direction.values()) { // TODO: Optimize this so it doesnt check all inventories around
 	    // every placement.
@@ -367,17 +368,16 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	}
     }
 
-    @NotNull
-    private BlockState disintegrate(BlockPos fieldPoint, BlockState state) {
+    private BlockState disintegrate(Level level, BlockPos fieldPoint, BlockState state) {
 	if (state.getDestroySpeed(level, fieldPoint) != -1) {
-	    collect(fieldPoint, state);
+	    collect(level, fieldPoint, state);
 	    level.setBlockAndUpdate(fieldPoint, Blocks.AIR.defaultBlockState());
 	    state = Blocks.AIR.defaultBlockState();
 	}
 	return state;
     }
 
-    private void collect(BlockPos fieldPoint, BlockState state) {
+    private void collect(Level level, BlockPos fieldPoint, BlockState state) {
 	if (hasCollectionModule) {
 
 	    List<ItemStack> items = Block.getDrops(state, (ServerLevel) level, fieldPoint, null);
@@ -450,16 +450,13 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     }
 
     public int getFortronUse() {
-	if (!level.isClientSide) {
+	if (!(level instanceof ClientLevel)) {
 	    fortronUse.setValue(scaleEnergy + speedEnergy + (shouldDisintegrate || shouldStabilize ? 5000 : 0));
 	}
 	return fortronUse.getValue();
     }
 
     public BlockPos getShiftedPos() {
-	if (shiftedPosition == null) {
-	    shiftedPosition.setValue(worldPosition);
-	}
 	return shiftedPosition.getValue();
     }
 
@@ -491,6 +488,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     }
 
     private void onChanged(ComponentInventory inv, int index) {
+	Level level = Objects.requireNonNull(getLevel());
 	int count = 0;
 	updateFieldTerms();
 	for (int i = 0; i < inv.getContainerSize(); i++) {
@@ -520,15 +518,15 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 				ContainerFortronFieldProjector.SLOT_NORTH[1]));
 	int newxRadiusPos = newshiftedPosition.getX() + Math.min(64, countModules(SubtypeModule.manipulationscale,
 		ContainerFortronFieldProjector.SLOT_EAST[0], ContainerFortronFieldProjector.SLOT_EAST[1]));
-	int newyRadiusPos = Math.min(getLevel().getMaxBuildHeight(),
-		Math.max(getLevel().getMinBuildHeight(),
+	int newyRadiusPos = Math.min(level.getMaxBuildHeight(),
+		Math.max(level.getMinBuildHeight(),
 			newshiftedPosition.getY() + countModules(SubtypeModule.manipulationscale,
 				ContainerFortronFieldProjector.SLOT_UP[0], ContainerFortronFieldProjector.SLOT_UP[1])));
 	int newzRadiusPos = newshiftedPosition.getZ() + Math.min(64, countModules(SubtypeModule.manipulationscale,
 		ContainerFortronFieldProjector.SLOT_SOUTH[0], ContainerFortronFieldProjector.SLOT_SOUTH[1]));
 	int newxRadiusNeg = newshiftedPosition.getX() - Math.min(64, countModules(SubtypeModule.manipulationscale,
 		ContainerFortronFieldProjector.SLOT_WEST[0], ContainerFortronFieldProjector.SLOT_WEST[1]));
-	int newyRadiusNeg = Math.max(getLevel().getMinBuildHeight(),
+	int newyRadiusNeg = Math.max(level.getMinBuildHeight(),
 		newshiftedPosition.getY() - countModules(SubtypeModule.manipulationscale,
 			ContainerFortronFieldProjector.SLOT_DOWN[0], ContainerFortronFieldProjector.SLOT_DOWN[1]));
 	int newzRadiusNeg = newshiftedPosition.getZ() - Math.min(64, countModules(SubtypeModule.manipulationscale,
@@ -556,7 +554,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     }
 
     public ProjectionType getProjectionType() {
-	ComponentInventory inv = getComponent(IComponentType.Inventory);
+	ComponentInventory inv = requireComponent(IComponentType.Inventory);
 	ItemStack stack = inv.getItem(ContainerFortronFieldProjector.SLOT_TYPE);
 
 	if (stack.isEmpty()) {
@@ -585,7 +583,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     }
 
     @Override
-    public void onBlockDestroyed() {
+    public void onBlockDestroyed(Level level) {
 
 	if (!(level instanceof ServerLevel serverLevel)) {
 	    return;

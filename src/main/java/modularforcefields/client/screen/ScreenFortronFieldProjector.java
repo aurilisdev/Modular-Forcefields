@@ -25,7 +25,7 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
 	    Component title) {
 	super(container, playerInventory, title);
 	addComponent(new ScreenComponentFluidGauge(() -> {
-	    TileFortronFieldProjector projector = container.getSafeHost();
+	    TileFortronFieldProjector projector = container.getSafeHost().orElse(null);
 	    if (projector != null) {
 		FluidTank tank = new FluidTank(projector.fortronCapacity.getValue().intValue());
 		tank.setFluid(new FluidStack(ModularForcefieldsFluids.FLUID_FORTRON,
@@ -35,7 +35,7 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
 	    return null;
 	}, 8, 77));
 	addComponent(new ScreenComponentMultiLabel(0, 0, matrixStack -> {
-	    if (menu.getUnsafeHost() instanceof TileFortronFieldProjector projector) {
+	    if (container.getSafeHost().orElse(null) instanceof TileFortronFieldProjector projector) {
 		matrixStack.drawString(font, MFFSTextUtils.gui("fortrondevice.linked", projector.getConnections()), 25,
 			115, 4210752, false);
 
@@ -53,7 +53,7 @@ public class ScreenFortronFieldProjector extends GenericScreen<ContainerFortronF
 		matrixStack.drawString(font, MFFSTextUtils.gui("fieldprojector.status", projector.getStatus().name()),
 			8, 130, 4210752, false);
 
-		double maxHealth = MFFSConfig.INSTANCE.FORTRONFIELD_MAXHEALTH.getAsDouble();
+		double maxHealth = MFFSConfig.getInstance().FORTRONFIELD_MAXHEALTH.getAsDouble();
 		double currentHealth = Math.max(0.0, Math.min(projector.health.getValue(), maxHealth));
 		double healthPercent = maxHealth <= 0.0 ? 0.0 : currentHealth / maxHealth;
 

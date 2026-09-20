@@ -24,6 +24,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -41,7 +42,6 @@ import voltaic.prefab.properties.variant.SingleProperty;
 import voltaic.prefab.tile.components.IComponentType;
 import voltaic.prefab.tile.components.type.ComponentContainerProvider;
 import voltaic.prefab.tile.components.type.ComponentInventory;
-import voltaic.prefab.tile.components.type.ComponentPacketHandler;
 import voltaic.prefab.tile.components.type.ComponentTickable;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME, modid = ModularForcefields.ID)
@@ -49,11 +49,12 @@ public class TileInterdictionMatrix extends TileFortronConnective {
     public static HashMap<TileInterdictionMatrix, AABB> matrices = new HashMap<>();
     public static final int BASEENERGY = 20;
     public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
-    public SingleProperty<Integer> fortron = property(new SingleProperty<>(PropertyTypes.INTEGER, "fortron", 0));
+    public SingleProperty<Integer> fortron = property(
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "fortron", 0));
     public SingleProperty<Integer> scaleEnergy = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "scaleEnergy", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "scaleEnergy", 0));
     public SingleProperty<Integer> fortronCapacity = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "fortronCapacity", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "fortronCapacity", 0));
     public int radius;
     public boolean running;
     public boolean antispawn;
@@ -63,17 +64,16 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 
     public TileInterdictionMatrix(BlockPos pos, BlockState state) {
 	super(ModularForcefieldsTiles.TILE_INTERDICTIONMATRIX.get(), pos, state);
-	addComponent(new ComponentPacketHandler(this));
 	addComponent(new ComponentInventory(this, ComponentInventory.InventoryBuilder.newInv().forceSize(18))
 		.valid((index, stack, inv) -> true).onChanged(this::onChanged));
 	addComponent(new ComponentContainerProvider("interdictionmatrix", this)
 		.createMenu((id, player) -> new ContainerInterdictionMatrix(id, player,
-			getComponent(IComponentType.Inventory), getCoordsArray())));
+			requireComponent(IComponentType.Inventory), getCoordsArray())));
     }
 
     @Override
-    protected void tickCommon(ComponentTickable tickable) {
-	super.tickCommon(tickable);
+    protected void tickCommon(Level level, ComponentTickable tickable) {
+	super.tickCommon(level, tickable);
 	if (tickable.getTicks() % 20 == 0) {
 
 	}
@@ -82,8 +82,8 @@ public class TileInterdictionMatrix extends TileFortronConnective {
     private final HashSet<UUID> validPlayers = new HashSet<>();
 
     @Override
-    protected void tickServer(ComponentTickable tickable) {
-	super.tickServer(tickable);
+    protected void tickServer(Level level, ComponentTickable tickable) {
+	super.tickServer(level, tickable);
 	if (tickable.getTicks() % 20 == 0) {
 	    fortronCapacity.setValue(getMaxFortron());
 	    fortron.setValue(Mth.clamp(fortron.getValue(), 0, fortronCapacity.getValue()));
@@ -94,7 +94,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	    }
 	}
 	if (tickable.getTicks() % 1000 == 1) {
-	    onChanged(getComponent(IComponentType.Inventory), -1);
+	    onChanged(requireComponent(IComponentType.Inventory), -1);
 	}
 	int use = getFortronUse();
 	running = false;
@@ -108,7 +108,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		for (Direction direction : Direction.values()) {
 		    BlockEntity entity = level.getBlockEntity(worldPosition.offset(direction.getNormal()));
 		    if (entity instanceof TileBiometricIdentifier identifier) {
-			for (ItemStack stack : identifier.<ComponentInventory>getComponent(IComponentType.Inventory)
+			for (ItemStack stack : identifier.<ComponentInventory>requireComponent(IComponentType.Inventory)
 				.getItems()) {
 			    if (stack.has(ModularForcefieldsDataComponentTypes.UUID)) {
 				validPlayers.add(stack.get(ModularForcefieldsDataComponentTypes.UUID));
@@ -121,17 +121,17 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 			LivingEntity::isAlive);
 		matrices.put(this, aabb);
 		List<SubtypeModule> list = new ArrayList<>();
-		for (ItemStack stack : this.<ComponentInventory>getComponent(IComponentType.Inventory).getItems()) {
+		for (ItemStack stack : this.<ComponentInventory>requireComponent(IComponentType.Inventory).getItems()) {
 		    if (stack.getItem() instanceof ItemModule module) {
 			list.add(module.subtype);
 		    }
 		}
-		applyModules(list, entities);
+		applyModules(level, list, entities);
 	    }
 	}
     }
 
-    private void applyModules(List<SubtypeModule> list, List<LivingEntity> entities) {
+    private void applyModules(Level level, List<SubtypeModule> list, List<LivingEntity> entities) {
 	for (LivingEntity entity : entities) {
 	    if (entity instanceof Player player) {
 		if (validPlayers.contains(player.getUUID()) || player.isCreative()) {
@@ -150,7 +150,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	    }
 	    if (list.contains(SubtypeModule.upgradeconfiscate)) {
 		if (entity instanceof Player player) {
-		    confiscateItems(player);
+		    confiscateItems(level, player);
 		}
 	    }
 	    if (list.contains(SubtypeModule.upgradeantipersonnel)) {
@@ -171,7 +171,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	return received;
     }
 
-    private void confiscateItems(Player player) {
+    private void confiscateItems(Level level, Player player) {
 	BlockEntity above = level.getBlockEntity(worldPosition.above());
 
 	if (above == null) {

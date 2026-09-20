@@ -36,7 +36,9 @@ public class ItemIdentificationCard extends ItemVoltaic {
 
     @Override
     public InteractionResult useOn(UseOnContext pContext) {
-	onUsage(pContext.getPlayer(), pContext.getItemInHand());
+	Player player = pContext.getPlayer();
+	if (player != null)
+	    onUsage(player, pContext.getItemInHand());
 	return super.useOn(pContext);
     }
 

@@ -25,6 +25,6 @@ public final class FortronFieldEvents {
 	if (!(event.getLevel() instanceof ServerLevel level)) {
 	    return;
 	}
-	FortronFieldData.get(level).tickCleanup(level, MFFSConfig.INSTANCE.FIELD_CLEANUP_PER_TICK.get());
+	FortronFieldData.get(level).tickCleanup(level, MFFSConfig.getInstance().FIELD_CLEANUP_PER_TICK.get());
     }
 }

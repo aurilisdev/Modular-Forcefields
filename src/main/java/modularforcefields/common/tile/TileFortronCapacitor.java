@@ -10,6 +10,7 @@ import modularforcefields.registers.ModularForcefieldsItems;
 import modularforcefields.registers.ModularForcefieldsTiles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import voltaic.common.block.states.VoltaicBlockStates;
@@ -18,34 +19,33 @@ import voltaic.prefab.properties.variant.SingleProperty;
 import voltaic.prefab.tile.components.IComponentType;
 import voltaic.prefab.tile.components.type.ComponentContainerProvider;
 import voltaic.prefab.tile.components.type.ComponentInventory;
-import voltaic.prefab.tile.components.type.ComponentPacketHandler;
 import voltaic.prefab.tile.components.type.ComponentTickable;
 
 public class TileFortronCapacitor extends TileFortronConnective {
     public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.upgradespeed,
 	    SubtypeModule.upgradecapacity);
     public static final int BASEENERGY = 100;
-    public SingleProperty<Integer> fortron = property(new SingleProperty<>(PropertyTypes.INTEGER, "fortron", 0));
+    public SingleProperty<Integer> fortron = property(
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "fortron", 0));
     public SingleProperty<Integer> fortronCapacity = property(
-	    new SingleProperty<>(PropertyTypes.INTEGER, "fortronCapacity", 0));
+	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "fortronCapacity", 0));
 
     public TileFortronCapacitor(BlockPos pos, BlockState state) {
 	super(ModularForcefieldsTiles.TILE_FORTRONCAPACITOR.get(), pos, state);
-	addComponent(new ComponentPacketHandler(this));
 	addComponent(new ComponentInventory(this, ComponentInventory.InventoryBuilder.newInv().forceSize(4))
 		.valid((index, stack, inv) -> ModularForcefieldsItems.ITEMS_MODULE
 			.getSpecificValues(SubtypeModule.upgradespeed, SubtypeModule.upgradecapacity)
 			.contains(stack.getItem())));
 	addComponent(new ComponentContainerProvider("fortroncapacitor", this)
 		.createMenu((id, player) -> new ContainerFortronCapacitor(id, player,
-			getComponent(IComponentType.Inventory), getCoordsArray())));
+			requireComponent(IComponentType.Inventory), getCoordsArray())));
     }
 
     @Override
-    protected void tickServer(ComponentTickable tickable) {
-	super.tickServer(tickable);
+    protected void tickServer(Level level, ComponentTickable tickable) {
+	super.tickServer(level, tickable);
 	if (tickable.getTicks() % 20 == 0) {
-	    onInventoryChange(getComponent(IComponentType.Inventory), 0);
+	    onInventoryChange(requireComponent(IComponentType.Inventory), 0);
 	    boolean isLit = getBlockState().getValue(VoltaicBlockStates.LIT);
 	    boolean shouldLit = fortron.getValue() > 0;
 	    if (isLit != shouldLit) {

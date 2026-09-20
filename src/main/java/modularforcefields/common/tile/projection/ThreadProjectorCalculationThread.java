@@ -2,9 +2,10 @@ package modularforcefields.common.tile.projection;
 
 import modularforcefields.common.tile.FortronFieldStatus;
 import modularforcefields.common.tile.TileFortronFieldProjector;
+import net.minecraft.world.level.Level;
 
 public class ThreadProjectorCalculationThread extends Thread {
-    private TileFortronFieldProjector projector;
+    private final TileFortronFieldProjector projector;
 
     public ThreadProjectorCalculationThread(TileFortronFieldProjector projector) {
 	this.projector = projector;
@@ -17,11 +18,11 @@ public class ThreadProjectorCalculationThread extends Thread {
 
     @Override
     public void run() {
-	if (!projector.isRemoved()) {
+	if (!projector.isRemoved() && projector.getLevel() instanceof Level level) {
 	    projector.setStatus(FortronFieldStatus.CALCULATING);
 	    projector.calculatedFieldPoints.clear();
 	    ProjectionType type = projector.getProjectionType();
-	    type.calculate(projector, this);
+	    type.calculate(level, projector, this);
 	    if (isInterrupted()) {
 		projector.calculatedFieldPoints.clear();
 		return;

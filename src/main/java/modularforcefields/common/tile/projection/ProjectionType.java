@@ -1,35 +1,38 @@
 package modularforcefields.common.tile.projection;
 
 import java.util.Random;
-import java.util.function.BiConsumer;
+
+import org.apache.commons.lang3.function.TriConsumer;
 
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import voltaic.prefab.block.HashDistanceBlockPos;
 
 public enum ProjectionType {
 
-    NONE((proj, t) -> proj.calculatedFieldPoints.clear()),
+    NONE((level, proj, t) -> proj.calculatedFieldPoints.clear()),
 
     CUBE(ProjectionType::calculateCube),
 
-    SPHERE((proj, t) -> calculateSphere(proj, t, false)),
+    SPHERE((level, proj, t) -> calculateSphere(level, proj, t, false)),
 
-    HEMISPHERE((proj, t) -> calculateSphere(proj, t, true)),
+    HEMISPHERE((level, proj, t) -> calculateSphere(level, proj, t, true)),
 
     PYRAMID(ProjectionType::calculatePyramid);
 
-    private final BiConsumer<TileFortronFieldProjector, ThreadProjectorCalculationThread> calculate;
+    private final TriConsumer<Level, TileFortronFieldProjector, ThreadProjectorCalculationThread> calculate;
 
-    ProjectionType(BiConsumer<TileFortronFieldProjector, ThreadProjectorCalculationThread> calculate) {
+    ProjectionType(TriConsumer<Level, TileFortronFieldProjector, ThreadProjectorCalculationThread> calculate) {
 	this.calculate = calculate;
     }
 
-    public void calculate(TileFortronFieldProjector projector, ThreadProjectorCalculationThread thread) {
-	calculate.accept(projector, thread);
+    public void calculate(Level level, TileFortronFieldProjector projector, ThreadProjectorCalculationThread thread) {
+	calculate.accept(level, projector, thread);
     }
 
-    private static void calculateCube(TileFortronFieldProjector proj, ThreadProjectorCalculationThread thread) {
+    private static void calculateCube(Level level, TileFortronFieldProjector proj,
+	    ThreadProjectorCalculationThread thread) {
 
 	Random rand = new Random();
 
@@ -143,9 +146,8 @@ public enum ProjectionType {
 		.add(new HashDistanceBlockPos(x, y, z, (int) (10000 - y + rand.nextDouble() * 3 + horizontalDistance)));
     }
 
-    private static void calculateSphere(TileFortronFieldProjector proj, ThreadProjectorCalculationThread thread,
-	    boolean hemisphere) {
-
+    private static void calculateSphere(Level level, TileFortronFieldProjector proj,
+	    ThreadProjectorCalculationThread thread, boolean hemisphere) {
 	Random rand = new Random();
 
 	BlockPos center = proj.getShiftedPos();
@@ -165,10 +167,10 @@ public enum ProjectionType {
 	int minX = centerX - radius;
 	int maxX = centerX + radius;
 
-	int minY = hemisphere ? Math.max(proj.getLevel().getMinBuildHeight(), centerY)
-		: Math.max(proj.getLevel().getMinBuildHeight(), centerY - radius);
+	int minY = hemisphere ? Math.max(level.getMinBuildHeight(), centerY)
+		: Math.max(level.getMinBuildHeight(), centerY - radius);
 
-	int maxY = Math.min(proj.getLevel().getMaxBuildHeight() - 1, centerY + radius);
+	int maxY = Math.min(level.getMaxBuildHeight() - 1, centerY + radius);
 
 	int minZ = centerZ - radius;
 	int maxZ = centerZ + radius;
@@ -210,7 +212,7 @@ public enum ProjectionType {
 		}
 	    }
 	}
-	if (hemisphere && !interior && centerY > proj.getLevel().getMinBuildHeight()) {
+	if (hemisphere && !interior && centerY > level.getMinBuildHeight()) {
 	    int y = centerY - 1;
 
 	    for (int x = minX; x <= maxX; x++) {
@@ -235,7 +237,8 @@ public enum ProjectionType {
 	}
     }
 
-    private static void calculatePyramid(TileFortronFieldProjector proj, ThreadProjectorCalculationThread thread) {
+    private static void calculatePyramid(Level level, TileFortronFieldProjector proj,
+	    ThreadProjectorCalculationThread thread) {
 
 	Random rand = new Random();
 
@@ -249,9 +252,9 @@ public enum ProjectionType {
 
 	boolean interior = proj.isInterior();
 
-	int minY = Math.max(proj.getLevel().getMinBuildHeight(), centerY);
+	int minY = Math.max(level.getMinBuildHeight(), centerY);
 
-	int maxY = Math.min(proj.getLevel().getMaxBuildHeight() - 1, centerY + radius);
+	int maxY = Math.min(level.getMaxBuildHeight() - 1, centerY + radius);
 
 	for (int x = centerX - radius; x <= centerX + radius; x++) {
 
@@ -281,7 +284,7 @@ public enum ProjectionType {
 		}
 	    }
 	}
-	if (!interior && centerY > proj.getLevel().getMinBuildHeight()) {
+	if (!interior && centerY > level.getMinBuildHeight()) {
 	    int y = centerY - 1;
 
 	    for (int x = centerX - radius; x <= centerX + radius; x++) {

@@ -3,7 +3,7 @@ package modularforcefields.common.settings;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class MFFSConfig {
-    public static MFFSConfig INSTANCE;
+    private static MFFSConfig INSTANCE = new MFFSConfig();
 
     public ModConfigSpec SPEC;
     public ModConfigSpec.DoubleValue COERCIONDERIVER_VOLTAGE;
@@ -20,5 +20,9 @@ public class MFFSConfig {
 	FIELD_CLEANUP_PER_TICK = builder.defineInRange("field_cleanup_per_tick", 512, 1, Integer.MAX_VALUE);
 	builder.pop();
 	SPEC = builder.build();
+    }
+
+    public static MFFSConfig getInstance() {
+	return INSTANCE;
     }
 }

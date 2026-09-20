@@ -30,8 +30,7 @@ public final class ModularForcefields {
     public static final String NAME = "Modular Forcefields";
 
     public ModularForcefields(IEventBus bus, ModContainer container) {
-	MFFSConfig.INSTANCE = new MFFSConfig();
-	container.registerConfig(ModConfig.Type.COMMON, MFFSConfig.INSTANCE.SPEC);
+	container.registerConfig(ModConfig.Type.COMMON, MFFSConfig.getInstance().SPEC);
 	if (FMLEnvironment.dist == Dist.CLIENT) {
 	    container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 	}
@@ -42,9 +41,7 @@ public final class ModularForcefields {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void onClientSetup(FMLClientSetupEvent event) {
-	event.enqueueWork(() -> {
-	    MFFSClientRegister.setup();
-	});
+	event.enqueueWork(() -> { MFFSClientRegister.setup(); });
     }
 
     @SubscribeEvent
