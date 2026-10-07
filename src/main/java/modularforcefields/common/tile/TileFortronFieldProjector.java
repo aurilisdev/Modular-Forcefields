@@ -53,6 +53,26 @@ import voltaic.prefab.tile.components.type.ComponentTickable;
 import voltaic.prefab.utilities.object.Location;
 
 public class TileFortronFieldProjector extends TileFortronConnective {
+    public boolean isPlayerPermitted(java.util.UUID uuid) {
+	Level lvl = getLevel();
+	if (lvl == null) {
+	    return false;
+	}
+	for (net.minecraft.core.Direction direction : net.minecraft.core.Direction.values()) {
+	    if (lvl.getBlockEntity(worldPosition.relative(direction)) instanceof TileBiometricIdentifier identifier) {
+		for (net.minecraft.world.item.ItemStack stack : identifier
+			.<voltaic.prefab.tile.components.type.ComponentInventory>requireComponent(
+				voltaic.prefab.tile.components.IComponentType.Inventory)
+			.getItems()) {
+		    if (uuid.equals(stack.get(modularforcefields.registers.ModularForcefieldsDataComponentTypes.UUID))) {
+			return true;
+		    }
+		}
+	    }
+	}
+	return false;
+    }
+
     public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
     public static final int BASEENERGY = 100;
     public Set<BlockPos> calculatedFieldPoints = Collections.synchronizedSet(new HashSet<>());

@@ -57,13 +57,27 @@ public class BlockFortronField extends Block {
 			    pos.getZ() - bound, pos.getX() + 1 + bound, pos.getY() + 1 + bound, pos.getZ() + 1 + bound),
 		    t -> true);
 	    for (Player player : players) {
-		if (player.isCreative()) {
+		if (player.isCreative() || isPermitted(level, pos, player)) {
 		    return Shapes.empty();
 		}
 	    }
 	    return Shapes.box(bound, bound, bound, 1 - bound, 1 - bound, 1 - bound);
 	}
 	return super.getCollisionShape(state, getter, pos, context);
+    }
+
+    private static boolean isPermitted(Level level, BlockPos pos, Player player) {
+	if (!(level instanceof ServerLevel serverLevel)) {
+	    return false;
+	}
+	FortronFieldData data = FortronFieldData.get(serverLevel);
+	for (long owner : data.getOwners(pos)) {
+	    TileFortronFieldProjector projector = data.getLoadedProjector(serverLevel, owner);
+	    if (projector != null && projector.isPlayerPermitted(player.getUUID())) {
+		return true;
+	    }
+	}
+	return false;
     }
 
     @Override
@@ -87,7 +101,7 @@ public class BlockFortronField extends Block {
 	    }
 	}
 
-	if (shock > 0) {
+	if (shock > 0 && !(living instanceof Player p && (p.isCreative() || isPermitted(level, pos, p)))) {
 	    living.hurt(living.damageSources().magic(), shock);
 	}
     }
