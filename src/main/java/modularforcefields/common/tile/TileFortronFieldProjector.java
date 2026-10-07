@@ -611,6 +611,9 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     }
 
     public DyeColor getFieldColor() {
+	if (!hasModule(SubtypeModule.upgradecolorchange)) {
+	    return DyeColor.LIGHT_BLUE;
+	}
 	return DyeColor.values()[fieldColorOrdinal.getValue()];
     }
 
