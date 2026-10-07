@@ -39,6 +39,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -272,7 +273,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 		    }
 		}
 		if (shouldSponge) {
-		    // TODO: IMPLEMENT SPONGE MODULE
+		    state = sponge(level, fieldPoint, state);
 		}
 		if (shouldDisintegrate) {
 		    state = disintegrate(level, fieldPoint, state);
@@ -291,7 +292,19 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	    calculatedFieldPoints.removeAll(finishedQueueItems);
 	    tickGenerationProgress -= currentlyGenerated;
 	}
+    }
 
+    private BlockState sponge(Level level, BlockPos fieldPoint, BlockState state) {
+	if (state.getFluidState().isEmpty()) {
+	    return state;
+	}
+	if (state.hasProperty(BlockStateProperties.WATERLOGGED)) {
+	    state = state.setValue(BlockStateProperties.WATERLOGGED, false);
+	} else {
+	    state = Blocks.AIR.defaultBlockState();
+	}
+	level.setBlockAndUpdate(fieldPoint, state);
+	return state;
     }
 
     private boolean integrateExistingFieldPoint(Level level, BlockPos fieldPoint) {
