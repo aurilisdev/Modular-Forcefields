@@ -82,26 +82,19 @@ public class BlockFortronField extends Block {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-
-	if (!(level instanceof ServerLevel serverLevel) || !(entity instanceof LivingEntity living)) {
-
+	if (!(level instanceof ServerLevel serverLevel) || !(entity instanceof LivingEntity living))
 	    return;
-	}
 
 	FortronFieldData data = FortronFieldData.get(serverLevel);
-
 	int shock = 0;
-
 	for (long owner : data.getOwners(pos)) {
-
 	    TileFortronFieldProjector projector = data.getLoadedProjector(serverLevel, owner);
-
 	    if (projector != null) {
 		shock = Math.max(shock, projector.countModules(SubtypeModule.upgradeshock));
 	    }
 	}
 
-	if (shock > 0 && !(living instanceof Player p && (p.isCreative() || isPermitted(level, pos, p)))) {
+	if (shock > 0 && (!(living instanceof Player p) || (!p.isCreative() && !isPermitted(level, pos, p)))) {
 	    living.hurt(living.damageSources().magic(), shock);
 	}
     }
@@ -109,11 +102,8 @@ public class BlockFortronField extends Block {
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest,
 	    FluidState fluid) {
-
-	if (level instanceof ServerLevel serverLevel && FortronFieldData.get(serverLevel).hasOwners(pos)) {
-
+	if (level instanceof ServerLevel serverLevel && FortronFieldData.get(serverLevel).hasOwners(pos))
 	    return false;
-	}
 
 	return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
