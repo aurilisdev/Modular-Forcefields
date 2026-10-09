@@ -23,7 +23,7 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 @Mod(ModularForcefields.ID)
-@EventBusSubscriber(modid = ModularForcefields.ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = ModularForcefields.ID)
 public final class ModularForcefields {
 
     public static final String ID = "modularforcefields";

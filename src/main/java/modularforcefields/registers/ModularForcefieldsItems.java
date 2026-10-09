@@ -42,7 +42,7 @@ public class ModularForcefieldsItems {
     public static final DeferredHolder<Item, Item> ITEM_FREQUENCYCARD = ITEMS.register("frequencycard",
 	    () -> new ItemFortronFrequencyCard(new Item.Properties().stacksTo(1)));
 
-    @EventBusSubscriber(value = Dist.CLIENT, modid = ModularForcefields.ID, bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(value = Dist.CLIENT, modid = ModularForcefields.ID)
     private static class MFFSCreativeRegistry {
 
 	@SubscribeEvent

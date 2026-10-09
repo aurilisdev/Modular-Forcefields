@@ -25,7 +25,7 @@ import voltaic.client.misc.SWBFClientExtensions;
 import voltaic.common.fluid.SimpleWaterBasedFluidType;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(modid = ModularForcefields.ID, bus = EventBusSubscriber.Bus.MOD, value = { Dist.CLIENT })
+@EventBusSubscriber(modid = ModularForcefields.ID, value = { Dist.CLIENT })
 public class MFFSClientRegister {
     public static final ModelResourceLocation MODEL_PREVIEWCUBE = ModelResourceLocation
 	    .standalone(ModularForcefields.rl("block/previewcube"));

@@ -44,7 +44,7 @@ import voltaic.prefab.tile.components.type.ComponentContainerProvider;
 import voltaic.prefab.tile.components.type.ComponentInventory;
 import voltaic.prefab.tile.components.type.ComponentTickable;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME, modid = ModularForcefields.ID)
+@EventBusSubscriber(modid = ModularForcefields.ID)
 public class TileInterdictionMatrix extends TileFortronConnective {
     public static HashMap<TileInterdictionMatrix, AABB> matrices = new HashMap<>();
     public static final int BASEENERGY = 20;
@@ -173,76 +173,52 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 
     private void confiscateItems(Level level, Player player) {
 	BlockEntity above = level.getBlockEntity(worldPosition.above());
-
-	if (above == null) {
+	if (above == null)
 	    return;
-	}
 
 	IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, above.getBlockPos(),
 		above.getBlockState(), above, Direction.DOWN);
-
-	if (handler == null) {
+	if (handler == null)
 	    return;
-	}
 
 	List<ItemStack> stacks = player.getInventory().items;
-
 	for (int index = 0; index < stacks.size(); index++) {
-
 	    player.getInventory().setItem(index, addItemToItemHandler(stacks.get(index), handler).copy());
 	}
-
 	stacks = player.getInventory().armor;
-
 	for (int index = 0; index < stacks.size(); index++) {
-
 	    player.getInventory().setItem(index, addItemToItemHandler(stacks.get(index), handler).copy());
 	}
-
 	stacks = player.getInventory().offhand;
-
 	for (int index = 0; index < stacks.size(); index++) {
-
 	    player.getInventory().setItem(index, addItemToItemHandler(stacks.get(index), handler).copy());
-
 	}
     }
 
     private static ItemStack addItemToItemHandler(ItemStack item, IItemHandler handler) {
-
 	for (int targetIndex = 0; targetIndex < handler.getSlots(); targetIndex++) {
-
 	    ItemStack remainder = handler.insertItem(targetIndex, item, false);
-
 	    int taken = item.getCount() - remainder.getCount();
-
-	    if (taken <= 0) {
-
+	    if (taken <= 0)
 		continue;
-
-	    }
-
 	    item.shrink(taken);
-
 	    if (item.isEmpty()) {
 		break;
 	    }
-
 	}
-
 	return item;
-
     }
 
     @SubscribeEvent
     public static void spawnLiving(MobSpawnEvent.SpawnPlacementCheck event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().antispawn) {
-		if (en.getValue().intersects(event.getEntityType().getSpawnAABB(event.getPos().getX(),
-			event.getPos().getY(), event.getPos().getZ()))) {
-		    event.setResult(MobSpawnEvent.SpawnPlacementCheck.Result.FAIL);
-		    return;
-		}
+	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().antispawn) {
+		continue;
+	    }
+	    if (en.getValue().intersects(event.getEntityType().getSpawnAABB(event.getPos().getX(),
+		    event.getPos().getY(), event.getPos().getZ()))) {
+		event.setResult(MobSpawnEvent.SpawnPlacementCheck.Result.FAIL);
+		return;
 	    }
 	}
     }
@@ -250,100 +226,111 @@ public class TileInterdictionMatrix extends TileFortronConnective {
     @SubscribeEvent
     public static void antiAccessBlockRight(PlayerInteractEvent.RightClickBlock event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
-		if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
-		    Player player = event.getEntity();
-		    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
-			continue;
-		    }
-		    event.setCanceled(true);
-		    event.setCancellationResult(InteractionResult.FAIL);
-		    return;
-		}
+	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockaccess) {
+		continue;
 	    }
+	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+		continue;
+	    }
+	    Player player = event.getEntity();
+	    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
+		continue;
+	    }
+	    event.setCanceled(true);
+	    event.setCancellationResult(InteractionResult.FAIL);
+	    return;
 	}
     }
 
     @SubscribeEvent
     public static void antiAccessBlockLeft(PlayerInteractEvent.LeftClickBlock event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
-		if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
-		    Player player = event.getEntity();
-		    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
-			continue;
-		    }
-		    event.setCanceled(true);
-		    return;
-		}
+	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockaccess) {
+		continue;
 	    }
+	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+		continue;
+	    }
+	    Player player = event.getEntity();
+	    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
+		continue;
+	    }
+	    event.setCanceled(true);
+	    return;
 	}
     }
 
     @SubscribeEvent
     public static void antiAccessItemRight(PlayerInteractEvent.RightClickBlock event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
-		if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
-		    Player player = event.getEntity();
-		    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
-			continue;
-		    }
-		    event.setCanceled(true);
-		    event.setCancellationResult(InteractionResult.FAIL);
-		    return;
-		}
+	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockaccess) {
+		continue;
 	    }
+	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+		continue;
+	    }
+	    Player player = event.getEntity();
+	    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
+		continue;
+	    }
+	    event.setCanceled(true);
+	    event.setCancellationResult(InteractionResult.FAIL);
+	    return;
 	}
     }
 
     @SubscribeEvent
     public static void antiAccessItemLeft(PlayerInteractEvent.LeftClickBlock event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockaccess) {
-		if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
-		    Player player = event.getEntity();
-		    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
-			continue;
-		    }
-		    event.setCanceled(true);
-		    return;
-		}
+	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockaccess) {
+		continue;
 	    }
+	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+		continue;
+	    }
+	    Player player = event.getEntity();
+	    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
+		continue;
+	    }
+	    event.setCanceled(true);
+	    return;
 	}
     }
 
     @SubscribeEvent
     public static void antiAccess(BlockEvent.BreakEvent event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockalter) {
-		if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
-		    Player player = event.getPlayer();
-		    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
-			continue;
-		    }
-		    event.setCanceled(true);
-		    return;
-		}
+	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockalter) {
+		continue;
 	    }
+	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+		continue;
+	    }
+	    Player player = event.getPlayer();
+	    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
+		continue;
+	    }
+	    event.setCanceled(true);
+	    return;
 	}
     }
 
     @SubscribeEvent
     public static void antiAccess(BlockEvent.EntityPlaceEvent event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (en.getKey().running && !en.getKey().isRemoved() && en.getKey().blockalter) {
-		if (en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
-		    if (event.getEntity() instanceof Player player) {
-			if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
-			    continue;
-			}
-		    }
-		    event.setCanceled(true);
-		    return;
+	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockalter) {
+		continue;
+	    }
+	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
+		continue;
+	    }
+	    if (event.getEntity() instanceof Player player) {
+		if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
+		    continue;
 		}
 	    }
-
+	    event.setCanceled(true);
+	    return;
 	}
     }
 

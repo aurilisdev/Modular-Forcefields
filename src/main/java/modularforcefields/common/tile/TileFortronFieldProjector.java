@@ -313,7 +313,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	}
     }
 
-    private BlockState sponge(Level level, BlockPos fieldPoint, BlockState state) {
+    private static BlockState sponge(Level level, BlockPos fieldPoint, BlockState state) {
 	if (state.getFluidState().isEmpty()) {
 	    return state;
 	}
