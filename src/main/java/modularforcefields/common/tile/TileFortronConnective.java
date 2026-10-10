@@ -1,18 +1,23 @@
 package modularforcefields.common.tile;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.common.packet.PacketFortronBeam;
 import modularforcefields.registers.ModularForcefieldsItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import voltaic.prefab.properties.types.PropertyTypes;
 import voltaic.prefab.properties.variant.SingleProperty;
 import voltaic.prefab.tile.GenericTile;
@@ -23,6 +28,9 @@ import voltaic.prefab.utilities.WorldUtils;
 
 public class TileFortronConnective extends GenericTile {
 
+    private static final int BEAM_LINGER = 20;
+    private long nextBeamTick = 0;
+    private final Map<TileFortronConnective, Long> lastFlow = new HashMap<>();
     protected HashSet<TileFortronConnective> connections = new HashSet<>();
     public SingleProperty<Integer> frequency = property(
 	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "frequency", 0));
@@ -79,11 +87,33 @@ public class TileFortronConnective extends GenericTile {
 	sendList.removeIf(connective -> !connective.canRecieveFortron(this) || !valid.test(connective));
 
 	int size = sendList.size();
+	long now = level == null ? 0 : level.getGameTime();
 	for (TileFortronConnective connective : sendList) {
 	    int ret = connective.recieveFortron(send / size);
+	    if (ret > 0) {
+		lastFlow.put(connective, now);
+	    }
 	    sent += ret;
 	    send -= ret;
 	    size--;
+	}
+	if (level instanceof ServerLevel serverLevel && now >= nextBeamTick) {
+	    boolean beamSent = false;
+	    Iterator<Map.Entry<TileFortronConnective, Long>> it = lastFlow.entrySet().iterator();
+	    while (it.hasNext()) {
+		Map.Entry<TileFortronConnective, Long> entry = it.next();
+		TileFortronConnective target = entry.getKey();
+		if (now - entry.getValue() > BEAM_LINGER || target.isRemoved() || !connections.contains(target)) {
+		    it.remove();
+		    continue;
+		}
+		PacketFortronBeam.send(serverLevel, Vec3.atCenterOf(worldPosition),
+			Vec3.atCenterOf(target.worldPosition), PacketFortronBeam.DEFAULT_COLOR, 24);
+		beamSent = true;
+	    }
+	    if (beamSent) {
+		nextBeamTick = now + 4;
+	    }
 	}
 	return sent;
     }

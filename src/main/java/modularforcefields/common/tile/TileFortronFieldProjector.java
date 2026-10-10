@@ -16,6 +16,7 @@ import modularforcefields.common.block.BlockFortronField;
 import modularforcefields.common.inventory.container.ContainerFortronFieldProjector;
 import modularforcefields.common.item.ItemModule;
 import modularforcefields.common.item.subtype.SubtypeModule;
+import modularforcefields.common.packet.PacketFortronBeam;
 import modularforcefields.common.settings.MFFSConfig;
 import modularforcefields.common.tile.projection.ProjectionType;
 import modularforcefields.common.tile.projection.ThreadProjectorCalculationThread;
@@ -352,6 +353,10 @@ public class TileFortronFieldProjector extends TileFortronConnective {
 	if (level instanceof ServerLevel serverLevel) {
 
 	    FortronFieldData.get(serverLevel).claim(projectorId.getValue(), worldPosition, fieldPoint);
+	    if (currentlyGenerated == 0 || serverLevel.random.nextInt(4) == 0) {
+		PacketFortronBeam.send(serverLevel, Vec3.atCenterOf(worldPosition), Vec3.atCenterOf(fieldPoint),
+			getFieldColor().getFireworkColor(), 20);
+	    }
 	}
 
 	return currentlyGenerated + 1;

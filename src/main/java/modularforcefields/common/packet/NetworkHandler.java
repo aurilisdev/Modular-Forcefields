@@ -12,8 +12,8 @@ public class NetworkHandler {
 
     @SubscribeEvent
     public static void registerPackets(final RegisterPayloadHandlersEvent event) {
-	@SuppressWarnings("unused")
 	final PayloadRegistrar registry = event.registrar(ModularForcefields.ID).versioned(PROTOCOL_VERSION).optional();
+	registry.playToClient(PacketFortronBeam.TYPE, PacketFortronBeam.CODEC, PacketFortronBeam::handle);
 
     }
 

@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import modularforcefields.common.packet.PacketFortronBeam;
 import modularforcefields.common.tile.TileFortronFieldProjector;
 import modularforcefields.registers.ModularForcefieldsBlocks;
 import net.minecraft.core.BlockPos;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.phys.Vec3;
 
 public final class FortronFieldData extends SavedData {
 
@@ -191,6 +193,10 @@ public final class FortronFieldData extends SavedData {
 
 	    for (long packedPos : positions) {
 		releaseOwnership(level, projectorId, chunkKey, packedPos);
+		if (level.random.nextInt(16) == 0) {
+		    PacketFortronBeam.send(level, Vec3.atCenterOf(BlockPos.of(projector.projectorPos)),
+			    Vec3.atCenterOf(BlockPos.of(packedPos)), PacketFortronBeam.BREAK_COLOR, 20);
+		}
 	    }
 	}
 
