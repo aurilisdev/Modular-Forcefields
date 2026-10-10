@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import modularforcefields.ModularForcefields;
+import modularforcefields.common.settings.MFFSConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -31,7 +32,6 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 @EventBusSubscriber(modid = ModularForcefields.ID, value = Dist.CLIENT)
 public class FortronBeamRenderer {
 
-    private static final int MAX_BEAMS = 512;
     private static final float WIDTH = 0.07F;
     private static final int FADE_TICKS = 14;
     private static final float FADE_STEP = 0.15F;
@@ -71,7 +71,7 @@ public class FortronBeamRenderer {
 		    return;
 		}
 	    }
-	    if (BEAMS.size() >= MAX_BEAMS) {
+	    if (BEAMS.size() >= MFFSConfig.getInstance().MAX_BEAMS.get()) {
 		int oldest = 0;
 		for (int i = 1; i < BEAMS.size(); i++) {
 		    if (BEAMS.get(i).age > BEAMS.get(oldest).age) {
@@ -121,11 +121,25 @@ public class FortronBeamRenderer {
 	stack.pushPose();
 	stack.translate(-cam.x, -cam.y, -cam.z);
 	Matrix4f matrix = stack.last().pose();
+	int limit = maxRenderedBeams(mc);
+	int rendered = 0;
 	for (Beam beam : BEAMS) {
+	    if (rendered++ >= limit)
+		break;
 	    renderBeam(consumer, matrix, tintSprite, beam, partial);
 	}
 	stack.popPose();
 	buffers.endBatch(renderType);
+    }
+
+    private static int maxRenderedBeams(Minecraft mc) {
+	int max = MFFSConfig.getInstance().MAX_BEAMS.get();
+	double factor = switch (mc.options.particles().get()) {
+	case ALL -> 1.0;
+	case DECREASED -> 0.75;
+	case MINIMAL -> 0.4;
+	};
+	return Math.max(1, (int) Math.ceil(max * factor));
     }
 
     private static void renderBeam(VertexConsumer consumer, Matrix4f matrix, TextureAtlasSprite sprite, Beam beam,

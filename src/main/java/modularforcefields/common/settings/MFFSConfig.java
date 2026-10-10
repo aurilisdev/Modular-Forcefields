@@ -10,6 +10,7 @@ public class MFFSConfig {
     public ModConfigSpec.DoubleValue FORTRONFIELD_MAXHEALTH;
     public ModConfigSpec.IntValue BROKEN_FIELD_REBUILD_DELAY;
     public ModConfigSpec.IntValue FIELD_CLEANUP_PER_TICK;
+    public ModConfigSpec.IntValue MAX_BEAMS;
 
     public MFFSConfig() {
 	ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -18,6 +19,9 @@ public class MFFSConfig {
 	FORTRONFIELD_MAXHEALTH = builder.defineInRange("fortronfield_maxhealth", 10_000_000, 1, Double.MAX_VALUE);
 	BROKEN_FIELD_REBUILD_DELAY = builder.defineInRange("broken_field_rebuild_delay", 20 * 60, 1, Integer.MAX_VALUE);
 	FIELD_CLEANUP_PER_TICK = builder.defineInRange("field_cleanup_per_tick", 512, 1, Integer.MAX_VALUE);
+	MAX_BEAMS = builder.comment(
+		"Maximum fortron field beams rendered (scaled by particle setting: all 100%, decreased 75%, minimal 40%)")
+		.defineInRange("max_beams", 512, 1, Integer.MAX_VALUE);
 	builder.pop();
 	SPEC = builder.build();
     }
