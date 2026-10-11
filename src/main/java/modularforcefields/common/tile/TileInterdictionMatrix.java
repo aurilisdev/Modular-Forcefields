@@ -25,6 +25,8 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -48,6 +50,7 @@ import voltaic.prefab.tile.components.type.ComponentTickable;
 public class TileInterdictionMatrix extends TileFortronConnective {
     public static HashMap<TileInterdictionMatrix, AABB> matrices = new HashMap<>();
     public static final int BASEENERGY = 20;
+    public static final int MAX_RADIUS = 64;
     public static final HashSet<SubtypeModule> VALIDMODULES = Sets.newHashSet(SubtypeModule.values());
     public SingleProperty<Integer> fortron = property(
 	    new SingleProperty<>(getPropertyManager(), PropertyTypes.INTEGER, "fortron", 0));
@@ -80,6 +83,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
     }
 
     private final HashSet<UUID> validPlayers = new HashSet<>();
+    private boolean wasRunning;
 
     @Override
     protected void tickServer(Level level, ComponentTickable tickable) {
@@ -102,9 +106,11 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 	    fortron.setValue(fortron.getValue() - use);
 	    running = true;
 	}
-	validPlayers.clear();
-	if (tickable.getTicks() % 10 == 0) {
+	boolean justActivated = running && !wasRunning;
+	wasRunning = running;
+	if (justActivated || tickable.getTicks() % 10 == 0) {
 	    if (running) {
+		validPlayers.clear();
 		for (Direction direction : Direction.values()) {
 		    BlockEntity entity = level.getBlockEntity(worldPosition.offset(direction.getNormal()));
 		    if (entity instanceof TileBiometricIdentifier identifier) {
@@ -158,9 +164,6 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 		    player.hurt(player.damageSources().magic(), 2 + strength);
 		}
 	    }
-	    antispawn = list.contains(SubtypeModule.upgradeantispawn);
-	    blockaccess = list.contains(SubtypeModule.upgradeblockaccess);
-	    blockalter = list.contains(SubtypeModule.upgradeblockalter);
 	}
     }
 
@@ -183,36 +186,38 @@ public class TileInterdictionMatrix extends TileFortronConnective {
 
 	List<ItemStack> stacks = player.getInventory().items;
 	for (int index = 0; index < stacks.size(); index++) {
-	    player.getInventory().setItem(index, addItemToItemHandler(stacks.get(index), handler).copy());
+	    stacks.set(index, addItemToItemHandler(stacks.get(index), handler));
 	}
 	stacks = player.getInventory().armor;
 	for (int index = 0; index < stacks.size(); index++) {
-	    player.getInventory().setItem(index, addItemToItemHandler(stacks.get(index), handler).copy());
+	    stacks.set(index, addItemToItemHandler(stacks.get(index), handler));
 	}
 	stacks = player.getInventory().offhand;
 	for (int index = 0; index < stacks.size(); index++) {
-	    player.getInventory().setItem(index, addItemToItemHandler(stacks.get(index), handler).copy());
+	    stacks.set(index, addItemToItemHandler(stacks.get(index), handler));
 	}
+	player.getInventory().setChanged();
     }
 
     private static ItemStack addItemToItemHandler(ItemStack item, IItemHandler handler) {
-	for (int targetIndex = 0; targetIndex < handler.getSlots(); targetIndex++) {
-	    ItemStack remainder = handler.insertItem(targetIndex, item, false);
-	    int taken = item.getCount() - remainder.getCount();
-	    if (taken <= 0)
-		continue;
-	    item.shrink(taken);
-	    if (item.isEmpty()) {
-		break;
-	    }
+	ItemStack remainder = item.copy();
+	for (int slot = 0; slot < handler.getSlots() && !remainder.isEmpty(); slot++) {
+	    remainder = handler.insertItem(slot, remainder, false);
 	}
-	return item;
+	return remainder;
+    }
+
+    private boolean isActiveIn(LevelAccessor other) {
+	if (!running || isRemoved() || level == null) {
+	    return false;
+	}
+	return other == level || other instanceof ServerLevelAccessor server && server.getLevel() == level;
     }
 
     @SubscribeEvent
     public static void spawnLiving(MobSpawnEvent.SpawnPlacementCheck event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().antispawn) {
+	    if (event.getLevel().isClientSide() || !en.getKey().isActiveIn(event.getLevel()) || !en.getKey().antispawn) {
 		continue;
 	    }
 	    if (en.getValue().intersects(event.getEntityType().getSpawnAABB(event.getPos().getX(),
@@ -226,7 +231,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
     @SubscribeEvent
     public static void antiAccessBlockRight(PlayerInteractEvent.RightClickBlock event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockaccess) {
+	    if (event.getLevel().isClientSide() || !en.getKey().isActiveIn(event.getLevel()) || !en.getKey().blockaccess) {
 		continue;
 	    }
 	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
@@ -245,44 +250,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
     @SubscribeEvent
     public static void antiAccessBlockLeft(PlayerInteractEvent.LeftClickBlock event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockaccess) {
-		continue;
-	    }
-	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
-		continue;
-	    }
-	    Player player = event.getEntity();
-	    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
-		continue;
-	    }
-	    event.setCanceled(true);
-	    return;
-	}
-    }
-
-    @SubscribeEvent
-    public static void antiAccessItemRight(PlayerInteractEvent.RightClickBlock event) {
-	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockaccess) {
-		continue;
-	    }
-	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
-		continue;
-	    }
-	    Player player = event.getEntity();
-	    if (en.getKey().validPlayers.contains(player.getUUID()) || player.isCreative()) {
-		continue;
-	    }
-	    event.setCanceled(true);
-	    event.setCancellationResult(InteractionResult.FAIL);
-	    return;
-	}
-    }
-
-    @SubscribeEvent
-    public static void antiAccessItemLeft(PlayerInteractEvent.LeftClickBlock event) {
-	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockaccess) {
+	    if (event.getLevel().isClientSide() || !en.getKey().isActiveIn(event.getLevel()) || !en.getKey().blockaccess) {
 		continue;
 	    }
 	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
@@ -300,7 +268,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
     @SubscribeEvent
     public static void antiAccess(BlockEvent.BreakEvent event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockalter) {
+	    if (event.getLevel().isClientSide() || !en.getKey().isActiveIn(event.getLevel()) || !en.getKey().blockalter) {
 		continue;
 	    }
 	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
@@ -318,7 +286,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
     @SubscribeEvent
     public static void antiAccess(BlockEvent.EntityPlaceEvent event) {
 	for (Entry<TileInterdictionMatrix, AABB> en : matrices.entrySet()) {
-	    if (!en.getKey().running || en.getKey().isRemoved() || !en.getKey().blockalter) {
+	    if (event.getLevel().isClientSide() || !en.getKey().isActiveIn(event.getLevel()) || !en.getKey().blockalter) {
 		continue;
 	    }
 	    if (!en.getValue().contains(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())) {
@@ -335,7 +303,7 @@ public class TileInterdictionMatrix extends TileFortronConnective {
     }
 
     public int getMaxFortron() {
-	return getFortronUse() * 40 + BASEENERGY * 100;
+	return (int) Math.min(Integer.MAX_VALUE, (long) getFortronUse() * 40L + BASEENERGY * 100L);
     }
 
     public int getFortronUse() {
@@ -348,9 +316,22 @@ public class TileInterdictionMatrix extends TileFortronConnective {
     }
 
     private void onChanged(ComponentInventory inv, int index) {
-	radius = countModules(SubtypeModule.manipulationscale);
-	strength = countModules(SubtypeModule.upgradestrength);
-	scaleEnergy.setValue((BASEENERGY + strength) * radius * radius * radius);
+	radius = Mth.clamp(countModules(SubtypeModule.manipulationscale), 0, MAX_RADIUS);
+	strength = Math.max(0, countModules(SubtypeModule.upgradestrength));
+	long use = (BASEENERGY + (long) strength) * radius * radius * radius;
+	scaleEnergy.setValue((int) Math.min(use, Integer.MAX_VALUE / 41L));
+	antispawn = hasModule(SubtypeModule.upgradeantispawn);
+	blockaccess = hasModule(SubtypeModule.upgradeblockaccess);
+	blockalter = hasModule(SubtypeModule.upgradeblockalter);
+	if (matrices.containsKey(this)) {
+	    matrices.put(this, new AABB(worldPosition).inflate(radius));
+	}
+    }
+
+    @Override
+    public void setRemoved() {
+	super.setRemoved();
+	matrices.remove(this);
     }
 
     @Override
