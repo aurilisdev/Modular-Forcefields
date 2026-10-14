@@ -487,7 +487,7 @@ public class TileFortronFieldProjector extends TileFortronConnective {
     }
 
     public int getFortronUse() {
-	if (!(level instanceof ClientLevel)) {
+	if (!level.isClientSide()) {
 	    fortronUse.setValue(scaleEnergy + speedEnergy + (shouldDisintegrate || shouldStabilize ? 5000 : 0));
 	}
 	return fortronUse.getValue();
