@@ -25,7 +25,6 @@ import modularforcefields.common.world.FortronProtectionRegion;
 import modularforcefields.registers.ModularForcefieldsBlocks;
 import modularforcefields.registers.ModularForcefieldsItems;
 import modularforcefields.registers.ModularForcefieldsTiles;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
